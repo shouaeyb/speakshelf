@@ -3,7 +3,7 @@ import { hasLocale } from "next-intl";
 import { getTranslations } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
 import { routing } from "@/i18n/routing";
-import { listNames } from "@/i18n/locales";
+import { listNamesPlain } from "@/i18n/locales";
 import { getSite } from "@/lib/catalog";
 import { jsonLdSafe } from "@/lib/jsonld";
 import { languageName } from "@/lib/lang";
@@ -30,16 +30,11 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
   const t = await getTranslations({ locale });
   const fmt = (n: number) => n.toLocaleString(locale);
 
-  // Scale cap: the hero sentence names at most three shelves, then counts
-  // the rest, so twenty providers never turn it into a paragraph.
+  // Scale cap: the hero sentence names at most three shelves as a bare
+  // comma list; the message itself closes with its locale's "and more", so
+  // the line stays true as providers land and never turns into a paragraph.
   const providerNames = PROVIDERS.filter((p) => site.providers.has(p.key)).map((p) => p.label);
-  const nameList =
-    providerNames.length > 3
-      ? t("home.namesMore", {
-          names: providerNames.slice(0, 3).join(", "),
-          count: providerNames.length - 3,
-        })
-      : listNames(providerNames, locale);
+  const nameList = listNamesPlain(providerNames.slice(0, 3), locale);
 
   // "Coverage adds up" derives from data, and stays modest by design:
   // compare by primary language subtag so two codes for the same language

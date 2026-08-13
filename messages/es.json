@@ -11,9 +11,8 @@
   },
   "home": {
     "eyebrow": "CATÁLOGO DE TEXTO A VOZ",
-    "title": "{voices} voces. Un solo estante.",
-    "sub": "Speakshelf cataloga las voces de texto a voz de {names}, cada una con una muestra que puedes reproducir en el navegador. Sin cuenta, sin configuración, solo las voces.",
-    "namesMore": "{names} y {count} más",
+    "title": "{voices, number} voces. Un solo estante.",
+    "sub": "Speakshelf cataloga las voces de texto a voz de {names} y más. Cada una con una muestra que puedes reproducir en el navegador. Sin cuenta, sin configuración, solo las voces.",
     "jumpProviders": "PROVEEDORES",
     "jumpAbout": "ACERCA DE",
     "providersTitle": "{count, plural, one {# proveedor} other {# proveedores}}",
@@ -33,7 +32,7 @@
     "why3Title": "Se actualiza solo",
     "why3Body": "Cada estante se actualiza a diario desde el AI TTS Microservice. Voces, idiomas y submodelos nuevos aparecen aquí sin que nadie edite el sitio.",
     "aboutTitle": "Sobre este catálogo",
-    "aboutBody": "Speakshelf es un catálogo de referencia de voces de texto a voz. Hoy reúne {voices} voces de {providers, plural, one {# proveedor} other {# proveedores}} en {languages, plural, one {# idioma} other {# idiomas}}, cada una con una muestra reproducible. Las voces se agrupan como las agrupan sus proveedores, en familias de modelos y motores, para que lo que escuchas corresponda a lo que desplegarías."
+    "aboutBody": "Speakshelf es un catálogo de referencia de voces de texto a voz. Hoy reúne {voices, number} voces de {providers, plural, one {# proveedor} other {# proveedores}} en {languages, plural, one {# idioma} other {# idiomas}}, cada una con una muestra reproducible. Las voces se agrupan como las agrupan sus proveedores, en familias de modelos y motores, para que lo que escuchas corresponda a lo que desplegarías."
   },
   "attribution": {
     "body": "Speakshelf es independiente y no está afiliado a Google, Amazon ni al proyecto Kokoro. Los datos de voces y el audio provienen del <link>AI TTS Microservice</link>, un servicio que unifica Google, Amazon, Azure y otros proveedores de voz tras un único punto de acceso. Las muestras se generan bajo demanda, así que escuchar es gratis."
@@ -47,7 +46,7 @@
       "jump": "MODELOS",
       "familiesIntro": "Google no deja de lanzar nuevas arquitecturas de voz y todas las generaciones siguen en servicio. El catálogo va desde voces paramétricas compactas hasta modelos que puedes dirigir con una frase.",
       "card": "El estante más profundo: familias de modelos desde Standard y WaveNet hasta Chirp 3 y las voces Gemini que siguen una instrucción de estilo escrita.",
-      "about": "Google Cloud opera uno de los mayores catálogos de texto a voz entre los proveedores de nube. Abarca {families} familias de modelos, desde las voces WaveNet que popularizaron la voz neuronal hasta las voces Gemini, que cambian su entrega cuando describes el tono que quieres. Gemini es en realidad {models} modelos en uno: cada voz Gemini puede renderizarse con cualquiera de sus submodelos, y cada renderizado tiene aquí su propia muestra. Todas las demás voces del catálogo también tienen muestra.",
+      "about": "Google Cloud opera uno de los mayores catálogos de texto a voz entre los proveedores de nube. Abarca {families, number} familias de modelos, desde las voces WaveNet que popularizaron la voz neuronal hasta las voces Gemini, que cambian su entrega cuando describes el tono que quieres. Gemini es en realidad {models, number} modelos en uno: cada voz Gemini puede renderizarse con cualquiera de sus submodelos, y cada renderizado tiene aquí su propia muestra. Todas las demás voces del catálogo también tienen muestra.",
       "unknownFamily": "Una incorporación reciente al catálogo de Google."
     },
     "polly": {
@@ -58,7 +57,7 @@
       "jump": "MOTORES",
       "familiesIntro": "Polly agrupa sus voces por motor. El catálogo va desde las voces standard hasta el motor generative, con un nivel long-form pensado para escuchas largas.",
       "card": "El servicio de texto a voz de AWS: motores standard, neural, generative y long-form.",
-      "about": "Amazon Polly es el servicio de texto a voz de AWS, que convierte texto en voz natural. Sus {voices} voces aquí abarcan {families} motores: standard y neural, un motor generative construido con técnicas de IA generativa, y voces long-form diseñadas para contenido extenso como artículos y material formativo. Cada voz tiene una muestra reproducible.",
+      "about": "Amazon Polly es el servicio de texto a voz de AWS, que convierte texto en voz natural. Sus {voices, number} voces aquí abarcan {families, number} motores: standard y neural, un motor generative construido con técnicas de IA generativa, y voces long-form diseñadas para contenido extenso como artículos y material formativo. Cada voz tiene una muestra reproducible.",
       "unknownFamily": "Una incorporación reciente al catálogo de Amazon Polly."
     },
     "kokoro": {
@@ -69,7 +68,7 @@
       "jump": "MODELO",
       "familiesIntro": "Kokoro es un único modelo y no una colección de motores, así que todo su catálogo cabe en una sola familia.",
       "card": "Un modelo de pesos abiertos, 82 millones de parámetros bajo licencia Apache 2.0.",
-      "about": "Kokoro es un modelo de texto a voz de pesos abiertos: 82 millones de parámetros, publicado bajo la licencia Apache 2.0. El AI TTS Microservice lo sirve junto a los catálogos de nube, de modo que sus {voices} voces en {languages} idiomas se reproducen aquí como cualquier otro estante. Cada voz tiene una muestra reproducible.",
+      "about": "Kokoro es un modelo de texto a voz de pesos abiertos: 82 millones de parámetros, publicado bajo la licencia Apache 2.0. El AI TTS Microservice lo sirve junto a los catálogos de nube, de modo que sus {voices, number} voces en {languages, number} idiomas se reproducen aquí como cualquier otro estante. Cada voz tiene una muestra reproducible.",
       "unknownFamily": "Una incorporación reciente al catálogo de Kokoro."
     }
   },
@@ -77,12 +76,12 @@
     "jumpVoices": "VOCES",
     "jumpLanguages": "IDIOMAS",
     "jumpAbout": "ACERCA DE",
-    "familiesTitle": "{count} {familyWord}",
+    "familiesTitle": "{count, number} {familyWord}",
     "languagesTitle": "{count, plural, one {# idioma} other {# idiomas}}",
     "languagesSub": "Cada idioma tiene su propia página con la lista completa de voces, para que puedas enlazar directamente a un estante del catálogo.",
     "famMeta": "{voices, plural, one {# voz} other {# voces}}",
     "famLangs": "{count, plural, one {# idioma} other {# idiomas}}",
-    "famModels": "{count} submodelos",
+    "famModels": "{count, number} submodelos",
     "aboutTitle": "Sobre este catálogo",
     "allVoices": "Todas las voces"
   },
@@ -180,7 +179,7 @@
   },
   "langPage": {
     "crumb": "← Todos los idiomas de {label}",
-    "meta": "{code} · {voices, plural, one {# voz} other {# voces}} · {families} {familyWord} · {samples, plural, one {# muestra reproducible} other {# muestras reproducibles}}"
+    "meta": "{code} · {voices, plural, one {# voz} other {# voces}} · {families, number} {familyWord} · {samples, plural, one {# muestra reproducible} other {# muestras reproducibles}}"
   },
   "consent": {
     "text": "Speakshelf usa cookies y analítica para entender cómo se usa el catálogo.",
@@ -198,22 +197,22 @@
     "home": "Volver al estante"
   },
   "footer": {
-    "note": "Catálogo actualizado el {date} · {voices} voces de {providers, plural, one {# proveedor} other {# proveedores}} en {languages, plural, one {# idioma} other {# idiomas}}",
+    "note": "Catálogo actualizado el {date} · {voices, number} voces de {providers, plural, one {# proveedor} other {# proveedores}} en {languages, plural, one {# idioma} other {# idiomas}}",
     "served": "Muestras servidas por el <link>AI TTS Microservice</link> · Independiente, sin afiliación con Google, Amazon ni el proyecto Kokoro",
     "languageLabel": "Idioma"
   },
   "meta": {
     "andMore": "{names} y más",
     "siteTitle": "Speakshelf · voces de texto a voz de {names}",
-    "siteDescription": "Explora y reproduce {voices} voces de texto a voz de {names} en {languages} idiomas, cada una con una muestra reproducible.",
+    "siteDescription": "Explora y reproduce {voices, number} voces de texto a voz de {names} en {languages, number} idiomas, cada una con una muestra reproducible.",
     "shareDescription": "Explora y reproduce los catálogos de texto a voz de {names}. Una muestra reproducible por cada voz.",
-    "homeJsonLd": "Un catálogo de voces de texto a voz de {names}, con muestras que puedes reproducir en el navegador.",
+    "homeJsonLd": "Un catálogo de voces de texto a voz de {names} y más, con muestras que puedes reproducir en el navegador.",
     "providerTitle": "Voces de texto a voz de {label}",
-    "providerDescription": "Reproduce muestras del catálogo completo de texto a voz de {label}: {voices} voces en {languages} idiomas, con filtros por {familyWord}, idioma y género.",
+    "providerDescription": "Reproduce muestras del catálogo completo de texto a voz de {label}: {voices, number} voces en {languages, number} idiomas, con filtros por {familyWord}, idioma y género.",
     "providerShareDescription": "El catálogo completo de texto a voz de {label} con una muestra reproducible por cada voz.",
     "providerJsonLd": "Un catálogo de todas las voces de texto a voz de {label}, con muestras que puedes reproducir en el navegador.",
     "langTitle": "Voces de {label} en {language}",
-    "langDescription": "Las {voices} voces de texto a voz de {label} para {language} ({code}), con muestras que puedes reproducir en el navegador.",
+    "langDescription": "Las {voices, number} voces de texto a voz de {label} para {language} ({code}), con muestras que puedes reproducir en el navegador.",
     "langShareDescription": "Voces de texto a voz de {label} para {language}, con muestras reproducibles.",
     "langJsonLd": "Voces de texto a voz de {label} para {language} ({code})."
   },

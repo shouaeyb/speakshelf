@@ -11,9 +11,8 @@
   },
   "home": {
     "eyebrow": "CATALOGUE DE SYNTHÈSE VOCALE",
-    "title": "{voices} voix. Une seule étagère.",
-    "sub": "Speakshelf catalogue les voix de synthèse vocale de {names}, chacune avec un extrait à écouter dans le navigateur. Pas de compte, pas de configuration, juste les voix.",
-    "namesMore": "{names} et {count} autres",
+    "title": "{voices, number} voix. Une seule étagère.",
+    "sub": "Speakshelf catalogue les voix de synthèse vocale de {names} et plus. Chacune avec un extrait à écouter dans le navigateur. Pas de compte, pas de configuration, juste les voix.",
     "jumpProviders": "FOURNISSEURS",
     "jumpAbout": "À PROPOS",
     "providersTitle": "{count, plural, one {# fournisseur} other {# fournisseurs}}",
@@ -33,7 +32,7 @@
     "why3Title": "À jour tout seul",
     "why3Body": "Chaque étagère se met à jour quotidiennement depuis l'AI TTS Microservice. Les nouvelles voix, langues et sous-modèles apparaissent ici sans que personne ne modifie le site.",
     "aboutTitle": "À propos de ce catalogue",
-    "aboutBody": "Speakshelf est un catalogue de référence des voix de synthèse vocale. Il réunit aujourd'hui {voices} voix de {providers, plural, one {# fournisseur} other {# fournisseurs}} en {languages, plural, one {# langue} other {# langues}}, chacune avec un extrait à écouter. Les voix sont groupées comme leurs fournisseurs les groupent, en familles de modèles et moteurs, pour que ce que vous entendez corresponde à ce que vous déploieriez."
+    "aboutBody": "Speakshelf est un catalogue de référence des voix de synthèse vocale. Il réunit aujourd'hui {voices, number} voix de {providers, plural, one {# fournisseur} other {# fournisseurs}} en {languages, plural, one {# langue} other {# langues}}, chacune avec un extrait à écouter. Les voix sont groupées comme leurs fournisseurs les groupent, en familles de modèles et moteurs, pour que ce que vous entendez corresponde à ce que vous déploieriez."
   },
   "attribution": {
     "body": "Speakshelf est indépendant et n'est affilié ni à Google, ni à Amazon, ni au projet Kokoro. Les données et l'audio proviennent de l'<link>AI TTS Microservice</link>, un service qui unifie Google, Amazon, Azure et d'autres fournisseurs de voix derrière un point d'accès unique. Les extraits sont générés à la demande, l'écoute est donc gratuite."
@@ -47,7 +46,7 @@
       "jump": "MODÈLES",
       "familiesIntro": "Google ne cesse de lancer de nouvelles architectures vocales et chaque génération reste en service. Le catalogue va des voix paramétriques compactes aux modèles que l'on dirige d'une phrase.",
       "card": "L'étagère la plus fournie : des familles de modèles de Standard et WaveNet jusqu'à Chirp 3 et aux voix Gemini qui suivent une consigne de style écrite.",
-      "about": "Google Cloud exploite l'un des plus grands catalogues de synthèse vocale parmi les fournisseurs de cloud. Il couvre {families} familles de modèles, des voix WaveNet qui ont popularisé la voix neuronale aux voix Gemini, qui changent leur interprétation quand vous décrivez le ton voulu. Gemini est en réalité {models} modèles en un : chaque voix Gemini peut être rendue par n'importe lequel de ses sous-modèles, et chaque rendu a ici son propre extrait. Toutes les autres voix du catalogue ont aussi leur extrait.",
+      "about": "Google Cloud exploite l'un des plus grands catalogues de synthèse vocale parmi les fournisseurs de cloud. Il couvre {families, number} familles de modèles, des voix WaveNet qui ont popularisé la voix neuronale aux voix Gemini, qui changent leur interprétation quand vous décrivez le ton voulu. Gemini est en réalité {models, number} modèles en un : chaque voix Gemini peut être rendue par n'importe lequel de ses sous-modèles, et chaque rendu a ici son propre extrait. Toutes les autres voix du catalogue ont aussi leur extrait.",
       "unknownFamily": "Un ajout récent au catalogue Google."
     },
     "polly": {
@@ -58,7 +57,7 @@
       "jump": "MOTEURS",
       "familiesIntro": "Polly groupe ses voix par moteur. Le catalogue va des voix standard au moteur generative, avec un niveau long-form pensé pour l'écoute prolongée.",
       "card": "Le service de synthèse vocale d'AWS : moteurs standard, neural, generative et long-form.",
-      "about": "Amazon Polly est le service de synthèse vocale d'AWS, qui convertit le texte en voix naturelle. Ses {voices} voix couvrent ici {families} moteurs : standard et neural, un moteur generative construit avec des techniques d'IA générative, et des voix long-form conçues pour les contenus longs comme les articles et les supports de formation. Chaque voix a un extrait à écouter.",
+      "about": "Amazon Polly est le service de synthèse vocale d'AWS, qui convertit le texte en voix naturelle. Ses {voices, number} voix couvrent ici {families, number} moteurs : standard et neural, un moteur generative construit avec des techniques d'IA générative, et des voix long-form conçues pour les contenus longs comme les articles et les supports de formation. Chaque voix a un extrait à écouter.",
       "unknownFamily": "Un ajout récent au catalogue Amazon Polly."
     },
     "kokoro": {
@@ -69,7 +68,7 @@
       "jump": "MODÈLE",
       "familiesIntro": "Kokoro est un modèle unique et non une collection de moteurs : tout son catalogue tient dans une seule famille.",
       "card": "Un modèle à poids ouverts, 82 millions de paramètres sous licence Apache 2.0.",
-      "about": "Kokoro est un modèle de synthèse vocale à poids ouverts : 82 millions de paramètres, publié sous licence Apache 2.0. L'AI TTS Microservice le sert aux côtés des catalogues cloud, si bien que ses {voices} voix en {languages} langues s'écoutent ici comme n'importe quelle autre étagère. Chaque voix a un extrait à écouter.",
+      "about": "Kokoro est un modèle de synthèse vocale à poids ouverts : 82 millions de paramètres, publié sous licence Apache 2.0. L'AI TTS Microservice le sert aux côtés des catalogues cloud, si bien que ses {voices, number} voix en {languages, number} langues s'écoutent ici comme n'importe quelle autre étagère. Chaque voix a un extrait à écouter.",
       "unknownFamily": "Un ajout récent au catalogue Kokoro."
     }
   },
@@ -77,12 +76,12 @@
     "jumpVoices": "VOIX",
     "jumpLanguages": "LANGUES",
     "jumpAbout": "À PROPOS",
-    "familiesTitle": "{count} {familyWord}",
+    "familiesTitle": "{count, number} {familyWord}",
     "languagesTitle": "{count, plural, one {# langue} other {# langues}}",
     "languagesSub": "Chaque langue a sa propre page avec la liste complète des voix, pour pouvoir envoyer quelqu'un directement vers une étagère du catalogue.",
     "famMeta": "{voices, plural, one {# voix} other {# voix}}",
     "famLangs": "{count, plural, one {# langue} other {# langues}}",
-    "famModels": "{count} sous-modèles",
+    "famModels": "{count, number} sous-modèles",
     "aboutTitle": "À propos de ce catalogue",
     "allVoices": "Toutes les voix"
   },
@@ -180,7 +179,7 @@
   },
   "langPage": {
     "crumb": "← Toutes les langues {label}",
-    "meta": "{code} · {voices, plural, one {# voix} other {# voix}} · {families} {familyWord} · {samples, plural, one {# extrait à écouter} other {# extraits à écouter}}"
+    "meta": "{code} · {voices, plural, one {# voix} other {# voix}} · {families, number} {familyWord} · {samples, plural, one {# extrait à écouter} other {# extraits à écouter}}"
   },
   "consent": {
     "text": "Speakshelf utilise des cookies et des outils d'analyse pour comprendre l'usage du catalogue.",
@@ -198,22 +197,22 @@
     "home": "Retour à l'étagère"
   },
   "footer": {
-    "note": "Catalogue mis à jour le {date} · {voices} voix de {providers, plural, one {# fournisseur} other {# fournisseurs}} en {languages, plural, one {# langue} other {# langues}}",
+    "note": "Catalogue mis à jour le {date} · {voices, number} voix de {providers, plural, one {# fournisseur} other {# fournisseurs}} en {languages, plural, one {# langue} other {# langues}}",
     "served": "Extraits servis par l'<link>AI TTS Microservice</link> · Indépendant, sans affiliation avec Google, Amazon ni le projet Kokoro",
     "languageLabel": "Langue"
   },
   "meta": {
     "andMore": "{names} et plus",
     "siteTitle": "Speakshelf · voix de synthèse vocale de {names}",
-    "siteDescription": "Parcourez et écoutez {voices} voix de synthèse vocale de {names} en {languages} langues, chacune avec un extrait à écouter.",
+    "siteDescription": "Parcourez et écoutez {voices, number} voix de synthèse vocale de {names} en {languages, number} langues, chacune avec un extrait à écouter.",
     "shareDescription": "Parcourez et écoutez les catalogues de synthèse vocale de {names}. Un extrait à écouter pour chaque voix.",
-    "homeJsonLd": "Un catalogue de voix de synthèse vocale de {names}, avec des extraits à écouter dans le navigateur.",
+    "homeJsonLd": "Un catalogue de voix de synthèse vocale de {names} et plus, avec des extraits à écouter dans le navigateur.",
     "providerTitle": "Voix de synthèse vocale {label}",
-    "providerDescription": "Écoutez des extraits du catalogue complet de synthèse vocale {label} : {voices} voix en {languages} langues, avec des filtres par {familyWord}, langue et genre.",
+    "providerDescription": "Écoutez des extraits du catalogue complet de synthèse vocale {label} : {voices, number} voix en {languages, number} langues, avec des filtres par {familyWord}, langue et genre.",
     "providerShareDescription": "Le catalogue complet de synthèse vocale {label}, avec un extrait à écouter pour chaque voix.",
     "providerJsonLd": "Un catalogue de toutes les voix de synthèse vocale {label}, avec des extraits à écouter dans le navigateur.",
     "langTitle": "Voix {label} en {language}",
-    "langDescription": "Les {voices} voix de synthèse vocale {label} pour le {language} ({code}), avec des extraits à écouter dans le navigateur.",
+    "langDescription": "Les {voices, number} voix de synthèse vocale {label} pour le {language} ({code}), avec des extraits à écouter dans le navigateur.",
     "langShareDescription": "Voix de synthèse vocale {label} pour le {language}, avec extraits à écouter.",
     "langJsonLd": "Voix de synthèse vocale {label} pour le {language} ({code})."
   },

@@ -11,14 +11,13 @@
   },
   "home": {
     "eyebrow": "TEXT TO SPEECH CATALOG",
-    "title": "{voices} voices. One shelf.",
-    "sub": "Speakshelf catalogs the text to speech voices of {names}, each with a sample you can play in the browser. No account, no setup, just the voices.",
-    "namesMore": "{names} and {count} more",
+    "title": "{voices, number} voices. One shelf.",
+    "sub": "Speakshelf catalogs the text to speech voices of {names} and more. Each with a sample you can play in the browser. No account, no setup, just the voices.",
     "jumpProviders": "PROVIDERS",
     "jumpAbout": "ABOUT",
     "providersTitle": "{count, plural, one {# provider} other {# providers}}",
     "providersSub": "Every provider keeps a full shelf: the complete voice list with filters and playback, notes on each model family, and a page per language. The shelf grows: the AI TTS Microservice unifies more providers, and new shelves open here once verified.",
-    "cardVoices": "{count, plural, other {voices}}",
+    "cardVoices": "{count, plural, other {voices, number}}",
     "cardMeta": "{languages, plural, one {# language} other {# languages}} · {familiesCount} {familyWord} · {samples, plural, one {# sample} other {# samples}}",
     "browse": "BROWSE →",
     "whyTitle": "Why one shelf",
@@ -33,7 +32,7 @@
     "why3Title": "Fresh on its own",
     "why3Body": "Every shelf refreshes from the AI TTS Microservice daily. New voices, languages and sub-models appear here without anyone editing the site.",
     "aboutTitle": "About this catalog",
-    "aboutBody": "Speakshelf is a reference catalog for text to speech voices. Today it carries {voices} voices from {providers, plural, one {# provider} other {# providers}} in {languages, plural, one {# language} other {# languages}}, every one with a sample you can play. Voices are grouped the way their providers group them, into model families and engines, so what you hear maps onto what you would deploy."
+    "aboutBody": "Speakshelf is a reference catalog for text to speech voices. Today it carries {voices, number} voices from {providers, plural, one {# provider} other {# providers}} in {languages, plural, one {# language} other {# languages}}, every one with a sample you can play. Voices are grouped the way their providers group them, into model families and engines, so what you hear maps onto what you would deploy."
   },
   "attribution": {
     "body": "Speakshelf is independent and not affiliated with Google, Amazon or the Kokoro project. Voice data and audio come from the <link>AI TTS Microservice</link>, a service that unifies Google, Amazon, Azure and other speech providers behind a single endpoint. Samples stream on demand, so listening is free."
@@ -47,7 +46,7 @@
       "jump": "MODELS",
       "familiesIntro": "Google keeps shipping new speech architectures and every generation is still in service. The catalog runs from compact parametric voices to models you can direct with a sentence.",
       "card": "The deepest shelf here: model families from Standard and WaveNet to Chirp 3 and Gemini voices that follow a written style prompt.",
-      "about": "Google Cloud runs one of the largest text to speech catalogs of any cloud provider. It spans {families} model families, from the WaveNet voices that made neural speech mainstream to Gemini voices that change their delivery when you describe the tone you want. Gemini is really {models} models in one: every Gemini voice can be rendered by any of its sub-models, and each render has its own sample here. Every other voice in the catalog has a sample too.",
+      "about": "Google Cloud runs one of the largest text to speech catalogs of any cloud provider. It spans {families, number} model families, from the WaveNet voices that made neural speech mainstream to Gemini voices that change their delivery when you describe the tone you want. Gemini is really {models, number} models in one: every Gemini voice can be rendered by any of its sub-models, and each render has its own sample here. Every other voice in the catalog has a sample too.",
       "unknownFamily": "A recent addition to the Google catalog."
     },
     "polly": {
@@ -58,7 +57,7 @@
       "jump": "ENGINES",
       "familiesIntro": "Polly groups its voices by engine. The catalog runs from the standard voices to the generative engine, with a long-form tier built for extended listening.",
       "card": "AWS's text to speech service: standard, neural, generative and long-form engines.",
-      "about": "Amazon Polly is the text to speech service on AWS, converting text into lifelike speech. Its {voices} voices here span {families} engines: standard and neural, a generative engine built with generative AI techniques, and long-form voices designed for longer content like articles and training material. Every voice has a playable sample.",
+      "about": "Amazon Polly is the text to speech service on AWS, converting text into lifelike speech. Its {voices, number} voices here span {families, number} engines: standard and neural, a generative engine built with generative AI techniques, and long-form voices designed for longer content like articles and training material. Every voice has a playable sample.",
       "unknownFamily": "A recent addition to the Amazon Polly catalog."
     },
     "kokoro": {
@@ -69,7 +68,7 @@
       "jump": "MODEL",
       "familiesIntro": "Kokoro is a single model rather than a stable of engines, so its whole catalog sits in one family.",
       "card": "An open-weight model, 82 million parameters under the Apache 2.0 license.",
-      "about": "Kokoro is an open-weight text to speech model: 82 million parameters, released under the Apache 2.0 license. The AI TTS Microservice serves it alongside the cloud catalogs, so its {voices} voices in {languages} languages play here like any other shelf. Every voice has a playable sample.",
+      "about": "Kokoro is an open-weight text to speech model: 82 million parameters, released under the Apache 2.0 license. The AI TTS Microservice serves it alongside the cloud catalogs, so its {voices, number} voices in {languages, number} languages play here like any other shelf. Every voice has a playable sample.",
       "unknownFamily": "A recent addition to the Kokoro catalog."
     }
   },
@@ -77,12 +76,12 @@
     "jumpVoices": "VOICES",
     "jumpLanguages": "LANGUAGES",
     "jumpAbout": "ABOUT",
-    "familiesTitle": "{count} {familyWord}",
+    "familiesTitle": "{count, number} {familyWord}",
     "languagesTitle": "{count, plural, one {# language} other {# languages}}",
     "languagesSub": "Every language has its own page with the full list of voices, so you can link someone straight to one shelf of the catalog.",
     "famMeta": "{voices, plural, one {# voice} other {# voices}}",
     "famLangs": "{count, plural, one {# lang} other {# langs}}",
-    "famModels": "{count} sub-models",
+    "famModels": "{count, number} sub-models",
     "aboutTitle": "About this catalog",
     "allVoices": "All voices"
   },
@@ -180,7 +179,7 @@
   },
   "langPage": {
     "crumb": "← All {label} languages",
-    "meta": "{code} · {voices, plural, one {# voice} other {# voices}} · {families} {familyWord} · {samples, plural, one {# playable sample} other {# playable samples}}"
+    "meta": "{code} · {voices, plural, one {# voice} other {# voices}} · {families, number} {familyWord} · {samples, plural, one {# playable sample} other {# playable samples}}"
   },
   "consent": {
     "text": "Speakshelf uses cookies and analytics to understand how the catalog is used.",
@@ -198,22 +197,22 @@
     "home": "Back to the shelf"
   },
   "footer": {
-    "note": "Catalog updated {date} · {voices} voices from {providers, plural, one {# provider} other {# providers}} in {languages, plural, one {# language} other {# languages}}",
+    "note": "Catalog updated {date} · {voices, number} voices from {providers, plural, one {# provider} other {# providers}} in {languages, plural, one {# language} other {# languages}}",
     "served": "Samples served by the <link>AI TTS Microservice</link> · Independent, not affiliated with Google, Amazon or the Kokoro project",
     "languageLabel": "Language"
   },
   "meta": {
     "andMore": "{names} and more",
     "siteTitle": "Speakshelf · text to speech voices from {names}",
-    "siteDescription": "Browse and play {voices} text to speech voices from {names} in {languages} languages, every one with a playable sample.",
+    "siteDescription": "Browse and play {voices, number} text to speech voices from {names} in {languages, number} languages, every one with a playable sample.",
     "shareDescription": "Browse and play the text to speech catalogs of {names}. A playable sample for every voice.",
-    "homeJsonLd": "A catalog of text to speech voices from {names}, with samples you can play in the browser.",
+    "homeJsonLd": "A catalog of text to speech voices from {names} and more, with samples you can play in the browser.",
     "providerTitle": "{label} text to speech voices",
-    "providerDescription": "Play samples of the full {label} text to speech catalog: {voices} voices in {languages} languages, with filters for {familyWord}, language and gender.",
+    "providerDescription": "Play samples of the full {label} text to speech catalog: {voices, number} voices in {languages, number} languages, with filters for {familyWord}, language and gender.",
     "providerShareDescription": "The full {label} text to speech catalog with a playable sample for every voice.",
     "providerJsonLd": "A catalog of every {label} text to speech voice, with samples you can play in the browser.",
     "langTitle": "{label} {language} voices",
-    "langDescription": "All {voices} {label} text to speech voices for {language} ({code}), with samples you can play in the browser.",
+    "langDescription": "All {voices, number} {label} text to speech voices for {language} ({code}), with samples you can play in the browser.",
     "langShareDescription": "{label} text to speech voices for {language}, with playable samples.",
     "langJsonLd": "{label} text to speech voices for {language} ({code})."
   },

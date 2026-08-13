@@ -32,6 +32,15 @@ export function listNames(names: string[], locale: string): string {
   }
 }
 
+/** Bare "A, B, C" for lists the message finishes itself ("{names} and
+ * more"). Not Intl.ListFormat: its unit type concatenates zh names with no
+ * separator at all, and conjunction styles keep es "y"/hi "और" before the
+ * last name, doubling the message's own closing conjunction. zh takes its
+ * enumeration comma; extend here if a future locale needs another mark. */
+export function listNamesPlain(names: string[], locale: string): string {
+  return names.join(locale === "zh" ? "、" : ", ");
+}
+
 /** Suggestion-banner strings, written in the TARGET language on purpose:
  *  the invitation must be readable by the person it invites, and the
  *  active locale's messages cannot carry another locale's words. */
