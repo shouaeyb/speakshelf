@@ -123,8 +123,8 @@ export default async function Home() {
             <p>
               Speakshelf is an independent reference and is not affiliated with Google. Voice data and
               audio come from the <a href="https://aitts.theproductivepixel.com">AI TTS Microservice</a>, a service
-              that unifies Google, Amazon and other speech providers behind a single endpoint. Samples
-              stream on demand, so listening is free.
+              that unifies Google, Amazon, Azure and other speech providers behind a single endpoint.
+              Samples stream on demand, so listening is free.
             </p>
           </div>
         </div>
