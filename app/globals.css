@@ -384,10 +384,14 @@ button {
 
 .toolbar {
   display: grid;
-  grid-template-columns: 2fr 1fr 1fr 1fr;
+  grid-template-columns: 2fr 1fr 1fr 1fr 1fr;
   gap: 1px;
   background: var(--border-strong);
   border: 1px solid var(--border-strong);
+}
+
+.toolbar-4 {
+  grid-template-columns: 2fr 1fr 1fr 1fr;
 }
 
 .toolbar-3 {
@@ -396,13 +400,23 @@ button {
 
 @media (max-width: 900px) {
   .toolbar,
+  .toolbar-4,
   .toolbar-3 {
     grid-template-columns: 1fr 1fr;
+  }
+  /* Search gets its own row; a trailing odd field goes full width so the
+     grid never shows an empty cell, whatever the field count. */
+  .toolbar .field:first-child {
+    grid-column: 1 / -1;
+  }
+  .toolbar .field:last-child:nth-child(even) {
+    grid-column: 1 / -1;
   }
 }
 
 @media (max-width: 520px) {
   .toolbar,
+  .toolbar-4,
   .toolbar-3 {
     grid-template-columns: 1fr;
   }
@@ -465,6 +479,15 @@ button {
 
 .select:focus {
   outline: none;
+}
+
+.select:disabled {
+  color: var(--text-3);
+  cursor: default;
+}
+
+.nowrap {
+  white-space: nowrap;
 }
 
 .field-caret {
@@ -598,18 +621,6 @@ a.lang-name:hover {
 
 .play-on .glyph {
   fill: #ffffff;
-}
-
-.no-sample {
-  width: 32px;
-  height: 32px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: var(--border-strong);
-  flex: none;
-  font-family: var(--mono);
-  font-size: 12px;
 }
 
 .vname {

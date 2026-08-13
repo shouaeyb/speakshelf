@@ -22,7 +22,7 @@ export default function Home() {
     name: "Voice Atlas",
     url: SITE_URL,
     description:
-      "A catalog of every Google Cloud text to speech voice, with official samples you can play in the browser.",
+      "A catalog of every Google Cloud text to speech voice, with samples you can play in the browser.",
   };
 
   return (
@@ -35,7 +35,7 @@ export default function Home() {
           <p className="eyebrow rise">GOOGLE CLOUD TEXT TO SPEECH</p>
           <h1 className="rise rise-2">Every Google voice, on one page.</h1>
           <p className="hero-sub rise rise-3">
-            Play the official sample for each voice in the Google Cloud catalog. Filter by model family,
+            Play a sample of every voice in the Google Cloud catalog. Filter by model family,
             language and gender. No account, no setup, just the voices.
           </p>
           <div className="stats rise rise-4">
@@ -76,8 +76,11 @@ export default function Home() {
                 <span className="fam-name">{f.label}</span>
                 <span className="fam-desc">{f.blurb}</span>
                 <span className="fam-meta">
-                  {fmt(f.voices)} {f.voices === 1 ? "voice" : "voices"} · {f.languages}{" "}
-                  {f.languages === 1 ? "lang" : "langs"}
+                  {fmt(f.voices)} {f.voices === 1 ? "voice" : "voices"} ·{" "}
+                  <span className="nowrap">
+                    {f.languages} {f.languages === 1 ? "lang" : "langs"}
+                  </span>
+                  {f.models ? <span className="nowrap"> · {f.models} sub-models</span> : null}
                 </span>
               </Link>
             ))}
@@ -116,8 +119,10 @@ export default function Home() {
             <p>
               Google Cloud runs one of the largest text to speech catalogs of any cloud provider. It spans ten model
               families, from the WaveNet voices that made neural speech mainstream to Gemini voices that
-              change their delivery when you describe the tone you want. Each voice ships with a short
-              official sample, and this site collects all of them in one place.
+              change their delivery when you describe the tone you want. Gemini is really four models in
+              one, with every Gemini voice available on 2.5 Flash, 2.5 Pro, 2.5 Flash-Lite and the 3.1
+              Flash preview. Every voice in the catalog has a sample here, and Gemini voices have one
+              per sub-model.
             </p>
             <p>
               Voice Atlas is an independent reference and is not affiliated with Google. Voice data and

@@ -1,14 +1,15 @@
 # Voice Atlas
 
-A catalog of every Google Cloud text to speech voice, with official samples you can play in the browser. 4,586 voices, 93 languages, ten model families from Standard to Gemini, on one page.
+A catalog of every Google Cloud text to speech voice, with samples you can play in the browser. 4,586 voices, 93 languages, ten model families from Standard to Gemini, on one page. Gemini voices come in four sub-model takes (2.5 Flash, 2.5 Pro, 2.5 Flash-Lite, 3.1 Flash preview), which puts the sample count at 12,416.
 
 Built with Next.js and styled after IBM's design language: IBM Plex type, sharp corners, thin rules, Carbon blue.
 
 ## How it works
 
 - The voice list ships with the repo (`data/voices.packed.json`), so pages render with no API calls at all.
-- Pressing play hits `/api/sample`, which asks the [AI TTS API](https://aitts.theproductivepixel.com) for a signed sample URL and redirects the browser to it. Sample lookups are free, and the server caches each signed URL for 20 hours.
-- The API key never leaves the server and no synthesis is ever triggered, so browsing costs nothing.
+- Pressing play hits `/api/sample`, which asks the [AI TTS API](https://aitts.theproductivepixel.com) for a signed sample URL and hands it to the browser. Sample lookups are free and the server caches each signed URL for 20 hours. For Gemini voices the route takes a `model` parameter to pick the sub-model.
+- The first listen for a rare voice can catch the API still preparing that sample. It answers 202, the row shows "preparing sample", and playback starts a few seconds later.
+- The API key never leaves the server and nothing here spends synthesis credits, so browsing costs nothing.
 
 ## Run it
 
@@ -28,7 +29,7 @@ For production, also set `NEXT_PUBLIC_SITE_URL` to your public origin so canonic
 TTS_API_KEY=tts_... node scripts/build-data.mjs
 ```
 
-Fetches the current Google voice list, probes which voices have published samples, and rewrites `data/voices.packed.json`. Takes a few minutes because it walks the whole catalog politely.
+Fetches the current Google voice list and rewrites `data/voices.packed.json`. One API call, a few seconds. It also warns if Google's Gemini sub-model list has changed so `lib/families.ts` can be kept in step.
 
 ## Pages
 

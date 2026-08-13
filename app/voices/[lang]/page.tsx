@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ExplorerList } from "@/components/Explorer";
-import { languages, voicesForLanguage } from "@/lib/catalog";
+import { languages, sampleCount, voicesForLanguage } from "@/lib/catalog";
 import { languageName } from "@/lib/lang";
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000";
@@ -39,7 +39,7 @@ export default async function LanguagePage({ params }: { params: Promise<Params>
   if (voices.length === 0) notFound();
   const name = languageName(lang);
   const families = new Set(voices.map((v) => v.family)).size;
-  const samples = voices.filter((v) => v.hasSample).length;
+  const samples = sampleCount(voices);
 
   const jsonLd = {
     "@context": "https://schema.org",

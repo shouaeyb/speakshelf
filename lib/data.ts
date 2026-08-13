@@ -12,12 +12,11 @@ export interface Voice {
   name: string;
   gender: Gender;
   tier: Tier;
-  hasSample: boolean;
   styles: string[];
 }
 
-// Tuple: [lang, family, name, gender, tier, hasSample, styles]
-export type PackedVoice = [string, string, string, string, string, number, string];
+// Tuple: [lang, family, name, gender, tier, styles]
+export type PackedVoice = [string, string, string, string, string, string];
 
 export interface PackedCatalog {
   version: number;
@@ -33,14 +32,13 @@ const GENDERS: Record<string, Gender> = {
 };
 
 export function unpack(catalog: PackedCatalog): Voice[] {
-  return catalog.voices.map(([lang, family, name, gender, tier, hasSample, styles]) => ({
+  return catalog.voices.map(([lang, family, name, gender, tier, styles]) => ({
     id: `google:${lang}-${family}-${name}`,
     lang,
     family,
     name,
     gender: GENDERS[gender] ?? "unknown",
     tier: tier === "u" ? "ultra" : "premium",
-    hasSample: hasSample === 1,
     styles: styles ? styles.split(",") : [],
   }));
 }

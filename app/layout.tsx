@@ -27,7 +27,7 @@ export const metadata: Metadata = {
     template: "%s · Voice Atlas",
   },
   description:
-    "Play official samples for the full Google Cloud text to speech catalog: Gemini, Chirp 3 HD, Neural2, WaveNet, Studio and Standard voices in 93 languages.",
+    "Play samples of the full Google Cloud text to speech catalog: Gemini, Chirp 3 HD, Neural2, WaveNet, Studio and Standard voices in 93 languages.",
   applicationName: "Voice Atlas",
   keywords: [
     "Google text to speech",

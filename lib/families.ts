@@ -11,7 +11,7 @@ export const FAMILIES: FamilyMeta[] = [
   {
     key: "Gemini",
     label: "Gemini",
-    blurb: "Native speech from the Gemini models. Delivery follows a written style prompt.",
+    blurb: "Native speech from Gemini. Four sub-models share every voice, and delivery follows a written style prompt.",
   },
   {
     key: "Chirp3HD",
@@ -63,3 +63,18 @@ export const FAMILIES: FamilyMeta[] = [
 export function familyLabel(key: string): string {
   return FAMILIES.find((f) => f.key === key)?.label ?? key;
 }
+
+// Every Gemini voice can render its sample with any of these sub-models.
+// The API defaults to 2.5 Flash when no model is passed, so the first
+// entry doubles as the default. Other families have a single model.
+export interface GeminiModel {
+  id: string;
+  label: string;
+}
+
+export const GEMINI_MODELS: GeminiModel[] = [
+  { id: "gemini-2.5-flash-tts", label: "2.5 Flash" },
+  { id: "gemini-2.5-pro-tts", label: "2.5 Pro" },
+  { id: "gemini-2.5-flash-lite-preview-tts", label: "2.5 Flash-Lite" },
+  { id: "gemini-3.1-flash-tts-preview", label: "3.1 Flash preview" },
+];
