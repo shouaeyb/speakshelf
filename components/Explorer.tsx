@@ -8,6 +8,7 @@ import { languageName } from "@/lib/lang";
 import { PROVIDER_FAMILIES, familyLabel, familyRank, modelLabel } from "@/lib/families";
 import { getProvider } from "@/lib/providers";
 import { EVENTS, track } from "@/lib/analytics";
+import { buildSearchDoc, matchesTokens, tokenize, type SearchDoc } from "@/lib/search";
 
 interface ExplorerProps {
   /** Provider key; scopes data, links and deep-link params. */
@@ -239,21 +240,26 @@ function ExplorerCore({ provider, voices, lockLanguage, models, paramsKey }: Cor
     );
   }, [all, rank, provider]);
 
+  // One search document per voice, built once per catalog load. Every
+  // field and trait is in it, so future characteristics are searchable
+  // with no change here.
+  const searchDocs = useMemo(() => {
+    if (!all) return new Map<string, SearchDoc>();
+    return new Map(all.map((v) => [v.id, buildSearchDoc(v, provider)]));
+  }, [all, provider]);
+
+  const emptyDoc: SearchDoc = { words: [], text: "" };
   const filtered = useMemo(() => {
     if (!all) return [];
-    const needle = q.trim().toLowerCase();
+    const tokens = tokenize(q);
     return all.filter((v) => {
       if (family && v.family !== family) return false;
       if (lang && v.lang !== lang) return false;
       if (gender && v.gender !== gender) return false;
-      if (needle) {
-        const hay =
-          `${v.name} ${v.family} ${familyLabel(provider, v.family)} ${v.lang} ${languageName(v.lang)} ${v.traits.age ?? ""}`.toLowerCase();
-        if (!hay.includes(needle)) return false;
-      }
+      if (tokens.length > 0 && !matchesTokens(searchDocs.get(v.id) ?? emptyDoc, tokens)) return false;
       return true;
     });
-  }, [all, q, family, lang, gender, provider]);
+  }, [all, q, family, lang, gender, searchDocs]);
 
   const groups = useMemo(() => {
     const byFamily = (a: Voice, b: Voice) =>
@@ -489,7 +495,7 @@ function ExplorerCore({ provider, voices, lockLanguage, models, paramsKey }: Cor
           <input
             className="search-input"
             type="search"
-            placeholder="Search by name, language or model"
+            placeholder="Search name, language, gender, model, style"
             aria-label="Search voices"
             value={q}
             onChange={(e) => setQ(e.target.value)}

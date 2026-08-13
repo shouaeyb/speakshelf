@@ -2,6 +2,14 @@
 
 Settled decisions, newest first. Append a dated entry when something gets decided; correct an old entry by appending, not rewriting. Do not relitigate these silently: if you believe one is wrong, say so to the owner with evidence.
 
+## 2026-08-13: search stays UI-only and becomes complete; fuzzy waits for evidence
+
+Search never touches an API: the catalog is already client-loaded and stays that way. The fix for "can't search gender/tier/styles/anything future": one memoized search document per voice built automatically from every field and trait, so new characteristics are searchable by construction; queries tokenize and AND together ("female child" works); diacritics are stripped on both sides; a pasted full voice id resolves to its exact row. Display stays grouped by language. Fuse.js was considered (the owner's other product uses it) and deliberately deferred: the search_used analytics will show real zero-result queries, and the fuzzy layer gets added if typos show up in evidence, not speculation. Peer-reviewed by kiro gpt-5.6-sol.
+
+## 2026-08-13: internationalization direction (owner decisions)
+
+Owner decisions, recorded before the build: browser-language handling is a one-tap suggestion banner in the visitor's language, never a hard redirect (crawler-safe, Google-guidance-aligned). Launch locales are the world's most spoken languages minus right-to-left: es, zh, hi, fr, bn, pt, ru beside default en; Arabic and other RTL wait for a dedicated RTL pass the owner will review jointly. English URLs stay byte-for-byte unchanged (as-needed locale prefix; /en variants redirect to clean paths). next-intl is the machinery (pinned after a compat spike): plurals, interpolated counts and rich text outgrow a hand-rolled t(). Protected names never translate: voice names, family/engine names, provider names, Speakshelf, AI TTS Microservice, codes and ids; language names localize via Intl. llms.txt and the OG card stay English. Translations are AI-written and honestly marked owner-review-pending; expansion beyond the set is one locale at a time. The peer reviewer is kiro gpt-5.6-sol, session 1ff1dd9c-49b6-48f7-a499-58495f3c2f14, resumed with --resume-id for continuity until this work completes.
+
 ## 2026-08-13: sample audio hosts are an allowlist, with R2 pre-added
 
 Playback is host-agnostic everywhere except the production CSP, which allowlists where audio may load from. The owner confirmed samples will soon also live on Cloudflare R2, so both R2 host shapes are pre-added (`*.r2.dev` public buckets, `*.r2.cloudflarestorage.com` presigned URLs, per Cloudflare's docs). Custom domains cannot be predicted, so `/api/sample` carries a tripwire: the first sample URL from a host outside the allowlist logs a loud server warning naming the host, before visitors ever hit the CSP wall.
