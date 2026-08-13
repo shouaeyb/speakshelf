@@ -19,7 +19,7 @@ All colors, spacing and type run through the CSS variables at the top of `global
 
 ## The mark
 
-The Speakshelf mark is two small offset squares on a diagonal: blue top left, companion bottom right. In the app it has no background box; the blue is constant and the companion square takes the surface's text color (currentColor in `.wordmark-sq`), so it reads near black on light surfaces and white on dark ones. The favicon (`app/icon.svg`) is this same mark set on a dark tile, because a browser tab sits on unknown backgrounds. The OG card uses the dark variant. Keep all three in step.
+The Speakshelf mark is two small offset squares on a diagonal: blue top left, companion bottom right. The geometry is fixed by the favicon and must hold at every size: each square is 45% of the cluster box and the diagonal gap is 10%, so the pair nearly touches and reads as one glyph, never as two floating dots. In the app it has no background box; the blue is constant and the companion square takes the surface's text color (currentColor in `.wordmark-sq`), so it reads near black on light surfaces and white on dark ones. The favicon (`app/icon.svg`) is this same mark set on a dark tile, because a browser tab sits on unknown backgrounds. The OG card uses the dark variant. Keep all three in step.
 
 Rules that make it Carbon: border radius is 0 everywhere, hairline 1px borders, grids with 1px gaps showing the border color through, IBM Plex Sans for prose and IBM Plex Mono for labels, codes and counts. Type gets light weights at display sizes (300) and the scale uses clamp() in the hero. Motion is minimal: the staggered `.rise` on load, the `.eq` equalizer on a playing row, and the loading spinner, all gated behind prefers-reduced-motion.
 

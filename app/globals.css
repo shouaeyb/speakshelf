@@ -126,12 +126,15 @@ button {
   flex: none;
 }
 
+/* Favicon geometry, scale-free: each square is 45% of the box and the
+   diagonal gap is 10%, matching icon.svg (9px squares, 2px gap, 20px
+   cluster). Keep these ratios when resizing the mark. */
 .wordmark-sq::before,
 .wordmark-sq::after {
   content: "";
   position: absolute;
-  width: 6px;
-  height: 6px;
+  width: 45%;
+  height: 45%;
 }
 
 .wordmark-sq::before {
