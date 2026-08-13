@@ -151,20 +151,22 @@ export default async function LocaleLayout({
                 <span className="wordmark">
                   <span className="wordmark-sq"></span>Speakshelf
                 </span>
+              </div>
+              <div className="footer-side">
+                <p className="footer-note">
+                  {t("note", {
+                    date: catalogUpdated,
+                    voices: stats.voices,
+                    providers: stats.providers,
+                    languages: stats.languages,
+                  })}
+                  <br />
+                  {t.rich("served", {
+                    link: (chunks) => <a href="https://aitts.theproductivepixel.com">{chunks}</a>,
+                  })}
+                </p>
                 <LocaleSwitcher />
               </div>
-              <p className="footer-note">
-                {t("note", {
-                  date: catalogUpdated,
-                  voices: stats.voices,
-                  providers: stats.providers,
-                  languages: stats.languages,
-                })}
-                <br />
-                {t.rich("served", {
-                  link: (chunks) => <a href="https://aitts.theproductivepixel.com">{chunks}</a>,
-                })}
-              </p>
             </div>
           </footer>
         </NextIntlClientProvider>
