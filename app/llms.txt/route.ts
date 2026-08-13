@@ -10,7 +10,7 @@ const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000";
 export async function GET() {
   const { stats, languages, families } = await getCatalog();
   const top = languages.slice(0, 12);
-  const body = `# Voice Atlas
+  const body = `# Speakshelf
 
 > A reference catalog of every Google Cloud text to speech voice: ${stats.voices.toLocaleString(
     "en-US",

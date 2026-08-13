@@ -1,4 +1,4 @@
-# Voice Atlas
+# Speakshelf
 
 A catalog of every Google Cloud text to speech voice, with samples you can play in the browser. At last count: 4,586 voices, 93 languages, ten model families from Standard to Gemini, on one page. Gemini voices come in one take per sub-model (four today), which puts the sample count past twelve thousand. The site refreshes its own catalog from the API daily, so those numbers grow on their own.
 

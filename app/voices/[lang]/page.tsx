@@ -31,7 +31,7 @@ export async function generateMetadata({ params }: { params: Promise<Params> }):
     description: `All ${count} Google Cloud text to speech voices for ${name} (${lang}), with samples you can play in the browser.`,
     alternates: { canonical: `/voices/${lang}` },
     openGraph: {
-      title: `${name} voices · Voice Atlas`,
+      title: `${name} voices · Speakshelf`,
       description: `All ${count} Google text to speech voices for ${name}, with playable samples.`,
       images: ["/og.png"],
     },
@@ -53,7 +53,7 @@ export default async function LanguagePage({ params }: { params: Promise<Params>
     name: `${name} text to speech voices`,
     url: `${SITE_URL}/voices/${lang}`,
     description: `Google Cloud text to speech voices for ${name} (${lang}).`,
-    isPartOf: { "@type": "WebSite", name: "Voice Atlas", url: SITE_URL },
+    isPartOf: { "@type": "WebSite", name: "Speakshelf", url: SITE_URL },
   };
 
   return (

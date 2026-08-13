@@ -20,7 +20,7 @@ export default async function Home() {
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "WebSite",
-    name: "Voice Atlas",
+    name: "Speakshelf",
     url: SITE_URL,
     description:
       "A catalog of every Google Cloud text to speech voice, with samples you can play in the browser.",
@@ -122,7 +122,7 @@ export default async function Home() {
               catalog has a sample too.
             </p>
             <p>
-              Voice Atlas is an independent reference and is not affiliated with Google. Voice data and
+              Speakshelf is an independent reference and is not affiliated with Google. Voice data and
               audio come from the <a href="https://aitts.theproductivepixel.com">AI TTS Microservice</a>, a service
               that unifies Google, Amazon and other speech providers behind a single endpoint. Samples
               stream on demand, so listening is free.

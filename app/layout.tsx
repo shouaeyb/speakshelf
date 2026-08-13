@@ -32,10 +32,10 @@ export async function generateMetadata(): Promise<Metadata> {
 const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
   title: {
-    default: "Voice Atlas · every Google Cloud text to speech voice",
-    template: "%s · Voice Atlas",
+    default: "Speakshelf · every Google Cloud text to speech voice",
+    template: "%s · Speakshelf",
   },
-  applicationName: "Voice Atlas",
+  applicationName: "Speakshelf",
   keywords: [
     "Google text to speech",
     "Google TTS voices",
@@ -48,15 +48,15 @@ const metadata: Metadata = {
   ],
   openGraph: {
     type: "website",
-    siteName: "Voice Atlas",
-    title: "Voice Atlas · every Google Cloud text to speech voice",
+    siteName: "Speakshelf",
+    title: "Speakshelf · every Google Cloud text to speech voice",
     description:
       "Browse and play the complete Google Cloud text to speech catalog. Filter by model family, language and gender.",
     images: ["/og.png"],
   },
   twitter: {
     card: "summary_large_image",
-    title: "Voice Atlas · every Google Cloud text to speech voice",
+    title: "Speakshelf · every Google Cloud text to speech voice",
     description:
       "Browse and play the complete Google Cloud text to speech catalog. Filter by model family, language and gender.",
     images: ["/og.png"],
@@ -79,7 +79,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
         <header className="masthead">
           <div className="shell masthead-in">
             <Link href="/" className="wordmark">
-              <span className="wordmark-sq"></span>Voice Atlas
+              <span className="wordmark-sq"></span>Speakshelf
             </Link>
             <nav className="mast-nav" aria-label="Main">
               <Link className="mast-link" href="/#models">
@@ -101,7 +101,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
         <footer className="footer">
           <div className="shell footer-in">
             <span className="wordmark">
-              <span className="wordmark-sq"></span>Voice Atlas
+              <span className="wordmark-sq"></span>Speakshelf
             </span>
             <p className="footer-note">
               Catalog updated {catalogUpdated} · {stats.voices.toLocaleString("en-US")} voices across{" "}
