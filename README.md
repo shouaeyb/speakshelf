@@ -31,6 +31,14 @@ TTS_API_KEY=tts_... node scripts/build-data.mjs
 
 Fetches the current Google voice list and rewrites `data/voices.packed.json`. One API call, a few seconds. It also warns if Google's Gemini sub-model list has changed so `lib/families.ts` can be kept in step.
 
+## Docs
+
+- [docs/architecture.md](docs/architecture.md), how it works and what must not break
+- [docs/decisions.md](docs/decisions.md), dated log of settled decisions
+- [docs/roadmap.md](docs/roadmap.md), direction and parked ideas
+- [docs/design.md](docs/design.md), design system and copy voice
+- [AGENTS.md](AGENTS.md), ground rules for AI agents working here
+
 ## Pages
 
 - `/` hero, model family overview, the full explorer with search and filters, and a language index

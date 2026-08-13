@@ -1,0 +1,49 @@
+# Design system and copy voice
+
+The look is IBM Carbon inspired: engineered, boxy, quiet. The implementation in `app/globals.css` is the source of truth. This page explains the intent so changes stay coherent.
+
+## Tokens
+
+All colors, spacing and type run through the CSS variables at the top of `globals.css`. The palette, by role:
+
+| Role | Value |
+| --- | --- |
+| Page background | #f4f4f4 |
+| Layer (cards, rows, fields) | #ffffff |
+| Borders | #e0e0e0, strong #8d8d8d |
+| Text | #161616, secondary #525252, tertiary #a8a8a8 |
+| Inverse sections (hero, subheads, footer) | #161616 background |
+| The blue | #0f62fe, soft #78a9ff |
+| Tag blue | #d0e2ff on #0043ce |
+| Tag purple (ultra tier) | #e8daff on #6929c4 |
+
+Rules that make it Carbon: border radius is 0 everywhere, hairline 1px borders, grids with 1px gaps showing the border color through, IBM Plex Sans for prose and IBM Plex Mono for labels, codes and counts. Type gets light weights at display sizes (300) and the scale uses clamp() in the hero. Motion is minimal: the staggered `.rise` on load and the `.eq` equalizer on a playing row, both gated behind prefers-reduced-motion.
+
+Every provider section present and future uses this same sheet. Provider identity comes from words (the eyebrow label, breadcrumbs), never from a palette swap. The one permitted differentiator, and only with owner sign-off, is the tag accent hue.
+
+## Components in the wild
+
+Masthead (sticky, 48px), hero with stat row, family tiles, dark language band, boxy toolbar (5, 4 or 3 fields), voice rows with play button states (play, spinner, equalizer, error note), sticky language group heads, footer. Reuse these before inventing anything.
+
+## Copy voice
+
+Shipped writing sounds like a person who knows the subject. Concretely:
+
+- No em dashes, and no en dashes doing an em dash's job. Commas, colons and full stops carry the rhythm.
+- No AI boilerplate: never "delve", "seamless", "unleash", "elevate", "comprehensive suite", "in today's world".
+- Plain claims, verified numbers. "One of the largest catalogs", not "the largest", unless proven.
+- Counts and names derive from data in page code, so prose cannot go stale (see the About section for the pattern).
+- Sentence case headings. Mono uppercase is reserved for small labels.
+
+## The design workflow, and who can use it
+
+New surfaces get designed before they get built: mock the page, screenshot it at desktop and mobile widths, fix what looks wrong, then port to the app. The overnight build's mockup lives in the owner's Claude Design project (id 7f79551f-ae78-45a9-ae93-b282a7b105a8, file "Voice Atlas.dc.html"; it predates the Speakshelf rename and several UI changes, so treat it as history, not truth).
+
+Not every agent has Claude Design tools, and that must never block work:
+
+- If you have access (the mcp claude-design tools are in your toolset): mock there, keep the artifact roughly in sync when you change the app's look, and note the sync state here.
+- If you do not: design directly against `globals.css` in a branch of the real app, and verify with headless browser screenshots (the Playwright pattern in `AGENTS.md`). The repo is always the source of truth either way.
+
+## Verification bar for UI work
+
+Before calling visual work done: build and run the production server, screenshot desktop (1280 or 1440), tablet (860) and mobile (390) widths, click-test one real sample playback, and check that no text touches the viewport edge (the shell owes every width a 24px gutter).
