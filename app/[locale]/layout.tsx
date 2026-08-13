@@ -1,3 +1,4 @@
+import { Suspense } from "react";
 import type { Metadata, Viewport } from "next";
 import { IBM_Plex_Sans, IBM_Plex_Mono } from "next/font/google";
 import { notFound } from "next/navigation";
@@ -8,6 +9,7 @@ import ConsentBanner from "@/components/ConsentBanner";
 import LanguageSuggest from "@/components/LanguageSuggest";
 import LocaleSwitcher from "@/components/LocaleSwitcher";
 import MastNav from "@/components/MastNav";
+import ScrollGlide from "@/components/ScrollGlide";
 import { Link } from "@/i18n/navigation";
 import { routing } from "@/i18n/routing";
 import { LOCALES, listNames } from "@/i18n/locales";
@@ -124,6 +126,9 @@ export default async function LocaleLayout({
     >
       <body>
         <NextIntlClientProvider>
+          <Suspense fallback={null}>
+            <ScrollGlide />
+          </Suspense>
           <LanguageSuggest />
           <header className="masthead">
             <div className="shell masthead-in">

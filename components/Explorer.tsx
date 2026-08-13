@@ -177,8 +177,11 @@ function ExplorerCore({ provider, voices, lockLanguage, models, paramsKey }: Cor
     urlApplied.current = true;
   }, [paramsKey, lockLanguage, all, subModels]);
 
-  // Keep the URL shareable without triggering navigation. replaceState does
-  // not feed back into useSearchParams, so this cannot loop.
+  // Keep the URL shareable without triggering navigation. Next mirrors
+  // external replaceState into useSearchParams (its patched history dispatches
+  // a restore action), so this write does echo back into the apply effect;
+  // it cannot loop because the echoed URL carries the values already applied.
+  // It also never scrolls: only GlideLink clicks record a glide intent.
   useEffect(() => {
     if (lockLanguage || !urlApplied.current) return;
     const p = new URLSearchParams();

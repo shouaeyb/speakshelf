@@ -34,6 +34,15 @@ html {
   scroll-behavior: smooth;
 }
 
+/* Readers who ask for less motion get instant scrolls everywhere: native
+   anchors through this rule, app glides through lib/glide.ts, which
+   resolves its "auto" behavior against it. */
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+}
+
 html,
 body {
   margin: 0;

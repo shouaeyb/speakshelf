@@ -1,7 +1,6 @@
-import { createNavigation } from "next-intl/navigation";
-import { routing } from "./routing";
-
-// Locale-aware Link/router for pages and components. Kept apart from
-// routing.ts so the proxy never imports this (and, through it, the
-// request config with next/root-params, which middleware cannot bundle).
-export const { Link, redirect, usePathname, useRouter, getPathname } = createNavigation(routing);
+// The app's navigation surface. Link is the glide-aware wrapper: Next's own
+// navigation scroll stays off and the app animates instead (lib/glide.ts).
+// Import Link from here, never from next/link or navigation-base, or the
+// page will land wherever the reader last scrolled.
+export { redirect, usePathname, useRouter, getPathname } from "./navigation-base";
+export { default as Link } from "@/components/GlideLink";
