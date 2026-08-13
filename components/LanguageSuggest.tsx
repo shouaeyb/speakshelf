@@ -60,7 +60,8 @@ export default function LanguageSuggest() {
           className="lang-suggest-cta"
           onClick={() => {
             remember(target);
-            router.replace(currentHref(), { locale: target });
+            // Same page in another language: keep the reader's place.
+            router.replace(currentHref(), { locale: target, scroll: false });
             setTarget(null);
           }}
         >

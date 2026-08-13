@@ -27,7 +27,8 @@ export default function LocaleSwitcher() {
             localStorage.setItem("ss-lang-dismissed", "1");
           } catch {}
           const href = pathname + window.location.search + window.location.hash;
-          router.replace(href, { locale: next });
+          // Same page in another language: keep the reader's place.
+          router.replace(href, { locale: next, scroll: false });
         }}
       >
         {LOCALES.map((l) => (

@@ -67,6 +67,7 @@ Client, in `Explorer.tsx`: `play()` resolves blob cache (module LRU, 24 object U
 - Search is client-only through `lib/search.ts`: one document per voice built from every field and trait (future traits searchable by construction), token-AND queries, word-start matching for plain tokens (so "male" never matches female), whole-document substrings for separator tokens (voice-id pastes), diacritics stripped. Fuzzy matching is deferred until search_used analytics show zero-result typos.
 - `.fam-grid` follows the tile count below five columns (`fam-grid-4` … `fam-grid-1`) so providers with few families show no dead cells.
 - URL state on provider pages: `?family=`, `?language=`, `?gender=`, `?gmodel=`, `?q=` are applied from the URL on navigation and written back with `replaceState`. A field the reader touched since the last apply is left alone.
+- The html element carries `data-scroll-behavior="smooth"` so the Next 16 router can suppress the smooth rule in `globals.css` while it scrolls a new page to the top; in-page anchors keep the animation. Never add `scroll-padding-top` on html (the router's in-viewport check reads it and navigations land short again); offset anchors with per-target `scroll-margin-top`. Locale switches (footer select, suggestion strip) navigate with `scroll: false` so the reader keeps their place.
 
 ## SEO and agent surface
 

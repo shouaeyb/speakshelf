@@ -114,7 +114,14 @@ export default async function LocaleLayout({
   const fmt = (n: number) => n.toLocaleString(locale);
 
   return (
-    <html lang={locale} className={`${plexSans.variable} ${plexMono.variable}`}>
+    // data-scroll-behavior lets the router suppress the smooth rule in
+    // globals.css while it scrolls to the top of a new page; without it,
+    // Next 16 leaves the animation running and navigations land short.
+    <html
+      lang={locale}
+      data-scroll-behavior="smooth"
+      className={`${plexSans.variable} ${plexMono.variable}`}
+    >
       <body>
         <NextIntlClientProvider>
           <LanguageSuggest />

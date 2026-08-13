@@ -97,3 +97,11 @@ Ship: llms.txt (daily regenerated), robots open for exactly the two public API p
 ## 2026-08-13 (overnight build, 1am to 4:30am): foundations
 
 IBM Carbon-inspired design system, IBM Plex via next/font, square corners, one blue. Human copy everywhere: no em dashes, no AI phrasing. Next.js App Router with SSG for language pages and a client-loaded home list. Design-first flow through a Claude Design mockup, then ported to the app.
+
+## 2026-08-13: router scrolls opt out of smooth scrolling
+
+Clicking between pages landed short of the top while pasted URLs landed clean. Next 16 stopped suppressing CSS `scroll-behavior: smooth` during its scroll-to-top on navigation unless the html element carries `data-scroll-behavior="smooth"`; without it the scroll became an animation whose own follow-up check cut it short around the masthead's height. The attribute now sits on the html element in the locale layout, and smooth stays for in-page anchor jumps, which never enter the router. Two guardrails for future work. Never add `scroll-padding-top` to html: the router reads it for its in-viewport check and it reintroduces the same landing-short bug even with the attribute present; per-target `scroll-margin-top` is the house pattern. And browser tests must scroll with `behavior: "instant"` in setup steps, because plain `window.scrollTo` animates under the smooth rule and a click mid-animation measures garbage.
+
+## 2026-08-13: locale switches keep the reader's place
+
+The suggestion strip and the footer switcher replace to the same page in the new language with `scroll: false`; a language switch is the same page, so the reader keeps their spot. Known limit, accepted: the voice list renders under content-visibility auto, so an incoming page's height starts near an estimate and grows as the browser measures it, and a reading position deeper than that early height gets clamped mid-transition (measured: deep on the Google shelf lands near y 2250). That clamp comes with every client navigation regardless of scroll options, and the clamped spot is still closer to the reader's place than the top would be. The same mechanism leaves a residue of about 11px after some navigations while the language strip is mounted; it clips only the strip's own top edge, never content.
