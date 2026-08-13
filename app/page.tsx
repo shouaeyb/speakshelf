@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { getSite } from "@/lib/catalog";
 import { PROVIDERS } from "@/lib/providers";
-import { languageName } from "@/lib/lang";
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000";
 
@@ -23,13 +22,28 @@ export default async function Home() {
       ? `${providerNames.slice(0, -1).join(", ")} and ${providerNames[providerNames.length - 1]}`
       : (providerNames[0] ?? "");
 
-  // "Coverage adds up" derives from data so the prose cannot go stale:
-  // languages the second shelf carries that the first does not.
+  // "Coverage adds up" derives from data, and stays modest by design:
+  // compare by primary language subtag so two codes for the same language
+  // (Polly's arb vs Google's ar-XA, yue-CN vs yue-HK) can never fake a
+  // gap, name whole-language gaps as gaps and variants as variants, and
+  // keep prose slots to names that read cleanly (no commas, and no
+  // parentheses for the variant examples). If the data thins out, the
+  // cell falls back to its generic sentence rather than reaching.
   const google = site.providers.get("google");
   const polly = site.providers.get("polly");
+  const primary = (code: string) => (code === "arb" ? "ar" : code.split("-")[0]);
   const googleCodes = new Set(google?.languages.map((l) => l.code) ?? []);
-  const pollyExtras = (polly?.languages ?? []).filter((l) => !googleCodes.has(l.code));
-  const extraExamples = pollyExtras.slice(0, 2).map((l) => languageName(l.code));
+  const googlePrimaries = new Set((google?.languages ?? []).map((l) => primary(l.code)));
+  const pollyLangs = polly?.languages ?? [];
+  const gapName = pollyLangs
+    .filter((l) => !googlePrimaries.has(primary(l.code)))
+    .map((l) => l.name.split(" (")[0])
+    .find((n) => !n.includes(","));
+  const variantExamples = pollyLangs
+    .filter((l) => !googleCodes.has(l.code) && googlePrimaries.has(primary(l.code)))
+    .map((l) => l.name)
+    .filter((n) => !n.includes(",") && !n.includes("("))
+    .slice(0, 2);
 
   const jsonLd = {
     "@context": "https://schema.org",
@@ -123,9 +137,14 @@ export default async function Home() {
             <div className="why-cell">
               <h3>Coverage adds up</h3>
               <p>
-                {pollyExtras.length > 0 && extraExamples.length === 2
-                  ? `Amazon Polly carries ${pollyExtras.length} languages Google Cloud doesn't, ${extraExamples[0]} and ${extraExamples[1]} among them. `
-                  : ""}
+                {gapName
+                  ? `Amazon Polly brings ${gapName}, which Google Cloud doesn't carry at all` +
+                    (variantExamples.length === 2
+                      ? `, plus regional variants like ${variantExamples[0]} and ${variantExamples[1]}. `
+                      : ". ")
+                  : variantExamples.length === 2
+                    ? `Amazon Polly adds regional variants like ${variantExamples[0]} and ${variantExamples[1]}. `
+                    : ""}
                 One shelf shows what each provider has that the others lack.
               </p>
             </div>
