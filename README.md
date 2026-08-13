@@ -1,36 +1,37 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Voice Atlas
 
-## Getting Started
+A catalog of every Google Cloud text to speech voice, with official samples you can play in the browser. 4,586 voices, 93 languages, ten model families from Standard to Gemini, on one page.
 
-First, run the development server:
+Built with Next.js and styled after IBM's design language: IBM Plex type, sharp corners, thin rules, Carbon blue.
+
+## How it works
+
+- The voice list ships with the repo (`data/voices.packed.json`), so pages render with no API calls at all.
+- Pressing play hits `/api/sample`, which asks the [AI TTS API](https://aitts.theproductivepixel.com) for a signed sample URL and redirects the browser to it. Sample lookups are free, and the server caches each signed URL for 20 hours.
+- The API key never leaves the server and no synthesis is ever triggered, so browsing costs nothing.
+
+## Run it
 
 ```bash
+npm install
+cp .env.example .env   # then paste your TTS_API_KEY
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+`TTS_API_KEY` comes from an [AI TTS API](https://aitts.theproductivepixel.com) account. Without it the site still renders; only sample playback returns errors.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+For production, also set `NEXT_PUBLIC_SITE_URL` to your public origin so canonical URLs, the sitemap and Open Graph tags point at the right host.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Refresh the catalog
 
-## Learn More
+```bash
+TTS_API_KEY=tts_... node scripts/build-data.mjs
+```
 
-To learn more about Next.js, take a look at the following resources:
+Fetches the current Google voice list, probes which voices have published samples, and rewrites `data/voices.packed.json`. Takes a few minutes because it walks the whole catalog politely.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Pages
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- `/` hero, model family overview, the full explorer with search and filters, and a language index
+- `/voices/[lang]` one page per language, statically generated, e.g. `/voices/ko-KR`
+- `/sitemap.xml` and `/robots.txt` are generated from the catalog
