@@ -1,5 +1,6 @@
 import type { NextRequest } from "next/server";
-import { getCatalog } from "@/lib/catalog";
+import { getSite, getSiteFresh } from "@/lib/catalog";
+import { rateLimit } from "@/lib/ratelimit";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -38,15 +39,35 @@ async function lookup(id: string, model: string, key: string): Promise<Result> {
 }
 
 export async function GET(req: NextRequest) {
-  const catalog = await getCatalog();
+  // A generous per-IP bucket in front of the only non-static route. The
+  // signed-URL cache below is what protects the shared upstream budget;
+  // this just stops one caller from hammering the server itself.
+  const ip = req.headers.get("x-forwarded-for")?.split(",")[0]?.trim() || "local";
+  const rl = rateLimit(ip);
+  if (!rl.ok) {
+    return Response.json(
+      { error: "Too many requests, slow down a little" },
+      { status: 429, headers: { "Retry-After": String(rl.retryAfter) } },
+    );
+  }
+
+  let site = await getSite();
   const id = req.nextUrl.searchParams.get("id") ?? "";
-  const voice = catalog.byId.get(id);
+  let voice = site.byId.get(id);
+  if (!voice) {
+    // A voice added upstream after the last refresh should be playable as
+    // soon as a page shows it; the fresh floor keeps guessing traffic from
+    // turning this into an upstream fetch storm.
+    site = await getSiteFresh();
+    voice = site.byId.get(id);
+  }
   if (!voice) {
     return Response.json({ error: "Unknown voice id" }, { status: 404 });
   }
 
   const model = req.nextUrl.searchParams.get("model") ?? "";
-  if (model && !(catalog.models[voice.family] ?? []).includes(model)) {
+  const models = site.providers.get(voice.provider)?.models ?? {};
+  if (model && !(models[voice.family] ?? []).includes(model)) {
     return Response.json({ error: "Invalid model for this voice" }, { status: 400 });
   }
 

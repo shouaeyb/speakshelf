@@ -2,19 +2,22 @@
 
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useSearchParams } from "next/navigation";
-import type { Voice, PackedCatalog } from "@/lib/data";
+import type { Voice, PackedCatalog, PackedProvider } from "@/lib/data";
 import { unpack } from "@/lib/data";
 import { languageName } from "@/lib/lang";
-import { FAMILIES, familyLabel, modelLabel } from "@/lib/families";
+import { PROVIDER_FAMILIES, familyLabel, familyRank, modelLabel } from "@/lib/families";
+import { getProvider } from "@/lib/providers";
 
 interface ExplorerProps {
-  /** Preloaded subset (language pages). When absent the full catalog loads on the client. */
+  /** Provider key; scopes data, links and deep-link params. */
+  provider: string;
+  /** Preloaded subset (language pages). When absent the provider's catalog loads on the client. */
   voices?: Voice[];
   /** Hide the language filter and group headers, e.g. on a single language page. */
   lockLanguage?: string;
   /** Sub-model ids per family from the server catalog, first entry is the
-   *  API default. Gemini is the only such family today; the sample math
-   *  stays generic so a second one just works. */
+   *  API default. Google's Gemini is the only family with several today;
+   *  the control is generic so a second one just works. */
   models: Record<string, string[]>;
 }
 
@@ -25,7 +28,7 @@ interface CoreProps extends ExplorerProps {
 
 type Active = {
   id: string;
-  /** Gemini sub-model the playback was started with, "" for the default. */
+  /** Sub-model the playback was started with, "" for the default. */
   model: string;
   status: "loading" | "generating" | "playing" | "error";
   note?: string;
@@ -36,7 +39,7 @@ type Active = {
 // first successful play the audio bytes are kept as a blob; replays then
 // come from memory in every engine. Signed URLs expire upstream after 24
 // hours; cached ones are dropped after 18 so a long-lived tab cannot
-// replay a dead link.
+// replay a dead link. Keys are full voice ids, so providers never collide.
 const URL_TTL_MS = 18 * 60 * 60 * 1000;
 const BLOB_MAX = 24;
 const urlCache = new Map<string, { url: string; t: number }>();
@@ -73,9 +76,9 @@ const StopGlyph = () => (
   </span>
 );
 
-// Home page: reactive to router navigations (family tiles set query params).
-// useSearchParams client-renders up to the nearest Suspense boundary on
-// prerendered routes, so only this wrapper pays that cost.
+// Provider home pages: reactive to router navigations (family tiles set
+// query params). useSearchParams client-renders up to the nearest Suspense
+// boundary on prerendered routes, so only this wrapper pays that cost.
 export default function Explorer(props: ExplorerProps) {
   const searchParams = useSearchParams();
   return <ExplorerCore {...props} paramsKey={searchParams.toString()} />;
@@ -86,8 +89,14 @@ export function ExplorerList(props: ExplorerProps) {
   return <ExplorerCore {...props} />;
 }
 
-function ExplorerCore({ voices, lockLanguage, models, paramsKey }: CoreProps) {
-  const geminiModels = models.Gemini ?? [];
+function ExplorerCore({ provider, voices, lockLanguage, models, paramsKey }: CoreProps) {
+  // The one family with several sub-models, if the provider has any
+  // (google's Gemini today). Its voices carry one sample per sub-model.
+  const multiFamily = useMemo(
+    () => Object.keys(models).find((k) => (models[k]?.length ?? 0) > 1) ?? "",
+    [models],
+  );
+  const subModels = useMemo(() => (multiFamily ? models[multiFamily] : []), [models, multiFamily]);
   const [all, setAll] = useState<Voice[] | null>(voices ?? null);
   const [q, setQ] = useState("");
   const [family, setFamily] = useState("");
@@ -104,23 +113,27 @@ function ExplorerCore({ voices, lockLanguage, models, paramsKey }: CoreProps) {
   // The write effect must not run before the URL has been applied once.
   const urlApplied = useRef(false);
 
-  // Full catalog loads after mount so page HTML stays small. The API route
-  // serves the server's current view of the catalog, which refreshes daily;
-  // the bundled copy is the offline fallback.
+  // The provider's catalog loads after mount so page HTML stays small. The
+  // API route serves the server's current view, which refreshes daily; the
+  // bundled copy is the offline fallback.
   useEffect(() => {
     if (voices) return;
     let live = true;
-    fetch("/api/catalog")
+    fetch(`/api/catalog/${provider}`)
       .then((res) => (res.ok ? res.json() : Promise.reject(new Error(String(res.status)))))
-      .catch(() => import("@/data/voices.packed.json").then((m) => m.default))
+      .catch(() =>
+        import("@/data/voices.packed.json").then(
+          (m) => (m.default as unknown as PackedCatalog).providers[provider],
+        ),
+      )
       .then((packed) => {
-        if (live) setAll(unpack(packed as PackedCatalog));
+        if (live && packed) setAll(unpack(provider, packed as PackedProvider));
       })
       .catch(() => {});
     return () => {
       live = false;
     };
-  }, [voices]);
+  }, [voices, provider]);
 
   // Apply ?family= etc. whenever the router navigates, so family tiles work
   // both on a fresh load and on same-page client transitions. Re-runs when
@@ -139,7 +152,7 @@ function ExplorerCore({ voices, lockLanguage, models, paramsKey }: CoreProps) {
       f: f && (!all || all.some((v) => v.family === f)) ? f : "",
       l: !all || all.some((v) => v.lang === l) ? l : "",
       g: ["female", "male", "neutral"].includes(g) ? g : "",
-      m: geminiModels.includes(m) && m !== geminiModels[0] ? m : "",
+      m: subModels.includes(m) && m !== subModels[0] ? m : "",
       s: p.get("q") ?? "",
     };
     const prev = applied.current;
@@ -151,7 +164,7 @@ function ExplorerCore({ voices, lockLanguage, models, paramsKey }: CoreProps) {
     setQ((cur) => (!prev || cur === prev.s ? want.s : cur));
     applied.current = want;
     urlApplied.current = true;
-  }, [paramsKey, lockLanguage, all, geminiModels]);
+  }, [paramsKey, lockLanguage, all, subModels]);
 
   // Keep the URL shareable without triggering navigation. replaceState does
   // not feed back into useSearchParams, so this cannot loop.
@@ -194,15 +207,15 @@ function ExplorerCore({ voices, lockLanguage, models, paramsKey }: CoreProps) {
   }, [all, langOrder, lockLanguage]);
 
   // Family choices come from the data, so a family this code has never
-  // heard of is still filterable; FAMILIES only provides the order.
+  // heard of is still filterable; the metadata only provides the order.
+  const rank = useMemo(() => familyRank(provider), [provider]);
   const familyOptions = useMemo(() => {
-    if (!all) return FAMILIES.map((f) => f.key);
+    if (!all) return (PROVIDER_FAMILIES[provider] ?? []).map((f) => f.key);
     const present = new Set(all.map((v) => v.family));
-    const rank = new Map(FAMILIES.map((f, i) => [f.key, i]));
     return [...present].sort(
       (a, b) => (rank.get(a) ?? 99) - (rank.get(b) ?? 99) || a.localeCompare(b),
     );
-  }, [all]);
+  }, [all, rank, provider]);
 
   const filtered = useMemo(() => {
     if (!all) return [];
@@ -212,17 +225,16 @@ function ExplorerCore({ voices, lockLanguage, models, paramsKey }: CoreProps) {
       if (lang && v.lang !== lang) return false;
       if (gender && v.gender !== gender) return false;
       if (needle) {
-        const hay = `${v.name} ${v.family} ${familyLabel(v.family)} ${v.lang} ${languageName(v.lang)}`.toLowerCase();
+        const hay = `${v.name} ${v.family} ${familyLabel(provider, v.family)} ${v.lang} ${languageName(v.lang)}`.toLowerCase();
         if (!hay.includes(needle)) return false;
       }
       return true;
     });
-  }, [all, q, family, lang, gender]);
+  }, [all, q, family, lang, gender, provider]);
 
   const groups = useMemo(() => {
-    const familyRank = new Map(FAMILIES.map((f, i) => [f.key, i]));
     const byFamily = (a: Voice, b: Voice) =>
-      (familyRank.get(a.family) ?? 99) - (familyRank.get(b.family) ?? 99) || a.name.localeCompare(b.name);
+      (rank.get(a.family) ?? 99) - (rank.get(b.family) ?? 99) || a.name.localeCompare(b.name);
     if (lockLanguage) return [{ code: lockLanguage, items: [...filtered].sort(byFamily) }];
     const map = new Map<string, Voice[]>();
     for (const v of filtered) {
@@ -233,7 +245,7 @@ function ExplorerCore({ voices, lockLanguage, models, paramsKey }: CoreProps) {
     return [...map.entries()]
       .sort((a, b) => (langOrder.get(b[0]) ?? 0) - (langOrder.get(a[0]) ?? 0) || a[0].localeCompare(b[0]))
       .map(([code, items]) => ({ code, items: items.sort(byFamily) }));
-  }, [filtered, lockLanguage, langOrder]);
+  }, [filtered, lockLanguage, langOrder, rank]);
 
   // A voice carries one sample per sub-model of its family, or just one.
   const sampleCount = useMemo(
@@ -242,8 +254,8 @@ function ExplorerCore({ voices, lockLanguage, models, paramsKey }: CoreProps) {
     [filtered, models],
   );
 
-  const showGemini =
-    geminiModels.length > 1 && (voices ? voices.some((v) => v.family === "Gemini") : true);
+  const showModelPick =
+    subModels.length > 1 && (voices ? voices.some((v) => v.family === multiFamily) : true);
 
   const hasFilters = q !== "" || family !== "" || lang !== "" || gender !== "" || gmodel !== "";
 
@@ -255,7 +267,7 @@ function ExplorerCore({ voices, lockLanguage, models, paramsKey }: CoreProps) {
   }
 
   function play(v: Voice) {
-    const model = v.family === "Gemini" ? gmodel : "";
+    const model = v.family === multiFamily ? gmodel : "";
     const cacheKey = model ? `${v.id}|${model}` : v.id;
     if (active?.id === v.id && active.model === model && active.status !== "error") {
       stop();
@@ -355,7 +367,7 @@ function ExplorerCore({ voices, lockLanguage, models, paramsKey }: CoreProps) {
             return;
           }
           if (!res.ok) {
-            fail(res.status === 503 ? "busy, try again in a minute" : "sample unavailable");
+            fail(res.status === 503 || res.status === 429 ? "busy, try again in a minute" : "sample unavailable");
             return;
           }
           const body = (await res.json().catch(() => null)) as { url?: string } | null;
@@ -384,7 +396,7 @@ function ExplorerCore({ voices, lockLanguage, models, paramsKey }: CoreProps) {
 
   const fmt = (n: number) => n.toLocaleString("en-US");
 
-  const fieldCount = 3 + (lockLanguage ? 0 : 1) + (showGemini ? 1 : 0);
+  const fieldCount = 3 + (lockLanguage ? 0 : 1) + (showModelPick ? 1 : 0);
   const toolbarClass = fieldCount === 5 ? "toolbar" : fieldCount === 4 ? "toolbar toolbar-4" : "toolbar toolbar-3";
 
   return (
@@ -402,17 +414,17 @@ function ExplorerCore({ voices, lockLanguage, models, paramsKey }: CoreProps) {
         </div>
         <div className="field">
           <label className="field-label" htmlFor="f-family">
-            FAMILY
+            {(getProvider(provider)?.familyWord.one ?? "family").toUpperCase()}
           </label>
           <select id="f-family" className="select" value={family} onChange={(e) => setFamily(e.target.value)}>
             <option value="">All</option>
             {familyOptions.map((key) => (
               <option key={key} value={key}>
-                {familyLabel(key)}
+                {familyLabel(provider, key)}
               </option>
             ))}
           </select>
-          <span className="field-caret">▼</span>
+          <span className="field-caret" aria-hidden="true">▼</span>
         </div>
         {!lockLanguage && (
           <div className="field">
@@ -427,7 +439,7 @@ function ExplorerCore({ voices, lockLanguage, models, paramsKey }: CoreProps) {
                 </option>
               ))}
             </select>
-            <span className="field-caret">▼</span>
+            <span className="field-caret" aria-hidden="true">▼</span>
           </div>
         )}
         <div className="field">
@@ -440,28 +452,28 @@ function ExplorerCore({ voices, lockLanguage, models, paramsKey }: CoreProps) {
             <option value="male">Male</option>
             <option value="neutral">Neutral</option>
           </select>
-          <span className="field-caret">▼</span>
+          <span className="field-caret" aria-hidden="true">▼</span>
         </div>
-        {showGemini && (
+        {showModelPick && (
           <div className="field">
             <label className="field-label" htmlFor="f-gmodel">
-              GEMINI
+              {familyLabel(provider, multiFamily).toUpperCase()}
             </label>
             <select
               id="f-gmodel"
               className="select"
-              value={gmodel || geminiModels[0]}
-              disabled={family !== "" && family !== "Gemini"}
-              title="Gemini voices have a sample per sub-model. This picks which one plays."
-              onChange={(e) => setGmodel(e.target.value === geminiModels[0] ? "" : e.target.value)}
+              value={gmodel || subModels[0]}
+              disabled={family !== "" && family !== multiFamily}
+              title={`${familyLabel(provider, multiFamily)} voices have a sample per sub-model. This picks which one plays.`}
+              onChange={(e) => setGmodel(e.target.value === subModels[0] ? "" : e.target.value)}
             >
-              {geminiModels.map((m) => (
+              {subModels.map((m) => (
                 <option key={m} value={m}>
                   {modelLabel(m)}
                 </option>
               ))}
             </select>
-            <span className="field-caret">▼</span>
+            <span className="field-caret" aria-hidden="true">▼</span>
           </div>
         )}
       </div>
@@ -489,7 +501,7 @@ function ExplorerCore({ voices, lockLanguage, models, paramsKey }: CoreProps) {
         <section className="lang-group" key={g.code}>
           {!lockLanguage && (
             <div className="lang-head">
-              <a className="lang-name" href={`/voices/${g.code}`}>
+              <a className="lang-name" href={`/${provider}/voices/${g.code}`}>
                 {languageName(g.code)}
               </a>
               <span className="lang-code">{g.code}</span>
@@ -517,7 +529,7 @@ function ExplorerCore({ voices, lockLanguage, models, paramsKey }: CoreProps) {
                 </button>
                 <span className="vname">{v.name}</span>
                 <span className={`tag ${v.tier === "ultra" ? "tag-purple" : "tag-blue"}`}>
-                  {familyLabel(v.family).toUpperCase()}
+                  {familyLabel(provider, v.family).toUpperCase()}
                 </span>
                 {v.styles.length > 0 && <span className="vstyles">{v.styles.join(" · ")}</span>}
                 <span className="vmeta">
@@ -541,8 +553,9 @@ function ExplorerCore({ voices, lockLanguage, models, paramsKey }: CoreProps) {
 
       {!lockLanguage && all && filtered.length > 0 && (
         <p className="list-note">
-          Languages are ordered by catalog size. Gemini voices carry one sample per sub-model, so the
-          GEMINI control picks which take you hear.
+          {showModelPick
+            ? `Languages are ordered by catalog size. ${familyLabel(provider, multiFamily)} voices carry one sample per sub-model, so the ${familyLabel(provider, multiFamily).toUpperCase()} control picks which take you hear.`
+            : "Languages are ordered by catalog size."}
         </p>
       )}
     </div>

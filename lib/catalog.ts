@@ -2,19 +2,24 @@
 // AI TTS Microservice at most once a day (Next data cache); the packed
 // file committed with the repo is the seed and the fallback, so the site
 // keeps working when the API is unreachable. New voices, languages and
-// sub-models therefore show up on their own, with no code change.
+// sub-models therefore show up on their own, with no code change. New
+// PROVIDERS do not: the bare /voices endpoint reports every provider the
+// service carries, and anything not blessed in lib/providers.ts is
+// console-logged and dropped, so going live stays a human decision.
 
 import fallbackJson from "@/data/voices.packed.json";
-import { unpack, type Voice, type PackedCatalog } from "./data";
+import { unpack, type Voice, type PackedCatalog, type PackedProvider } from "./data";
 import { languageName } from "./lang";
-import { FAMILIES } from "./families";
+import { PROVIDER_FAMILIES } from "./families";
+import { PROVIDERS, getProvider, isBlessed } from "./providers";
 
-const UPSTREAM = "https://aitts.theproductivepixel.com/api/v1/voices?provider=google";
+const UPSTREAM = "https://aitts.theproductivepixel.com/api/v1/voices";
 
 const FALLBACK = fallbackJson as unknown as PackedCatalog;
 
 interface ApiVoice {
   voice_id: string;
+  provider?: string;
   language: string;
   family: string;
   name: string;
@@ -26,20 +31,18 @@ interface ApiVoice {
 
 const GENDER_CODE: Record<string, string> = { female: "f", male: "m", neutral: "n", unknown: "u" };
 
-function toPacked(list: ApiVoice[]): PackedCatalog | null {
+function toPackedProvider(key: string, list: ApiVoice[]): PackedProvider | null {
   const models: Record<string, string[]> = {};
   for (const v of list) {
     // The voice id must stay reconstructable from its parts; if the API
     // ever changes that layout, the fallback data is safer than guesses.
-    if (`google:${v.language}-${v.family}-${v.name}` !== v.voice_id) return null;
+    if (`${key}:${v.language}-${v.family}-${v.name}` !== v.voice_id) return null;
     for (const m of v.available_models ?? []) {
       const l = models[v.family] ?? (models[v.family] = []);
       if (!l.includes(m)) l.push(m);
     }
   }
   return {
-    version: 3,
-    updated: new Date().toISOString().slice(0, 10),
     models,
     voices: list.map((v) => [
       v.language,
@@ -66,27 +69,67 @@ async function livePacked(): Promise<PackedCatalog | null> {
     }
     const body = (await res.json()) as { data?: { voices?: ApiVoice[] } };
     const list = body.data?.voices;
-    // A truncated response must not shrink the site. The committed data
-    // is the yardstick: anything well below it is treated as broken.
-    if (!Array.isArray(list) || list.length < FALLBACK.voices.length * 0.8) {
-      console.warn(
-        `catalog refresh: got ${Array.isArray(list) ? list.length : "no"} voices, expected about ${FALLBACK.voices.length}, using fallback data`,
-      );
+    if (!Array.isArray(list) || list.length === 0) {
+      console.warn("catalog refresh: got no voices, using fallback data");
       return null;
     }
-    const packed = toPacked(list);
-    if (!packed) {
-      console.warn("catalog refresh: voice id layout changed upstream, using fallback data");
+
+    const byProvider = new Map<string, ApiVoice[]>();
+    for (const v of list) {
+      const p = v.provider ?? v.voice_id.split(":")[0];
+      const l = byProvider.get(p);
+      if (l) l.push(v);
+      else byProvider.set(p, [v]);
     }
-    return packed;
+
+    const providers: Record<string, PackedProvider> = {};
+    for (const [p, voices] of byProvider) {
+      if (!isBlessed(p)) {
+        console.warn(
+          `catalog refresh: unblessed provider "${p}" upstream with ${voices.length} voices; ignored until blessed in lib/providers.ts`,
+        );
+        continue;
+      }
+      const packed = toPackedProvider(p, voices);
+      if (!packed) {
+        console.warn(`catalog refresh: voice id layout changed upstream (${p}), using fallback data`);
+        return null;
+      }
+      providers[p] = packed;
+    }
+
+    // A truncated response must not shrink the site. The committed data is
+    // the yardstick, per provider: each blessed provider in the fallback
+    // must come back at 80% strength or the whole fallback is used. A
+    // provider blessed before its first data refresh has no yardstick yet
+    // and passes on live data alone.
+    for (const meta of PROVIDERS) {
+      const before = FALLBACK.providers[meta.key]?.voices.length;
+      if (!before) continue;
+      const after = providers[meta.key]?.voices.length ?? 0;
+      if (after < before * 0.8) {
+        console.warn(
+          `catalog refresh: ${meta.key} came back with ${after} voices, expected about ${before}, using fallback data`,
+        );
+        return null;
+      }
+    }
+
+    return {
+      version: 4,
+      updated: new Date().toISOString().slice(0, 10),
+      providers,
+    };
   } catch (err) {
     console.warn(`catalog refresh failed, using fallback data: ${err instanceof Error ? err.message : err}`);
     return null;
   }
 }
 
-export async function getPacked(): Promise<PackedCatalog> {
-  return (await livePacked()) ?? FALLBACK;
+/** Packed slice for one provider, served by /api/catalog/[provider]. */
+export async function getPackedProvider(key: string): Promise<PackedProvider | null> {
+  const packed = (await livePacked()) ?? FALLBACK;
+  return packed.providers[key] ?? null;
 }
 
 export interface LanguageSummary {
@@ -115,15 +158,32 @@ export interface CatalogStats {
   samples: number;
 }
 
-export interface Catalog {
+export interface ProviderCatalog {
+  provider: string;
   updated: string;
   voices: Voice[];
-  byId: Map<string, Voice>;
   /** Sub-model ids per family, first entry is the API default. */
   models: Record<string, string[]>;
   languages: LanguageSummary[];
   families: FamilySummary[];
   stats: CatalogStats;
+}
+
+export interface SiteStats {
+  voices: number;
+  providers: number;
+  /** Union of language codes across providers. */
+  languages: number;
+  samples: number;
+}
+
+export interface Site {
+  updated: string;
+  /** Blessed providers present in the data, in display order. */
+  providers: Map<string, ProviderCatalog>;
+  /** Every voice of every provider, for /api/sample lookups. */
+  byId: Map<string, Voice>;
+  stats: SiteStats;
 }
 
 // Every voice is playable on demand; families with sub-models carry one
@@ -137,8 +197,8 @@ export function sampleCount(voices: Voice[], models: Record<string, string[]>): 
   return n;
 }
 
-function buildCatalog(packed: PackedCatalog): Catalog {
-  const voices = unpack(packed);
+function buildProviderCatalog(provider: string, updated: string, packed: PackedProvider): ProviderCatalog {
+  const voices = unpack(provider, packed);
   const models = packed.models ?? {};
 
   const byLang = new Map<string, Voice[]>();
@@ -179,18 +239,19 @@ function buildCatalog(packed: PackedCatalog): Catalog {
       ...(models[key] && models[key].length > 1 ? { models: models[key].length } : {}),
     };
   };
-  const families = FAMILIES.filter((f) => byFamily.has(f.key)).map((f) => summarize(f.key, f.label, f.blurb));
+  const known = PROVIDER_FAMILIES[provider] ?? [];
+  const families = known.filter((f) => byFamily.has(f.key)).map((f) => summarize(f.key, f.label, f.blurb));
   // A family this code has never heard of still gets a tile.
   for (const key of byFamily.keys()) {
-    if (!FAMILIES.some((f) => f.key === key)) {
-      families.push(summarize(key, key, "A recent addition to the Google catalog."));
+    if (!known.some((f) => f.key === key)) {
+      families.push(summarize(key, key, getProvider(provider)?.unknownFamilyBlurb ?? ""));
     }
   }
 
   return {
-    updated: packed.updated,
+    provider,
+    updated,
     voices,
-    byId: new Map(voices.map((v) => [v.id, v])),
     models,
     languages,
     families,
@@ -203,24 +264,90 @@ function buildCatalog(packed: PackedCatalog): Catalog {
   };
 }
 
-// The data cache re-parses two megabytes of JSON on every read, which is
-// too much for request-path callers like /api/sample. The built catalog is
-// therefore held for a few minutes per process; the daily data cache only
-// gets consulted when that window lapses. The key separates live from
-// fallback data, so a fallback served during an outage is replaced as
-// soon as the live fetch works again.
-const MEMO_TTL_MS = 5 * 60 * 1000;
-let memo: { key: string; at: number; catalog: Catalog } | null = null;
-
-export async function getCatalog(): Promise<Catalog> {
-  if (memo && Date.now() - memo.at < MEMO_TTL_MS) return memo.catalog;
-  const live = await livePacked();
-  const packed = live ?? FALLBACK;
-  const key = `${live ? "live" : "fallback"}:${packed.updated}:${packed.voices.length}`;
-  if (memo?.key === key) {
-    memo.at = Date.now();
-  } else {
-    memo = { key, at: Date.now(), catalog: buildCatalog(packed) };
+function buildSite(packed: PackedCatalog): Site {
+  const providers = new Map<string, ProviderCatalog>();
+  // Display order comes from the bless config, not the payload.
+  for (const meta of PROVIDERS) {
+    const slice = packed.providers[meta.key];
+    if (!slice || slice.voices.length === 0) continue;
+    providers.set(meta.key, buildProviderCatalog(meta.key, packed.updated, slice));
   }
-  return memo.catalog;
+
+  const byId = new Map<string, Voice>();
+  const langUnion = new Set<string>();
+  let voices = 0;
+  let samples = 0;
+  for (const c of providers.values()) {
+    voices += c.stats.voices;
+    samples += c.stats.samples;
+    for (const v of c.voices) byId.set(v.id, v);
+    for (const l of c.languages) langUnion.add(l.code);
+  }
+
+  return {
+    updated: packed.updated,
+    providers,
+    byId,
+    stats: { voices, providers: providers.size, languages: langUnion.size, samples },
+  };
+}
+
+// The all-provider voice list is about 2.9MB, which is over the Next data
+// cache's 2MB item limit (it logs "items over 2MB can not be cached" and
+// stores nothing), so fetch's revalidate window cannot do the daily
+// caching here. This process memo is the effective cache instead: six
+// hours bounds both the upstream traffic and the JSON parse cost, and the
+// pages' own daily ISR still sets the visible refresh cadence. The key
+// separates live from fallback data, so a fallback served during an
+// outage is replaced as soon as the live fetch works again.
+const MEMO_TTL_MS = 6 * 60 * 60 * 1000;
+// A forced refresh (unknown voice id on /api/sample) still respects this
+// floor, so id-guessing traffic cannot turn into an upstream fetch storm.
+const FRESH_FLOOR_MS = 60 * 1000;
+let memo: { key: string; at: number; site: Site } | null = null;
+
+function totalVoices(packed: PackedCatalog): number {
+  return Object.values(packed.providers).reduce((n, p) => n + p.voices.length, 0);
+}
+
+// Concurrent callers at a memo boundary share one refresh instead of each
+// fetching the 2.9MB list themselves.
+let loading: Promise<Site> | null = null;
+
+function loadSite(): Promise<Site> {
+  if (loading) return loading;
+  loading = (async () => {
+    try {
+      const live = await livePacked();
+      const packed = live ?? FALLBACK;
+      const key = `${live ? "live" : "fallback"}:${packed.updated}:${totalVoices(packed)}`;
+      if (memo?.key === key) {
+        memo.at = Date.now();
+      } else {
+        memo = { key, at: Date.now(), site: buildSite(packed) };
+      }
+      return memo.site;
+    } finally {
+      loading = null;
+    }
+  })();
+  return loading;
+}
+
+export async function getSite(): Promise<Site> {
+  if (memo && Date.now() - memo.at < MEMO_TTL_MS) return memo.site;
+  return loadSite();
+}
+
+/** For lookups that just missed: refetches unless the memo is fresh, so a
+ *  voice that appeared upstream after the last refresh becomes playable
+ *  without waiting out the full memo window. */
+export async function getSiteFresh(): Promise<Site> {
+  if (memo && Date.now() - memo.at < FRESH_FLOOR_MS) return memo.site;
+  return loadSite();
+}
+
+export async function getProviderCatalog(key: string): Promise<ProviderCatalog | null> {
+  const site = await getSite();
+  return site.providers.get(key) ?? null;
 }

@@ -153,27 +153,49 @@ button {
   background: currentColor;
 }
 
+/* Provider tabs: the masthead's nav is global. The active provider gets
+   the Carbon tab underline; pages carry their own section jump links. */
 .mast-nav {
   display: flex;
-  gap: 24px;
+  gap: 4px;
+  height: 100%;
 }
 
 .mast-link {
   font-size: 13px;
   color: var(--text-2);
   white-space: nowrap;
+  display: flex;
+  align-items: center;
+  padding: 0 12px;
+  height: 100%;
 }
 
 .mast-link:hover {
   color: var(--text);
   text-decoration: none;
+  background: var(--bg);
 }
 
-@media (max-width: 480px) {
-  .mast-nav {
-    gap: 14px;
+.mast-active {
+  color: var(--text);
+  font-weight: 500;
+  box-shadow: inset 0 -2px 0 var(--blue);
+}
+
+.mast-short {
+  display: none;
+}
+
+@media (max-width: 560px) {
+  .mast-long {
+    display: none;
+  }
+  .mast-short {
+    display: inline;
   }
   .mast-link {
+    padding: 0 9px;
     font-size: 12px;
   }
 }
@@ -216,8 +238,28 @@ button {
   line-height: 1.5;
   color: #c6c6c6;
   max-width: 600px;
-  margin: 0 0 56px;
+  margin: 0 0 28px;
   text-wrap: pretty;
+}
+
+/* Section jump links inside the hero: local wayfinding, since the
+   masthead only navigates between providers. */
+.hero-jumps {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  margin: 0 0 48px;
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 1px;
+}
+
+.hero-jumps a {
+  color: var(--blue-soft);
+}
+
+.hero-jumps a:hover {
+  color: #a6c8ff;
 }
 
 .stats {
@@ -336,15 +378,43 @@ button {
   border: 1px solid var(--border);
 }
 
+/* Providers with fewer families than columns would show dead cells at
+   desktop, so the column count follows the tile count (google 10, polly
+   4, kokoro 1 today). Partial last rows at breakpoints stay as they are. */
+.fam-grid-4 {
+  grid-template-columns: repeat(4, 1fr);
+}
+
+.fam-grid-3 {
+  grid-template-columns: repeat(3, 1fr);
+}
+
+.fam-grid-2 {
+  grid-template-columns: repeat(2, 1fr);
+}
+
+.fam-grid-1 {
+  grid-template-columns: 1fr;
+}
+
 @media (max-width: 1080px) {
   .fam-grid {
     grid-template-columns: repeat(3, 1fr);
+  }
+  .fam-grid-2 {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .fam-grid-1 {
+    grid-template-columns: 1fr;
   }
 }
 
 @media (max-width: 640px) {
   .fam-grid {
     grid-template-columns: repeat(2, 1fr);
+  }
+  .fam-grid-1 {
+    grid-template-columns: 1fr;
   }
 }
 
@@ -407,6 +477,135 @@ button {
   color: var(--tag-purple-text);
 }
 
+/* Umbrella provider cards */
+
+.providers {
+  background: var(--layer);
+  border-bottom: 1px solid var(--border);
+  padding: 56px 0 64px;
+}
+
+.prov-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1px;
+  background: var(--border);
+  border: 1px solid var(--border);
+}
+
+@media (max-width: 900px) {
+  .prov-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.prov-card {
+  background: var(--layer);
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  color: var(--text);
+}
+
+.prov-card:hover {
+  background: var(--layer-hover);
+  text-decoration: none;
+  color: var(--text);
+}
+
+.prov-key {
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 1.5px;
+  color: var(--text-3);
+}
+
+.prov-name {
+  font-weight: 600;
+  font-size: 18px;
+}
+
+.prov-count {
+  font-weight: 300;
+  font-size: 40px;
+  line-height: 1;
+  margin-top: 6px;
+}
+
+.prov-count small {
+  font-size: 14px;
+  font-weight: 400;
+  color: var(--text-2);
+  margin-left: 6px;
+}
+
+.prov-meta {
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--text-3);
+}
+
+.prov-desc {
+  font-size: 13px;
+  line-height: 1.5;
+  color: var(--text-2);
+  flex: 1;
+  text-wrap: pretty;
+  margin-top: 2px;
+}
+
+.prov-go {
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 1px;
+  color: var(--blue);
+  margin-top: 8px;
+}
+
+.prov-card:hover .prov-go {
+  color: var(--blue-hover);
+}
+
+/* Umbrella "why one shelf" band */
+
+.why {
+  padding: 56px 0 64px;
+}
+
+.why-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1px;
+  background: var(--border);
+  border: 1px solid var(--border);
+}
+
+@media (max-width: 800px) {
+  .why-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.why-cell {
+  background: var(--layer);
+  padding: 20px 24px 24px;
+}
+
+.why-cell h3 {
+  font-size: 15px;
+  font-weight: 600;
+  margin: 0 0 8px;
+}
+
+.why-cell p {
+  font-size: 13px;
+  line-height: 1.55;
+  color: var(--text-2);
+  margin: 0;
+  text-wrap: pretty;
+}
+
 /* Explorer */
 
 /* Longhand only: this element also carries .shell, whose 24px side
@@ -420,7 +619,8 @@ button {
 #models,
 #voices,
 #languages,
-#about {
+#about,
+#providers {
   scroll-margin-top: 60px;
 }
 

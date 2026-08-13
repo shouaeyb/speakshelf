@@ -2,6 +2,22 @@
 
 Settled decisions, newest first. Append a dated entry when something gets decided; correct an old entry by appending, not rewriting. Do not relitigate these silently: if you believe one is wrong, say so to the owner with evidence.
 
+## 2026-08-13: providers go live by blessing; the machinery is generic
+
+The multi-provider shelf shipped with Amazon Polly (177 voices) and Kokoro (54) beside Google (4,586). Data, routing, playback and SEO surfaces are generic over a provider dimension, but a provider only goes live through the curated config in `lib/providers.ts` (copy, family metadata, the provider's own vocabulary) plus a refreshed data pack and a real browser playback pass. The bare `/voices` endpoint reports every provider upstream; unblessed ones are console-logged and stay invisible. The owner explicitly declined webhook or CI alerting for newcomers: logs are enough. Rationale: honest copy and verified playback cannot be automated, and a provider appearing on the site should never be a surprise.
+
+## 2026-08-13: umbrella at the root, Google under /google, permanent redirects are 308
+
+The umbrella homepage lives at `/` (provider cards, aggregate stats, no voice list). Google's whole section moved to `/google` with permanent redirects from every old URL: `/voices/:lang` to `/google/voices/:lang`, and `/` to `/google` whenever an explorer-specific query param is present (four separate `has` rules for family, language, gender, gmodel, since `has` entries AND together; `q` is excluded on review, too generic a name to bind permanently to /google). Note for the earlier subfolder entry that said "301": Next's `permanent: true` answers **308**, the method-preserving permanent redirect; search engines treat it as permanent the same way. Hash-only anchors can't be redirected server side and nothing was deployed yet, so they are not chased.
+
+## 2026-08-13: catalog serves per-provider slices, and the process memo is the real cache
+
+`/api/catalog/[provider]` replaced the single catalog blob: google is about 95 percent of the payload, and a visitor on /polly or /kokoro should not download 4,586 Google voices to browse 177. Separately, the all-provider upstream response (~2.9MB) is over the Next data cache's 2MB item limit, so the `revalidate` fetch cache silently stores nothing; the process memo (six hours, with a 60 second fresh floor for /api/sample id misses) is the effective catalog cache, and the pages' daily ISR sets the visible refresh cadence.
+
+## 2026-08-13: a generous in-memory rate limit guards the one non-static route
+
+Owner asked for a sanity limit against dumb loops racking server bills. Scope: `/api/sample` only, since every other route is static and rides the CDN. Per-IP token bucket, burst 30 then 30 a minute, 429 with Retry-After, buckets swept when idle. Deliberately not security (x-forwarded-for is forgeable, state resets on deploy) and deliberately not the guardian of the shared upstream sample-url budget; the 20 hour signed-URL cache with coalescing and the 429-to-503 relay already do that. No global limiter: rejected as over-engineering.
+
 ## 2026-08-13: name is Speakshelf, domain speakshelf.com
 
 "Voice Atlas" collided with existing products (voiceatlas.com among others). Out of 44 checked .com candidates, 9 were unregistered; the owner picked speakshelf.com over voxroster.com and voxcensus.com. Knockout trademark glance done the same day: no US federal filing live or dead for speakshelf or speak shelf in the indexed register mirrors (nearest marks SPEAKHDL, SPEAKAIR, SPEAKME, all different goods), nothing indexed from EUIPO, no product or company anywhere with the name. A glance is not clearance: before serious brand spend, do a formal USPTO and WIPO search or have an attorney run one.

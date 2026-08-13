@@ -29,7 +29,9 @@ Every provider section present and future uses this same sheet. Provider identit
 
 ## Components in the wild
 
-Masthead (sticky, 48px), hero with stat row, family tiles, dark language band, boxy toolbar (5, 4 or 3 fields), voice rows with play button states (play, spinner, equalizer, error note), sticky language group heads, footer. Reuse these before inventing anything.
+Masthead (sticky, 48px) with global provider tabs (active provider underlined in blue, short labels under 560px), hero with stat row and mono section jump links, family tiles (grid columns follow the tile count below five, so sparse providers show no dead cells), umbrella provider cards (`.prov-card`: mono `/KEY`, name, big count, mono meta, blurb, BROWSE line), the umbrella "why" tiles, dark language band, boxy toolbar (5, 4 or 3 fields; the family filter label uses the provider's own word), voice rows with play button states (play, spinner, equalizer, error note), sticky language group heads, footer. Reuse these before inventing anything.
+
+Provider identity is words, never palette: the eyebrow, the vocabulary ("engines" on /polly, "model families" on /google), the copy. One token sheet serves every page.
 
 ## Copy voice
 
@@ -43,7 +45,7 @@ Shipped writing sounds like a person who knows the subject. Concretely:
 
 ## The design workflow, and who can use it
 
-New surfaces get designed before they get built: mock the page, screenshot it at desktop and mobile widths, fix what looks wrong, then port to the app. The overnight build's mockup lives in the owner's Claude Design project (id 7f79551f-ae78-45a9-ae93-b282a7b105a8, file "Voice Atlas.dc.html"; it predates the Speakshelf rename and several UI changes, so treat it as history, not truth).
+New surfaces get designed before they get built: mock the page, screenshot it at desktop and mobile widths, fix what looks wrong, then port to the app. Mockups live in the owner's Claude Design project (id 7f79551f-ae78-45a9-ae93-b282a7b105a8). "Speakshelf Umbrella.dc.html" and "Speakshelf Provider Chrome.dc.html" are the 2026-08-13 multi-provider mockups, kept in step with what shipped; "Voice Atlas.dc.html" predates the rename and is history, not truth.
 
 Not every agent has Claude Design tools, and that must never block work:
 

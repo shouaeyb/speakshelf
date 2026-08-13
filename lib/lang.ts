@@ -5,8 +5,12 @@ const OVERRIDES: Record<string, string> = {
   "cmn-CN": "Chinese, Mandarin (China)",
   "cmn-TW": "Chinese, Mandarin (Taiwan)",
   "yue-HK": "Chinese, Cantonese (Hong Kong)",
+  "yue-CN": "Chinese, Cantonese (China)",
   "ar-XA": "Arabic",
+  "arb": "Arabic, Standard",
   "jv-JV": "Javanese",
+  // Polly's Welsh English region code makes Intl.DisplayNames throw.
+  "en-GB-WLS": "English (Wales)",
 };
 
 const cache = new Map<string, string>();
