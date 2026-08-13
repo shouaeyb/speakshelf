@@ -56,7 +56,7 @@ export async function generateMetadata({
       : t("andMore", { names: names.slice(0, Math.min(2, names.length - 1)).join(", ") });
   const shareTitle = t("siteTitle", { names: shareNames });
   const description = t("siteDescription", {
-    voices: site.stats.voices.toLocaleString(locale),
+    voices: site.stats.voices,
     names: present,
     languages: site.stats.languages,
   });
@@ -109,6 +109,7 @@ export default async function LocaleLayout({
   const { locale } = await params;
   if (!hasLocale(routing.locales, locale)) notFound();
   const t = await getTranslations({ locale, namespace: "footer" });
+  const ta = await getTranslations({ locale, namespace: "a11y" });
   const { stats, updated: catalogUpdated } = await getSite();
   const fmt = (n: number) => n.toLocaleString(locale);
 
@@ -143,7 +144,7 @@ export default async function LocaleLayout({
               <p className="footer-note">
                 {t("note", {
                   date: catalogUpdated,
-                  voices: fmt(stats.voices),
+                  voices: stats.voices,
                   providers: stats.providers,
                   languages: stats.languages,
                 })}

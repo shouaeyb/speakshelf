@@ -11,6 +11,7 @@ import { applyConsent, readConsentMode, writeConsentMode, type ConsentMode } fro
 export default function ConsentBanner() {
   const [visible, setVisible] = useState(false);
   const t = useTranslations("consent");
+  const ta = useTranslations("a11y");
 
   useEffect(() => {
     setVisible(readConsentMode() === "unknown");
@@ -25,7 +26,7 @@ export default function ConsentBanner() {
   };
 
   return (
-    <div className="consent" role="region" aria-label="Cookies">
+    <div className="consent" role="region" aria-label={ta("cookies")}>
       <div className="shell consent-in">
         <p className="consent-text">{t("text")}</p>
         <div className="consent-actions">

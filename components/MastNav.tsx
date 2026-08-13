@@ -20,6 +20,7 @@ const MAX_NAMED = 4;
 export default function MastNav() {
   const pathname = usePathname();
   const t = useTranslations("masthead");
+  const ta = useTranslations("a11y");
   let named = PROVIDERS.length > MAX_NAMED ? PROVIDERS.slice(0, MAX_NAMED - 1) : PROVIDERS;
   // The active shelf must always be visible and underlined, even when the
   // roster is collapsed: swap it in for the last named slot if hidden.
@@ -30,7 +31,7 @@ export default function MastNav() {
     named = [...named.slice(0, -1), activeMeta];
   }
   return (
-    <nav className="mast-nav" aria-label="Providers">
+    <nav className="mast-nav" aria-label={ta("providers")}>
       {named.map((p) => {
         const active = pathname === `/${p.key}` || pathname.startsWith(`/${p.key}/`);
         return (

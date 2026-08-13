@@ -1,6 +1,7 @@
-// Client-side voice search. One document per voice, built automatically
-// from every field and trait, so a characteristic added tomorrow is
-// searchable today with no edit here. Queries tokenize and AND together.
+// Client-side voice search. One document per voice: every current field
+// is enumerated here, and the TRAITS map is folded in generically, so a
+// new trait is searchable with no edit; a brand-new top-level Voice
+// field would still need adding below. Queries tokenize and AND together.
 // Plain tokens match at word starts ("fem" finds female, "male" does not
 // match female); tokens carrying separators (":", "-") match as
 // substrings of the whole document, so a full or partial voice id still

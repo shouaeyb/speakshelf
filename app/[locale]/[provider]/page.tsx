@@ -35,7 +35,7 @@ export async function generateMetadata({ params }: { params: Promise<Params> }):
     title: t("providerTitle", { label: meta.label }),
     description: t("providerDescription", {
       label: meta.label,
-      voices: catalog.stats.voices.toLocaleString(locale),
+      voices: catalog.stats.voices,
       languages: catalog.stats.languages,
       familyWord: tp("familyWord", { count: 1 }),
     }),
@@ -79,7 +79,7 @@ export default async function ProviderPage({ params }: { params: Promise<Params>
           <p className="eyebrow rise">{t(`providers.${provider}.eyebrow`)}</p>
           <h1 className="rise rise-2">{t(`providers.${provider}.heroTitle`)}</h1>
           <p className="hero-sub rise rise-3">{t(`providers.${provider}.heroSub`)}</p>
-          <nav className="hero-jumps rise rise-3" aria-label="Sections">
+          <nav className="hero-jumps rise rise-3" aria-label={t("a11y.sections")}>
             <a href="#models">{t(`providers.${provider}.jump`)}</a>
             <a href="#voices">{t("providerPage.jumpVoices")}</a>
             <a href="#languages">{t("providerPage.jumpLanguages")}</a>
@@ -158,7 +158,7 @@ export default async function ProviderPage({ params }: { params: Promise<Params>
           <div className="about-cols">
             <p>
               {t(`providers.${provider}.about`, {
-                voices: fmt(stats.voices),
+                voices: stats.voices,
                 families: stats.families,
                 languages: stats.languages,
                 models: models.Gemini?.length ?? 0,

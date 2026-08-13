@@ -88,9 +88,9 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
         <div className="shell">
           <div className="hero-rule rise"></div>
           <p className="eyebrow rise">{t("home.eyebrow")}</p>
-          <h1 className="rise rise-2">{t("home.title", { voices: fmt(stats.voices) })}</h1>
+          <h1 className="rise rise-2">{t("home.title", { voices: stats.voices })}</h1>
           <p className="hero-sub rise rise-3">{t("home.sub", { names: nameList })}</p>
-          <nav className="hero-jumps rise rise-3" aria-label="Sections">
+          <nav className="hero-jumps rise rise-3" aria-label={t("a11y.sections")}>
             <a href="#providers">{t("home.jumpProviders")}</a>
             <a href="#about">{t("home.jumpAbout")}</a>
           </nav>
@@ -129,12 +129,13 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
                   <span className="prov-name">{p.label}</span>
                   <span className="prov-count">
                     {fmt(c.stats.voices)}
-                    <small>{t("home.cardVoices")}</small>
+                    <small>{t("home.cardVoices", { count: c.stats.voices })}</small>
                   </span>
                   <span className="prov-meta">
                     {t("home.cardMeta", {
                       languages: c.stats.languages,
-                      families: `${fmt(c.stats.families)} ${famWord}`,
+                      familiesCount: fmt(c.stats.families),
+                      familyWord: famWord,
                       samples: c.stats.samples,
                     })}
                   </span>
@@ -174,7 +175,7 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
           <div className="about-cols">
             <p>
               {t("home.aboutBody", {
-                voices: fmt(stats.voices),
+                voices: stats.voices,
                 providers: stats.providers,
                 languages: stats.languages,
               })}

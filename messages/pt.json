@@ -18,8 +18,8 @@
     "jumpAbout": "SOBRE",
     "providersTitle": "{count, plural, one {# provedor} other {# provedores}}",
     "providersSub": "Cada provedor mantém uma estante completa: a lista inteira de vozes com filtros e reprodução, notas sobre cada família de modelos e uma página por idioma. A estante cresce: o AI TTS Microservice unifica mais provedores, e novas estantes abrem aqui depois de verificadas.",
-    "cardVoices": "vozes",
-    "cardMeta": "{languages, plural, one {# idioma} other {# idiomas}} · {families} · {samples, plural, one {# amostra} other {# amostras}}",
+    "cardVoices": "{count, plural, one {voz} other {vozes}}",
+    "cardMeta": "{languages, plural, one {# idioma} other {# idiomas}} · {familiesCount} {familyWord} · {samples, plural, one {# amostra} other {# amostras}}",
     "browse": "EXPLORAR →",
     "whyTitle": "Por que uma só estante",
     "whySub": "Catálogos diferem em mais do que tamanho. Vê-los lado a lado mostra as lacunas, as sobreposições e o caráter de cada um.",
@@ -56,9 +56,9 @@
       "heroSub": "Ouça uma amostra de cada voz do catálogo do Amazon Polly. Filtre por motor, idioma e gênero. Sem conta, sem configuração, só as vozes.",
       "familyWord": "{count, plural, one {motor} other {motores}}",
       "jump": "MOTORES",
-      "familiesIntro": "O Polly agrupa suas vozes por motor. O catálogo vai das vozes standard ao motor generativo, com um nível long-form pensado para escutas longas.",
-      "card": "O serviço de texto para fala da AWS: motores standard, neural, generativo e long-form.",
-      "about": "O Amazon Polly é o serviço de texto para fala da AWS, que converte texto em fala natural. Suas {voices} vozes aqui abrangem {families} motores: standard e neural, um motor generativo construído com técnicas de IA generativa, e vozes long-form projetadas para conteúdos longos como artigos e materiais de treinamento. Cada voz tem uma amostra para ouvir.",
+      "familiesIntro": "O Polly agrupa suas vozes por motor. O catálogo vai das vozes standard ao motor generative, com um nível long-form pensado para escutas longas.",
+      "card": "O serviço de texto para fala da AWS: motores standard, neural, generative e long-form.",
+      "about": "O Amazon Polly é o serviço de texto para fala da AWS, que converte texto em fala natural. Suas {voices} vozes aqui abrangem {families} motores: standard e neural, um motor generative construído com técnicas de IA generativa, e vozes long-form projetadas para conteúdos longos como artigos e materiais de treinamento. Cada voz tem uma amostra para ouvir.",
       "unknownFamily": "Uma adição recente ao catálogo do Amazon Polly."
     },
     "kokoro": {
@@ -92,24 +92,52 @@
         "blurb": "Fala nativa do Gemini. Cada voz pode ser renderizada por todos os submodelos, e a entrega segue uma instrução de estilo escrita.",
         "note": "As amostras mostram cada voz com honestidade, esquisitices incluídas. Algumas vozes Gemini podem soar com um sotaque diferente do rótulo regional, por exemplo uma voz en-US soando en-IN. Na sua própria instrução de geração, um pedido simples como \"diga isto com sotaque americano\" costuma corrigir."
       },
-      "Chirp3HD": { "blurb": "A geração HD atual, afinada para conversas naturais." },
-      "Standard": { "blurb": "Vozes paramétricas com a maior cobertura de idiomas ao menor preço." },
-      "Wavenet": { "blurb": "O modelo da DeepMind que popularizou a fala neural." },
-      "Neural2": { "blurb": "Vozes neurais de segunda geração, o padrão de muitos produtos." },
-      "ChirpHD": { "blurb": "A primeira geração Chirp, ainda amplamente usada." },
-      "News": { "blurb": "Vozes de estilo jornalístico afinadas para ler notícias." },
-      "Studio": { "blurb": "Vozes com qualidade de narração para leituras longas." },
-      "Polyglot": { "blurb": "Uma identidade de voz que fala vários idiomas." },
-      "Casual": { "blurb": "Uma voz conversacional criada para respostas informais." }
+      "Chirp3HD": {
+        "blurb": "A geração HD atual, afinada para conversas naturais."
+      },
+      "Standard": {
+        "blurb": "Vozes paramétricas com a maior cobertura de idiomas ao menor preço."
+      },
+      "Wavenet": {
+        "blurb": "O modelo da DeepMind que popularizou a fala neural."
+      },
+      "Neural2": {
+        "blurb": "Vozes neurais de segunda geração, o padrão de muitos produtos."
+      },
+      "ChirpHD": {
+        "blurb": "A primeira geração Chirp, ainda amplamente usada."
+      },
+      "News": {
+        "blurb": "Vozes de estilo jornalístico afinadas para ler notícias."
+      },
+      "Studio": {
+        "blurb": "Vozes com qualidade de narração para leituras longas."
+      },
+      "Polyglot": {
+        "blurb": "Uma identidade de voz que fala vários idiomas."
+      },
+      "Casual": {
+        "blurb": "Uma voz conversacional criada para respostas informais."
+      }
     },
     "polly": {
-      "Neural": { "blurb": "Vozes neurais, a geração de aprendizado de máquina que elevou a qualidade de fala do Polly." },
-      "Standard": { "blurb": "O motor standard, as vozes base do Polly com ampla cobertura de idiomas." },
-      "Generative": { "blurb": "O motor mais novo do Polly, construído com IA generativa para fala conversacional." },
-      "LongForm": { "blurb": "Feito para escutas longas: artigos, materiais de treinamento e narração." }
+      "Neural": {
+        "blurb": "Vozes neurais, a geração de aprendizado de máquina que elevou a qualidade de fala do Polly."
+      },
+      "Standard": {
+        "blurb": "O motor standard, as vozes base do Polly com ampla cobertura de idiomas."
+      },
+      "Generative": {
+        "blurb": "O motor mais novo do Polly, construído com IA generativa para fala conversacional."
+      },
+      "LongForm": {
+        "blurb": "Feito para escutas longas: artigos, materiais de treinamento e narração."
+      }
     },
     "kokoro": {
-      "Kokoro": { "blurb": "Todas as vozes do Kokoro: um modelo de pesos abertos, 82 milhões de parâmetros, Apache 2.0." }
+      "Kokoro": {
+        "blurb": "Todas as vozes do Kokoro: um modelo de pesos abertos, 82 milhões de parâmetros, Apache 2.0."
+      }
     }
   },
   "tags": {
@@ -188,5 +216,10 @@
     "langDescription": "As {voices} vozes de texto para fala do {label} para {language} ({code}), com amostras para ouvir no navegador.",
     "langShareDescription": "Vozes de texto para fala do {label} para {language}, com amostras para ouvir.",
     "langJsonLd": "Vozes de texto para fala do {label} para {language} ({code})."
+  },
+  "a11y": {
+    "sections": "Seções",
+    "providers": "Provedores",
+    "cookies": "Cookies"
   }
 }

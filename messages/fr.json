@@ -18,8 +18,8 @@
     "jumpAbout": "À PROPOS",
     "providersTitle": "{count, plural, one {# fournisseur} other {# fournisseurs}}",
     "providersSub": "Chaque fournisseur dispose d'une étagère complète : la liste intégrale des voix avec filtres et lecture, des notes sur chaque famille de modèles et une page par langue. L'étagère s'agrandit : l'AI TTS Microservice unifie d'autres fournisseurs, et de nouvelles étagères ouvrent ici une fois vérifiées.",
-    "cardVoices": "voix",
-    "cardMeta": "{languages, plural, one {# langue} other {# langues}} · {families} · {samples, plural, one {# extrait} other {# extraits}}",
+    "cardVoices": "{count, plural, one {voix} other {voix}}",
+    "cardMeta": "{languages, plural, one {# langue} other {# langues}} · {familiesCount} {familyWord} · {samples, plural, one {# extrait} other {# extraits}}",
     "browse": "PARCOURIR →",
     "whyTitle": "Pourquoi une seule étagère",
     "whySub": "Les catalogues diffèrent par plus que la taille. Les voir côte à côte révèle les manques, les recouvrements et le caractère de chacun.",
@@ -56,9 +56,9 @@
       "heroSub": "Écoutez un extrait de chaque voix du catalogue Amazon Polly. Filtrez par moteur, langue et genre. Pas de compte, pas de configuration, juste les voix.",
       "familyWord": "{count, plural, one {moteur} other {moteurs}}",
       "jump": "MOTEURS",
-      "familiesIntro": "Polly groupe ses voix par moteur. Le catalogue va des voix standard au moteur génératif, avec un niveau long-form pensé pour l'écoute prolongée.",
-      "card": "Le service de synthèse vocale d'AWS : moteurs standard, neural, génératif et long-form.",
-      "about": "Amazon Polly est le service de synthèse vocale d'AWS, qui convertit le texte en voix naturelle. Ses {voices} voix couvrent ici {families} moteurs : standard et neural, un moteur génératif construit avec des techniques d'IA générative, et des voix long-form conçues pour les contenus longs comme les articles et les supports de formation. Chaque voix a un extrait à écouter.",
+      "familiesIntro": "Polly groupe ses voix par moteur. Le catalogue va des voix standard au moteur generative, avec un niveau long-form pensé pour l'écoute prolongée.",
+      "card": "Le service de synthèse vocale d'AWS : moteurs standard, neural, generative et long-form.",
+      "about": "Amazon Polly est le service de synthèse vocale d'AWS, qui convertit le texte en voix naturelle. Ses {voices} voix couvrent ici {families} moteurs : standard et neural, un moteur generative construit avec des techniques d'IA générative, et des voix long-form conçues pour les contenus longs comme les articles et les supports de formation. Chaque voix a un extrait à écouter.",
       "unknownFamily": "Un ajout récent au catalogue Amazon Polly."
     },
     "kokoro": {
@@ -92,24 +92,52 @@
         "blurb": "La voix native de Gemini. Chaque voix peut être rendue par tous les sous-modèles, et l'interprétation suit une consigne de style écrite.",
         "note": "Les extraits présentent chaque voix honnêtement, défauts compris. Certaines voix Gemini peuvent rendre un accent différent de leur étiquette régionale, par exemple une voix en-US qui sonne en-IN. Dans votre propre consigne de génération, une instruction simple comme « dis ceci avec un accent américain » corrige généralement le problème."
       },
-      "Chirp3HD": { "blurb": "La génération HD actuelle, réglée pour la conversation naturelle." },
-      "Standard": { "blurb": "Des voix paramétriques avec la plus large couverture de langues au prix le plus bas." },
-      "Wavenet": { "blurb": "Le modèle de DeepMind qui a popularisé la voix neuronale." },
-      "Neural2": { "blurb": "Voix neuronales de deuxième génération, le choix par défaut de nombreux produits." },
-      "ChirpHD": { "blurb": "La première génération Chirp, encore largement déployée." },
-      "News": { "blurb": "Des voix de style journalistique réglées pour lire les actualités." },
-      "Studio": { "blurb": "Des voix de qualité narration pour les lectures longues." },
-      "Polyglot": { "blurb": "Une identité vocale qui parle plusieurs langues." },
-      "Casual": { "blurb": "Une voix conversationnelle conçue pour les réponses informelles." }
+      "Chirp3HD": {
+        "blurb": "La génération HD actuelle, réglée pour la conversation naturelle."
+      },
+      "Standard": {
+        "blurb": "Des voix paramétriques avec la plus large couverture de langues au prix le plus bas."
+      },
+      "Wavenet": {
+        "blurb": "Le modèle de DeepMind qui a popularisé la voix neuronale."
+      },
+      "Neural2": {
+        "blurb": "Voix neuronales de deuxième génération, le choix par défaut de nombreux produits."
+      },
+      "ChirpHD": {
+        "blurb": "La première génération Chirp, encore largement déployée."
+      },
+      "News": {
+        "blurb": "Des voix de style journalistique réglées pour lire les actualités."
+      },
+      "Studio": {
+        "blurb": "Des voix de qualité narration pour les lectures longues."
+      },
+      "Polyglot": {
+        "blurb": "Une identité vocale qui parle plusieurs langues."
+      },
+      "Casual": {
+        "blurb": "Une voix conversationnelle conçue pour les réponses informelles."
+      }
     },
     "polly": {
-      "Neural": { "blurb": "Les voix neuronales, la génération d'apprentissage automatique qui a élevé la qualité vocale de Polly." },
-      "Standard": { "blurb": "Le moteur standard, les voix de base de Polly avec une large couverture de langues." },
-      "Generative": { "blurb": "Le moteur le plus récent de Polly, construit sur l'IA générative pour la voix conversationnelle." },
-      "LongForm": { "blurb": "Fait pour l'écoute longue : articles, supports de formation et narration." }
+      "Neural": {
+        "blurb": "Les voix neuronales, la génération d'apprentissage automatique qui a élevé la qualité vocale de Polly."
+      },
+      "Standard": {
+        "blurb": "Le moteur standard, les voix de base de Polly avec une large couverture de langues."
+      },
+      "Generative": {
+        "blurb": "Le moteur le plus récent de Polly, construit sur l'IA générative pour la voix conversationnelle."
+      },
+      "LongForm": {
+        "blurb": "Fait pour l'écoute longue : articles, supports de formation et narration."
+      }
     },
     "kokoro": {
-      "Kokoro": { "blurb": "Toutes les voix Kokoro : un modèle à poids ouverts, 82 millions de paramètres, Apache 2.0." }
+      "Kokoro": {
+        "blurb": "Toutes les voix Kokoro : un modèle à poids ouverts, 82 millions de paramètres, Apache 2.0."
+      }
     }
   },
   "tags": {
@@ -188,5 +216,10 @@
     "langDescription": "Les {voices} voix de synthèse vocale {label} pour le {language} ({code}), avec des extraits à écouter dans le navigateur.",
     "langShareDescription": "Voix de synthèse vocale {label} pour le {language}, avec extraits à écouter.",
     "langJsonLd": "Voix de synthèse vocale {label} pour le {language} ({code})."
+  },
+  "a11y": {
+    "sections": "Sections",
+    "providers": "Fournisseurs",
+    "cookies": "Cookies"
   }
 }

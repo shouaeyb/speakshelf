@@ -23,7 +23,10 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 
   const entries: MetadataRoute.Sitemap = [];
   for (const { path, priority, changeFrequency } of paths) {
-    const languages = Object.fromEntries(LOCALES.map((l) => [l, localeUrl(path, l)]));
+    const languages = {
+      ...Object.fromEntries(LOCALES.map((l) => [l, localeUrl(path, l)])),
+      "x-default": localeUrl(path, "en"),
+    };
     for (const locale of LOCALES) {
       entries.push({
         url: localeUrl(path, locale),

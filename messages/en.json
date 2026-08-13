@@ -18,8 +18,8 @@
     "jumpAbout": "ABOUT",
     "providersTitle": "{count, plural, one {# provider} other {# providers}}",
     "providersSub": "Every provider keeps a full shelf: the complete voice list with filters and playback, notes on each model family, and a page per language. The shelf grows: the AI TTS Microservice unifies more providers, and new shelves open here once verified.",
-    "cardVoices": "voices",
-    "cardMeta": "{languages, plural, one {# language} other {# languages}} · {families} · {samples, plural, one {# sample} other {# samples}}",
+    "cardVoices": "{count, plural, other {voices}}",
+    "cardMeta": "{languages, plural, one {# language} other {# languages}} · {familiesCount} {familyWord} · {samples, plural, one {# sample} other {# samples}}",
     "browse": "BROWSE →",
     "whyTitle": "Why one shelf",
     "whySub": "Catalogs differ in more than size. Keeping them side by side shows the gaps, the overlaps and the character of each.",
@@ -92,24 +92,52 @@
         "blurb": "Native speech from Gemini. Each voice can be rendered by every sub-model, and delivery follows a written style prompt.",
         "note": "Samples show each voice honestly, quirks included. Some Gemini voices can render a different accent than their locale label, an en-US voice sounding en-IN for instance. In your own generation prompt, a plain instruction like \"say this in an American accent\" usually corrects it."
       },
-      "Chirp3HD": { "blurb": "The current HD generation, tuned for natural conversation." },
-      "Standard": { "blurb": "Parametric voices with the widest language coverage at the lowest price." },
-      "Wavenet": { "blurb": "The DeepMind model that made neural speech mainstream." },
-      "Neural2": { "blurb": "Second generation neural voices, the default for many products." },
-      "ChirpHD": { "blurb": "The first Chirp generation, still widely deployed." },
-      "News": { "blurb": "Broadcast style voices tuned for reading the news." },
-      "Studio": { "blurb": "Narration grade voices for long form reading." },
-      "Polyglot": { "blurb": "One voice identity that speaks several languages." },
-      "Casual": { "blurb": "A conversational voice built for informal replies." }
+      "Chirp3HD": {
+        "blurb": "The current HD generation, tuned for natural conversation."
+      },
+      "Standard": {
+        "blurb": "Parametric voices with the widest language coverage at the lowest price."
+      },
+      "Wavenet": {
+        "blurb": "The DeepMind model that made neural speech mainstream."
+      },
+      "Neural2": {
+        "blurb": "Second generation neural voices, the default for many products."
+      },
+      "ChirpHD": {
+        "blurb": "The first Chirp generation, still widely deployed."
+      },
+      "News": {
+        "blurb": "Broadcast style voices tuned for reading the news."
+      },
+      "Studio": {
+        "blurb": "Narration grade voices for long form reading."
+      },
+      "Polyglot": {
+        "blurb": "One voice identity that speaks several languages."
+      },
+      "Casual": {
+        "blurb": "A conversational voice built for informal replies."
+      }
     },
     "polly": {
-      "Neural": { "blurb": "Neural voices, the machine learning generation that lifted Polly's speech quality." },
-      "Standard": { "blurb": "The standard engine, Polly's baseline voices with wide language coverage." },
-      "Generative": { "blurb": "The newest Polly engine, built on generative AI for conversational speech." },
-      "LongForm": { "blurb": "Made for long listening: articles, training material and narration." }
+      "Neural": {
+        "blurb": "Neural voices, the machine learning generation that lifted Polly's speech quality."
+      },
+      "Standard": {
+        "blurb": "The standard engine, Polly's baseline voices with wide language coverage."
+      },
+      "Generative": {
+        "blurb": "The newest Polly engine, built on generative AI for conversational speech."
+      },
+      "LongForm": {
+        "blurb": "Made for long listening: articles, training material and narration."
+      }
     },
     "kokoro": {
-      "Kokoro": { "blurb": "Every Kokoro voice: one open-weight model, 82 million parameters, Apache 2.0." }
+      "Kokoro": {
+        "blurb": "Every Kokoro voice: one open-weight model, 82 million parameters, Apache 2.0."
+      }
     }
   },
   "tags": {
@@ -188,5 +216,10 @@
     "langDescription": "All {voices} {label} text to speech voices for {language} ({code}), with samples you can play in the browser.",
     "langShareDescription": "{label} text to speech voices for {language}, with playable samples.",
     "langJsonLd": "{label} text to speech voices for {language} ({code})."
+  },
+  "a11y": {
+    "sections": "Sections",
+    "providers": "Providers",
+    "cookies": "Cookies"
   }
 }

@@ -18,8 +18,8 @@
     "jumpAbout": "关于",
     "providersTitle": "{count, plural, other {# 家提供商}}",
     "providersSub": "每家提供商都有完整的书架：带筛选和播放的全部语音列表、每个模型家族的说明，以及每种语言的独立页面。书架还在扩充：AI TTS Microservice 正在整合更多提供商，经核验后新的书架会在这里开放。",
-    "cardVoices": "个语音",
-    "cardMeta": "{languages, plural, other {# 种语言}} · {families} · {samples, plural, other {# 个示例}}",
+    "cardVoices": "{count, plural, other {个语音}}",
+    "cardMeta": "{languages, plural, other {# 种语言}} · {familiesCount} 个{familyWord} · {samples, plural, other {# 个示例}}",
     "browse": "浏览 →",
     "whyTitle": "为什么用一个书架",
     "whySub": "目录之间的差异不只是规模。并排摆放才能看清空缺、重叠和各自的特点。",
@@ -43,7 +43,7 @@
       "eyebrow": "GOOGLE CLOUD 文字转语音",
       "heroTitle": "每个 Google 语音，都在这一页。",
       "heroSub": "播放 Google Cloud 目录中每个语音的示例。按模型家族、语言和性别筛选。无需账号，无需配置，只有语音。",
-      "familyWord": "{count, plural, other {个模型家族}}",
+      "familyWord": "{count, plural, other {模型家族}}",
       "jump": "模型",
       "familiesIntro": "Google 不断推出新的语音架构，而每一代都仍在服务。目录从紧凑的参数化语音一直延伸到可用一句话指挥的模型。",
       "card": "这里最深的书架：从 Standard 和 WaveNet 到 Chirp 3，再到遵循书面风格指令的 Gemini 语音。",
@@ -54,18 +54,18 @@
       "eyebrow": "AMAZON POLLY 文字转语音",
       "heroTitle": "每个 Amazon Polly 语音，都在这一页。",
       "heroSub": "播放 Amazon Polly 目录中每个语音的示例。按引擎、语言和性别筛选。无需账号，无需配置，只有语音。",
-      "familyWord": "{count, plural, other {个引擎}}",
+      "familyWord": "{count, plural, other {引擎}}",
       "jump": "引擎",
-      "familiesIntro": "Polly 按引擎给语音分组。目录从 standard 语音延伸到生成式引擎，还有为长时间聆听打造的 long-form 档位。",
-      "card": "AWS 的文字转语音服务：standard、neural、生成式与 long-form 引擎。",
-      "about": "Amazon Polly 是 AWS 的文字转语音服务，把文本转换为逼真的语音。这里的 {voices} 个语音横跨 {families} 个引擎：standard 与 neural、采用生成式 AI 技术打造的生成式引擎，以及为文章和培训材料等较长内容设计的 long-form 语音。每个语音都有可播放的示例。",
+      "familiesIntro": "Polly 按引擎给语音分组。目录从 standard 语音延伸到generative 引擎，还有为长时间聆听打造的 long-form 档位。",
+      "card": "AWS 的文字转语音服务：standard、neural、generative 与 long-form 引擎。",
+      "about": "Amazon Polly 是 AWS 的文字转语音服务，把文本转换为逼真的语音。这里的 {voices} 个语音横跨 {families} 个引擎：standard 与 neural、采用生成式 AI 技术打造的generative 引擎，以及为文章和培训材料等较长内容设计的 long-form 语音。每个语音都有可播放的示例。",
       "unknownFamily": "Amazon Polly 目录的新成员。"
     },
     "kokoro": {
       "eyebrow": "KOKORO 文字转语音",
       "heroTitle": "每个 Kokoro 语音，都在这一页。",
       "heroSub": "播放开放权重模型 Kokoro 每个语音的示例。按语言和性别筛选。无需账号，无需配置，只有语音。",
-      "familyWord": "{count, plural, other {个模型家族}}",
+      "familyWord": "{count, plural, other {模型家族}}",
       "jump": "模型",
       "familiesIntro": "Kokoro 是单一模型而非引擎集合，所以整个目录都在同一个家族里。",
       "card": "开放权重模型，8200 万参数，Apache 2.0 许可。",
@@ -77,7 +77,7 @@
     "jumpVoices": "语音",
     "jumpLanguages": "语言",
     "jumpAbout": "关于",
-    "familiesTitle": "{count} {familyWord}",
+    "familiesTitle": "{count} 个{familyWord}",
     "languagesTitle": "{count, plural, other {# 种语言}}",
     "languagesSub": "每种语言都有自己的页面，收录完整语音列表，方便直接把某一格书架分享给别人。",
     "famMeta": "{voices, plural, other {# 个语音}}",
@@ -92,24 +92,52 @@
         "blurb": "Gemini 的原生语音。每个语音都能由全部子模型渲染，演绎方式遵循书面风格指令。",
         "note": "示例如实呈现每个语音，包括小毛病。部分 Gemini 语音的口音可能与地区标签不符，例如 en-US 语音听起来像 en-IN。在你自己的生成指令里加一句简单说明，如\"用美式口音朗读\"，通常就能纠正。"
       },
-      "Chirp3HD": { "blurb": "当前的 HD 世代，为自然对话调校。" },
-      "Standard": { "blurb": "参数化语音，语言覆盖最广，价格最低。" },
-      "Wavenet": { "blurb": "让神经语音走向主流的 DeepMind 模型。" },
-      "Neural2": { "blurb": "第二代神经语音，许多产品的默认选择。" },
-      "ChirpHD": { "blurb": "第一代 Chirp，仍被广泛使用。" },
-      "News": { "blurb": "为播报新闻调校的广播风格语音。" },
-      "Studio": { "blurb": "适合长篇朗读的演播级语音。" },
-      "Polyglot": { "blurb": "一个语音身份，多种语言。" },
-      "Casual": { "blurb": "为非正式回复打造的对话语音。" }
+      "Chirp3HD": {
+        "blurb": "当前的 HD 世代，为自然对话调校。"
+      },
+      "Standard": {
+        "blurb": "参数化语音，语言覆盖最广，价格最低。"
+      },
+      "Wavenet": {
+        "blurb": "让神经语音走向主流的 DeepMind 模型。"
+      },
+      "Neural2": {
+        "blurb": "第二代神经语音，许多产品的默认选择。"
+      },
+      "ChirpHD": {
+        "blurb": "第一代 Chirp，仍被广泛使用。"
+      },
+      "News": {
+        "blurb": "为播报新闻调校的广播风格语音。"
+      },
+      "Studio": {
+        "blurb": "适合长篇朗读的演播级语音。"
+      },
+      "Polyglot": {
+        "blurb": "一个语音身份，多种语言。"
+      },
+      "Casual": {
+        "blurb": "为非正式回复打造的对话语音。"
+      }
     },
     "polly": {
-      "Neural": { "blurb": "神经语音：让 Polly 语音质量跃升的机器学习世代。" },
-      "Standard": { "blurb": "standard 引擎，Polly 的基础语音，语言覆盖广。" },
-      "Generative": { "blurb": "Polly 最新的引擎，基于生成式 AI 打造对话语音。" },
-      "LongForm": { "blurb": "为长时间聆听而生：文章、培训材料和旁白。" }
+      "Neural": {
+        "blurb": "神经语音：让 Polly 语音质量跃升的机器学习世代。"
+      },
+      "Standard": {
+        "blurb": "standard 引擎，Polly 的基础语音，语言覆盖广。"
+      },
+      "Generative": {
+        "blurb": "Polly 最新的引擎，基于生成式 AI 打造对话语音。"
+      },
+      "LongForm": {
+        "blurb": "为长时间聆听而生：文章、培训材料和旁白。"
+      }
     },
     "kokoro": {
-      "Kokoro": { "blurb": "Kokoro 的全部语音：一个开放权重模型，8200 万参数，Apache 2.0。" }
+      "Kokoro": {
+        "blurb": "Kokoro 的全部语音：一个开放权重模型，8200 万参数，Apache 2.0。"
+      }
     }
   },
   "tags": {
@@ -152,7 +180,7 @@
   },
   "langPage": {
     "crumb": "← {label} 的全部语言",
-    "meta": "{code} · {voices, plural, other {# 个语音}} · {families} {familyWord} · {samples, plural, other {# 个可播放示例}}"
+    "meta": "{code} · {voices, plural, other {# 个语音}} · {families} 个{familyWord} · {samples, plural, other {# 个可播放示例}}"
   },
   "consent": {
     "text": "Speakshelf 使用 Cookie 和分析工具来了解目录的使用情况。",
@@ -188,5 +216,10 @@
     "langDescription": "{label} 面向{language}（{code}）的全部 {voices} 个文字转语音语音，示例可在浏览器中播放。",
     "langShareDescription": "{label} 面向{language}的文字转语音语音，附可播放示例。",
     "langJsonLd": "{label} 面向{language}（{code}）的文字转语音语音。"
+  },
+  "a11y": {
+    "sections": "栏目",
+    "providers": "提供商",
+    "cookies": "Cookie"
   }
 }

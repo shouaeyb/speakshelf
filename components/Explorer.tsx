@@ -255,10 +255,13 @@ function ExplorerCore({ provider, voices, lockLanguage, models, paramsKey }: Cor
       if (v.gender !== "unknown") terms.push(t(`explorer.genderWords.${v.gender}`));
       terms.push(t(`tags.${v.tier}`));
       if (v.traits.age === "child") terms.push(t("explorer.traits.child"));
+      // Sub-model ids and labels, so "2.5 pro" and "gemini-2.5-pro-tts"
+      // both find the family that carries them.
+      for (const m of models[v.family] ?? []) terms.push(m, modelLabel(m));
       return terms;
     };
     return new Map(all.map((v) => [v.id, buildSearchDoc(v, provider, locale, localized(v))]));
-  }, [all, provider, locale, t]);
+  }, [all, provider, locale, t, models]);
 
   const emptyDoc: SearchDoc = { words: [], text: "" };
   const filtered = useMemo(() => {
@@ -313,12 +316,22 @@ function ExplorerCore({ provider, voices, lockLanguage, models, paramsKey }: Cor
   const hasFilters = q !== "" || family !== "" || lang !== "" || gender !== "" || gmodel !== "";
 
   // Search analytics: one event per settled query, not per keystroke.
+  // result_count rides along (read via ref so results do not refire the
+  // event) to separate successful searches from zero-result typo
+  // candidates, the evidence the deferred fuzzy layer waits for.
+  const resultCountRef = useRef(0);
+  useEffect(() => {
+    resultCountRef.current = shownVoices;
+  }, [shownVoices]);
   useEffect(() => {
     const query = q.trim();
     if (!query) return;
-    const t = setTimeout(() => track(EVENTS.SEARCH_USED, { provider, locale, query }), 800);
-    return () => clearTimeout(t);
-  }, [q, provider]);
+    const timer = setTimeout(
+      () => track(EVENTS.SEARCH_USED, { provider, locale, query, result_count: resultCountRef.current }),
+      800,
+    );
+    return () => clearTimeout(timer);
+  }, [q, provider, locale]);
 
   // A family's honesty note (Gemini's accent quirk today) surfaces only
   // while that family is in view: filtered to it, or one of its voices is
