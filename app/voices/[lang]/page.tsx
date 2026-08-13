@@ -60,7 +60,9 @@ export default async function LanguagePage({ params }: { params: Promise<Params>
           </Link>
           <h1>{name}</h1>
           <p className="subhead-meta">
-            {lang} · {voices.length} voices · {families} model families · {samples} playable samples
+            {lang} · {voices.length} {voices.length === 1 ? "voice" : "voices"} · {families} model{" "}
+            {families === 1 ? "family" : "families"} · {samples} playable{" "}
+            {samples === 1 ? "sample" : "samples"}
           </p>
         </div>
       </section>
