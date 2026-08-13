@@ -115,11 +115,35 @@ button {
   color: var(--text);
 }
 
+/* The Speakshelf mark: two offset squares, same layout as the favicon.
+   No background box in the app; the blue square is constant and the
+   companion square takes the surface's text color via currentColor, so
+   it is near black on light surfaces and white on dark ones. */
 .wordmark-sq {
-  width: 10px;
-  height: 10px;
-  background: var(--blue);
+  width: 14px;
+  height: 14px;
+  position: relative;
   flex: none;
+}
+
+.wordmark-sq::before,
+.wordmark-sq::after {
+  content: "";
+  position: absolute;
+  width: 6px;
+  height: 6px;
+}
+
+.wordmark-sq::before {
+  top: 0;
+  left: 0;
+  background: var(--blue);
+}
+
+.wordmark-sq::after {
+  right: 0;
+  bottom: 0;
+  background: currentColor;
 }
 
 .mast-nav {
