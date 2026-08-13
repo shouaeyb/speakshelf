@@ -2,6 +2,10 @@
 
 Settled decisions, newest first. Append a dated entry when something gets decided; correct an old entry by appending, not rewriting. Do not relitigate these silently: if you believe one is wrong, say so to the owner with evidence.
 
+## 2026-08-13: sample audio hosts are an allowlist, with R2 pre-added
+
+Playback is host-agnostic everywhere except the production CSP, which allowlists where audio may load from. The owner confirmed samples will soon also live on Cloudflare R2, so both R2 host shapes are pre-added (`*.r2.dev` public buckets, `*.r2.cloudflarestorage.com` presigned URLs, per Cloudflare's docs). Custom domains cannot be predicted, so `/api/sample` carries a tripwire: the first sample URL from a host outside the allowlist logs a loud server warning naming the host, before visitors ever hit the CSP wall.
+
 ## 2026-08-13: trait tags, a first-play quirk toast, and a cosmetic consent bar
 
 Three owner calls in one round. Child voices show as a gray CHILD tag beside the family tag, not a parenthetical in the gender cell; trait tags are exempt from the mobile tag-hide because a rare trait matters more than a repeated family name. The Gemini accent note additionally appears as a one-time-per-session toast on the first play of a noted family's voice, because the top-of-list note is off screen once a reader scrolls into a long list; the toast is the Carbon notification shape, auto-dismisses, and never repeats in a session. A consent bar mirrors the tts-microutil V2 posture: shown until the visitor picks Accept all or Necessary only, the true choice is stored, and nothing gates on it yet; `applyConsent` in lib/consent.ts is the single seam where the owner's legal team's rules will land, and there is deliberately no settings link to reopen it (resetConsent exists in code for that future).

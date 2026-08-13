@@ -19,6 +19,29 @@ type Failure = { retryAfter: string | null; status: number };
 type Result = Entry | Pending | Failure;
 const cache = new Map<string, Entry | Promise<Result>>();
 
+// Audio hosts the production CSP allows (next.config.ts media-src and
+// connect-src): GCS today, Cloudflare R2 pre-added for the owner's
+// planned move. If upstream ever mints a sample URL elsewhere (a custom
+// domain, another bucket provider), this warns loudly in the server log
+// before visitors hit the CSP wall.
+const KNOWN_AUDIO_HOSTS = ["storage.googleapis.com", ".r2.dev", ".r2.cloudflarestorage.com"];
+const warnedHosts = new Set<string>();
+
+function checkAudioHost(url: string): void {
+  try {
+    const host = new URL(url).hostname;
+    const known = KNOWN_AUDIO_HOSTS.some((h) => host === h || host.endsWith(h));
+    if (!known && !warnedHosts.has(host)) {
+      warnedHosts.add(host);
+      console.warn(
+        `sample audio host "${host}" is not in the CSP allowlist; production playback from it will be blocked until next.config.ts adds it`,
+      );
+    }
+  } catch {
+    // Unparseable URL: the client will surface the failure on its own.
+  }
+}
+
 async function lookup(id: string, model: string, key: string): Promise<Result> {
   const qs = model ? `?model=${encodeURIComponent(model)}` : "";
   const res = await fetch(`${API_BASE}/voices/${encodeURIComponent(id)}/sample-url${qs}`, {
@@ -35,6 +58,7 @@ async function lookup(id: string, model: string, key: string): Promise<Result> {
   const body = (await res.json()) as { data?: { sample_url?: string } };
   const url = body.data?.sample_url;
   if (!url) return { retryAfter: null, status: 404 };
+  checkAudioHost(url);
   return { url, exp: Date.now() + TTL_MS };
 }
 
