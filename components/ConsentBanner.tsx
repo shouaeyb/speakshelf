@@ -25,8 +25,7 @@ export default function ConsentBanner() {
     <div className="consent" role="region" aria-label="Cookies">
       <div className="shell consent-in">
         <p className="consent-text">
-          Speakshelf uses cookies and analytics, including session replay, to understand how the
-          catalog is used.
+          Speakshelf uses cookies and analytics to understand how the catalog is used.
         </p>
         <div className="consent-actions">
           <button type="button" className="consent-btn consent-ghost" onClick={() => decide("necessary")}>
