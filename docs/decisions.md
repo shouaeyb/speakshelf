@@ -2,6 +2,10 @@
 
 Settled decisions, newest first. Append a dated entry when something gets decided; correct an old entry by appending, not rewriting. Do not relitigate these silently: if you believe one is wrong, say so to the owner with evidence.
 
+## 2026-08-13: trait tags, a first-play quirk toast, and a cosmetic consent bar
+
+Three owner calls in one round. Child voices show as a gray CHILD tag beside the family tag, not a parenthetical in the gender cell; trait tags are exempt from the mobile tag-hide because a rare trait matters more than a repeated family name. The Gemini accent note additionally appears as a one-time-per-session toast on the first play of a noted family's voice, because the top-of-list note is off screen once a reader scrolls into a long list; the toast is the Carbon notification shape, auto-dismisses, and never repeats in a session. A consent bar mirrors the tts-microutil V2 posture: shown until the visitor picks Accept all or Necessary only, the true choice is stored, and nothing gates on it yet; `applyConsent` in lib/consent.ts is the single seam where the owner's legal team's rules will land, and there is deliberately no settings link to reopen it (resetConsent exists in code for that future).
+
 ## 2026-08-13: voice traits are retained, not dropped
 
 The owner caught the packed format silently dropping voice characteristics: Amazon Polly's child voices (Ivy, Justin, Kevin, marked age "child" by the API and "Female (child)" in AWS's own table) rendered as plain female or male here. The tuple gained an optional seventh slot carrying non-style characteristics keyed exactly as the API keys them; it turned out to also preserve per-voice pitch on 2,610 Google rows. Displayed today: age only ("female (child)" in the voice row, searchable). Pitch, accent, use_case and roles are retained in data and the catalog API but not yet surfaced; Azure's richer characteristics will flow through the same slot when that provider lands. Principle: the pack never discards a characteristic the API provides, and display grows deliberately, not automatically.

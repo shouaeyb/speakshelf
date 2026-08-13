@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next";
 import { IBM_Plex_Sans, IBM_Plex_Mono } from "next/font/google";
 import Link from "next/link";
 import Analytics from "@/components/Analytics";
+import ConsentBanner from "@/components/ConsentBanner";
 import MastNav from "@/components/MastNav";
 import { getSite } from "@/lib/catalog";
 import { PROVIDERS } from "@/lib/providers";
@@ -125,6 +126,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
         </header>
         {children}
         <Analytics />
+        <ConsentBanner />
         <footer className="footer">
           <div className="shell footer-in">
             <span className="wordmark">

@@ -106,6 +106,11 @@ function ExplorerCore({ provider, voices, lockLanguage, models, paramsKey }: Cor
   // "" means the API default, which is the first listed sub-model.
   const [gmodel, setGmodel] = useState("");
   const [active, setActive] = useState<Active>(null);
+  // The family quirk toast: shown once per session, on the first play of
+  // a voice from a noted family, because the top-of-list note is off
+  // screen once the reader has scrolled into a long list.
+  const [toast, setToast] = useState<string | null>(null);
+  const toastTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const errTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const retryTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -190,8 +195,24 @@ function ExplorerCore({ provider, voices, lockLanguage, models, paramsKey }: Cor
       audioRef.current?.pause();
       if (errTimer.current) clearTimeout(errTimer.current);
       if (retryTimer.current) clearTimeout(retryTimer.current);
+      if (toastTimer.current) clearTimeout(toastTimer.current);
     };
   }, []);
+
+  function maybeToast(fam: string) {
+    const note = PROVIDER_FAMILIES[provider]?.find((f) => f.key === fam)?.note;
+    if (!note) return;
+    const key = `ss-note-${provider}-${fam}`;
+    try {
+      if (sessionStorage.getItem(key)) return;
+      sessionStorage.setItem(key, "1");
+    } catch {
+      return;
+    }
+    setToast(note);
+    if (toastTimer.current) clearTimeout(toastTimer.current);
+    toastTimer.current = setTimeout(() => setToast(null), 15000);
+  }
 
   const langOrder = useMemo(() => {
     if (!all) return new Map<string, number>();
@@ -347,6 +368,7 @@ function ExplorerCore({ provider, voices, lockLanguage, models, paramsKey }: Cor
           model: model || undefined,
           source,
         });
+        maybeToast(v.family);
       }
       setActive({ id: v.id, model, status: "playing" });
     };
@@ -634,6 +656,7 @@ function ExplorerCore({ provider, voices, lockLanguage, models, paramsKey }: Cor
                 <span className={`tag ${v.tier === "ultra" ? "tag-purple" : "tag-blue"}`}>
                   {familyLabel(provider, v.family).toUpperCase()}
                 </span>
+                {v.traits.age && <span className="tag tag-gray tag-age">{v.traits.age.toUpperCase()}</span>}
                 {v.styles.length > 0 && <span className="vstyles">{v.styles.join(" · ")}</span>}
                 <span className="vmeta">
                   {isActive && active.status === "error" && (
@@ -646,16 +669,22 @@ function ExplorerCore({ provider, voices, lockLanguage, models, paramsKey }: Cor
                       preparing sample
                     </span>
                   )}
-                  <span className="vgender">
-                    {v.gender === "unknown" ? "" : v.gender}
-                    {v.traits.age ? ` (${v.traits.age})` : ""}
-                  </span>
+                  <span className="vgender">{v.gender === "unknown" ? "" : v.gender}</span>
                 </span>
               </div>
             );
           })}
         </section>
       ))}
+
+      {toast && (
+        <div className="toast" role="status">
+          <p>{toast}</p>
+          <button type="button" className="toast-close" aria-label="Dismiss" onClick={() => setToast(null)}>
+            ✕
+          </button>
+        </div>
+      )}
 
       {!lockLanguage && all && filtered.length > 0 && (
         <p className="list-note">
