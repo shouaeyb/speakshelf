@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import Explorer from "@/components/Explorer";
+import { ExplorerList } from "@/components/Explorer";
 import { languages, voicesForLanguage } from "@/lib/catalog";
 import { languageName } from "@/lib/lang";
 
@@ -65,7 +65,7 @@ export default async function LanguagePage({ params }: { params: Promise<Params>
         </div>
       </section>
       <section className="explorer shell">
-        <Explorer voices={voices} lockLanguage={lang} />
+        <ExplorerList voices={voices} lockLanguage={lang} />
       </section>
     </main>
   );

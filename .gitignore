@@ -43,3 +43,5 @@ next-env.d.ts
 # local secrets and source key file
 !.env.example
 TTS_API_KEY.rtf
+shot_*.png
+.claude/

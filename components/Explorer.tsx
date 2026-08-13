@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useRef, useState } from "react";
+import { useSearchParams } from "next/navigation";
 import type { Voice, PackedCatalog } from "@/lib/data";
 import { unpack } from "@/lib/data";
 import { languageName } from "@/lib/lang";
@@ -11,6 +12,11 @@ interface ExplorerProps {
   voices?: Voice[];
   /** Hide the language filter and group headers, e.g. on a single language page. */
   lockLanguage?: string;
+}
+
+interface CoreProps extends ExplorerProps {
+  /** Serialized search params from the router; undefined when no URL sync is wanted. */
+  paramsKey?: string;
 }
 
 type Active = { id: string; status: "loading" | "playing" | "error" } | null;
@@ -29,7 +35,20 @@ const StopGlyph = () => (
   </span>
 );
 
-export default function Explorer({ voices, lockLanguage }: ExplorerProps) {
+// Home page: reactive to router navigations (family tiles set query params).
+// useSearchParams client-renders up to the nearest Suspense boundary on
+// prerendered routes, so only this wrapper pays that cost.
+export default function Explorer(props: ExplorerProps) {
+  const searchParams = useSearchParams();
+  return <ExplorerCore {...props} paramsKey={searchParams.toString()} />;
+}
+
+// Language pages: no URL sync, rows stay in the prerendered HTML.
+export function ExplorerList(props: ExplorerProps) {
+  return <ExplorerCore {...props} />;
+}
+
+function ExplorerCore({ voices, lockLanguage, paramsKey }: CoreProps) {
   const [all, setAll] = useState<Voice[] | null>(voices ?? null);
   const [q, setQ] = useState("");
   const [family, setFamily] = useState("");
@@ -38,6 +57,10 @@ export default function Explorer({ voices, lockLanguage }: ExplorerProps) {
   const [active, setActive] = useState<Active>(null);
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const errTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  // Guards against stale media events after switching voices or stopping.
+  const playGen = useRef(0);
+  // The write effect must not run before the URL has been applied once.
+  const urlApplied = useRef(false);
 
   // Full catalog loads as a separate chunk so page HTML stays small.
   useEffect(() => {
@@ -51,26 +74,28 @@ export default function Explorer({ voices, lockLanguage }: ExplorerProps) {
     };
   }, [voices]);
 
-  // Pick up ?family= etc. from the URL once, so family tiles can link here.
-  // One time read of an external system on mount; the URL cannot be read
-  // during server render without making the whole page dynamic.
+  // Apply ?family= etc. whenever the router navigates, so family tiles work
+  // both on a fresh load and on same-page client transitions. Re-runs when
+  // the catalog arrives so the language code can be validated against it.
   useEffect(() => {
-    if (lockLanguage) return;
-    const p = new URLSearchParams(window.location.search);
-    const f = p.get("family");
-    const l = p.get("language");
-    const g = p.get("gender");
-    const s = p.get("q");
+    if (lockLanguage || paramsKey === undefined) return;
+    const p = new URLSearchParams(paramsKey);
+    const f = p.get("family") ?? "";
+    const l = p.get("language") ?? "";
+    const g = p.get("gender") ?? "";
+    const s = p.get("q") ?? "";
     // eslint-disable-next-line react-hooks/set-state-in-effect
-    if (f && FAMILIES.some((x) => x.key === f)) setFamily(f);
-    if (l) setLang(l);
-    if (g && ["female", "male", "neutral", "unknown"].includes(g)) setGender(g);
-    if (s) setQ(s);
-  }, [lockLanguage]);
+    setFamily(FAMILIES.some((x) => x.key === f) ? f : "");
+    setLang(!all || all.some((v) => v.lang === l) ? l : "");
+    setGender(["female", "male", "neutral"].includes(g) ? g : "");
+    setQ(s);
+    urlApplied.current = true;
+  }, [paramsKey, lockLanguage, all]);
 
-  // Keep the URL shareable without triggering navigation.
+  // Keep the URL shareable without triggering navigation. replaceState does
+  // not feed back into useSearchParams, so this cannot loop.
   useEffect(() => {
-    if (lockLanguage || typeof window === "undefined") return;
+    if (lockLanguage || !urlApplied.current) return;
     const p = new URLSearchParams();
     if (family) p.set("family", family);
     if (lang) p.set("language", lang);
@@ -137,6 +162,7 @@ export default function Explorer({ voices, lockLanguage }: ExplorerProps) {
   const hasFilters = q !== "" || family !== "" || lang !== "" || gender !== "";
 
   function stop() {
+    playGen.current++;
     audioRef.current?.pause();
     setActive(null);
   }
@@ -149,10 +175,17 @@ export default function Explorer({ voices, lockLanguage }: ExplorerProps) {
     if (!audioRef.current) audioRef.current = new Audio();
     const a = audioRef.current;
     if (errTimer.current) clearTimeout(errTimer.current);
+    const gen = ++playGen.current;
+    const current = () => playGen.current === gen;
     setActive({ id: v.id, status: "loading" });
-    a.onplaying = () => setActive({ id: v.id, status: "playing" });
-    a.onended = () => setActive((cur) => (cur?.id === v.id ? null : cur));
+    a.onplaying = () => {
+      if (current()) setActive({ id: v.id, status: "playing" });
+    };
+    a.onended = () => {
+      if (current()) setActive((cur) => (cur?.id === v.id ? null : cur));
+    };
     a.onerror = () => {
+      if (!current()) return;
       setActive({ id: v.id, status: "error" });
       errTimer.current = setTimeout(() => {
         setActive((cur) => (cur?.id === v.id && cur.status === "error" ? null : cur));

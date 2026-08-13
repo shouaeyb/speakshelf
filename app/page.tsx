@@ -114,7 +114,7 @@ export default function Home() {
           <h2 className="sec-title">About this catalog</h2>
           <div className="about-cols">
             <p>
-              Google Cloud runs the largest text to speech catalog of any cloud provider. It spans ten model
+              Google Cloud runs one of the largest text to speech catalogs of any cloud provider. It spans ten model
               families, from the WaveNet voices that made neural speech mainstream to Gemini voices that
               change their delivery when you describe the tone you want. Each voice ships with a short
               official sample, and this site collects all of them in one place.
