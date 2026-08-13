@@ -1109,21 +1109,29 @@ a.lang-name:hover {
   padding: 40px 0 56px;
 }
 
+/* Same two-column geometry as .about-cols: the note starts at the grid
+   midline instead of being anchored to the right margin, so its left edge
+   sits on a system line and its ragged right floats free of the margin. */
 .footer-in {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  gap: 24px;
-  flex-wrap: wrap;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px 48px;
+  align-items: start;
+}
+
+@media (max-width: 800px) {
+  .footer-in {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
 }
 
 .footer .wordmark {
   color: var(--inv-text);
 }
 
-/* The note sits on the footer's right, but its text stays left-aligned:
-   multiline flush-right reads poorly (ragged left edge), and Carbon sets
-   body copy left. Do not "fix" this back to right for symmetry. */
+/* Left-aligned like all multiline text in this system: flush-right reads
+   poorly (ragged left edge). Do not "fix" it back to right for symmetry. */
 .footer-note {
   font-family: var(--mono);
   font-size: 11.5px;
