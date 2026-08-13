@@ -271,6 +271,14 @@ function ExplorerCore({ provider, voices, lockLanguage, models, paramsKey }: Cor
 
   const hasFilters = q !== "" || family !== "" || lang !== "" || gender !== "" || gmodel !== "";
 
+  // A family's honesty note (Gemini's accent quirk today) surfaces only
+  // while that family is in view: filtered to it, or one of its voices is
+  // the active playback. Quiet by design.
+  const noteFor = (fam: string | undefined) =>
+    (fam && PROVIDER_FAMILIES[provider]?.find((f) => f.key === fam)?.note) || "";
+  const activeFam = active ? all?.find((v) => v.id === active.id)?.family : undefined;
+  const familyNote = noteFor(family) || noteFor(activeFam);
+
   function stop() {
     playGen.current++;
     if (retryTimer.current) clearTimeout(retryTimer.current);
@@ -504,6 +512,12 @@ function ExplorerCore({ provider, voices, lockLanguage, models, paramsKey }: Cor
           </button>
         )}
       </div>
+
+      {familyNote && (
+        <p className="family-note" role="note">
+          {familyNote}
+        </p>
+      )}
 
       {all && filtered.length === 0 && (
         <div className="empty">No voices match. Try a shorter search or clear a filter.</div>

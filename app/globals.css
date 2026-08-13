@@ -970,6 +970,18 @@ a.lang-name:hover {
   }
 }
 
+/* Family honesty note (see FamilyMeta.note): quiet, appears only while
+   the noted family is filtered or playing. */
+.family-note {
+  font-family: var(--mono);
+  font-size: 11px;
+  line-height: 1.65;
+  color: var(--text-3);
+  max-width: 720px;
+  margin: 0 0 16px;
+  text-wrap: pretty;
+}
+
 .empty {
   background: var(--layer);
   border: 1px solid var(--border);

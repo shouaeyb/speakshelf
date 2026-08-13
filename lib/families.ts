@@ -11,6 +11,9 @@ export interface FamilyMeta {
   key: string;
   label: string;
   blurb: string;
+  /** Optional honesty note about a family's known quirk, surfaced quietly
+   *  in the explorer while that family is filtered or playing. */
+  note?: string;
 }
 
 export const PROVIDER_FAMILIES: Record<string, FamilyMeta[]> = {
@@ -20,6 +23,8 @@ export const PROVIDER_FAMILIES: Record<string, FamilyMeta[]> = {
       label: "Gemini",
       blurb:
         "Native speech from Gemini. Each voice can be rendered by every sub-model, and delivery follows a written style prompt.",
+      note:
+        'Samples show each voice honestly, quirks included. Some Gemini voices can render a different accent than their locale label, an en-US voice sounding en-IN for instance. In your own generation prompt, a plain instruction like "say this in an American accent" usually corrects it.',
     },
     {
       key: "Chirp3HD",

@@ -84,7 +84,8 @@ export default async function Home() {
           </h2>
           <p className="sec-sub">
             Every provider keeps a full shelf: the complete voice list with filters and playback, notes
-            on each model family, and a page per language.
+            on each model family, and a page per language. The shelf grows: the AI TTS Microservice
+            unifies more providers, and new shelves open here once verified.
           </p>
           <div className="prov-grid">
             {PROVIDERS.filter((p) => site.providers.has(p.key)).map((p) => {

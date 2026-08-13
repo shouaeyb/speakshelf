@@ -40,6 +40,7 @@ Shipped writing sounds like a person who knows the subject. Concretely:
 - No em dashes, and no en dashes doing an em dash's job. Commas, colons and full stops carry the rhythm.
 - No AI boilerplate: never "delve", "seamless", "unleash", "elevate", "comprehensive suite", "in today's world".
 - Plain claims, verified numbers. "One of the largest catalogs", not "the largest", unless proven.
+- Cached share surfaces (the og.png card, og and twitter titles and descriptions) carry no counts, and they name one provider fewer than the shelf plus "and more", so the cached line stays literally true when the next provider lands. Live pages name every provider exactly.
 - Counts and names derive from data in page code, so prose cannot go stale (see the About section for the pattern).
 - Sentence case headings. Mono uppercase is reserved for small labels.
 

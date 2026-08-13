@@ -33,22 +33,26 @@ const providerList = listNames(PROVIDERS.map((p) => p.label));
 
 export async function generateMetadata(): Promise<Metadata> {
   const site = await getSite();
-  const present = listNames(PROVIDERS.filter((p) => site.providers.has(p.key)).map((p) => p.label));
+  const names = PROVIDERS.filter((p) => site.providers.has(p.key)).map((p) => p.label);
+  const present = listNames(names);
   const title = `Speakshelf · text to speech voices from ${present}`;
   // Counts live only in the SEO description, which search engines
   // re-crawl. Share surfaces (og/twitter, like the og.png card) carry no
-  // numbers: platforms cache previews for weeks, so counts there would
-  // drift stale no matter how they are generated.
+  // numbers, and they name one provider fewer than the shelf carries plus
+  // "and more": platforms cache previews for weeks, so the cached line
+  // stays literally true when the next provider lands.
+  const shareNames = `${names.slice(0, Math.max(1, names.length - 1)).join(", ")} and more`;
+  const shareTitle = `Speakshelf · text to speech voices from ${shareNames}`;
   const description = `Browse and play ${site.stats.voices.toLocaleString(
     "en-US",
   )} text to speech voices from ${present} in ${site.stats.languages} languages, every one with a playable sample.`;
-  const shareDescription = `Browse and play the text to speech catalogs of ${present}. A playable sample for every voice.`;
+  const shareDescription = `Browse and play the text to speech catalogs of ${shareNames}. A playable sample for every voice.`;
   return {
     ...metadata,
     title: { template: "%s · Speakshelf", default: title },
     description,
-    openGraph: { ...metadata.openGraph, title, description: shareDescription },
-    twitter: { ...metadata.twitter, title, description: shareDescription },
+    openGraph: { ...metadata.openGraph, title: shareTitle, description: shareDescription },
+    twitter: { ...metadata.twitter, title: shareTitle, description: shareDescription },
   };
 }
 
