@@ -12,7 +12,7 @@
   "home": {
     "eyebrow": "文字转语音目录",
     "title": "{voices, number} 个语音，一个书架。",
-    "sub": "Speakshelf 收录 {names} 等的文字转语音语音。每个语音都有可在浏览器中播放的示例。无需账号，无需配置，只有语音。",
+    "sub": "Speakshelf 收录 {names} 等提供商的文字转语音语音。每个语音都有可在浏览器中播放的示例。无需账号，无需配置，只有语音。",
     "jumpProviders": "提供商",
     "jumpAbout": "关于",
     "providersTitle": "{count, plural, other {# 家提供商}}",
@@ -206,7 +206,7 @@
     "siteTitle": "Speakshelf · 来自{names}的文字转语音语音",
     "siteDescription": "浏览并试听来自{names}、覆盖 {languages, number} 种语言的 {voices, number} 个文字转语音语音，每个都有可播放示例。",
     "shareDescription": "浏览并试听{names}的文字转语音目录。每个语音都有可播放示例。",
-    "homeJsonLd": "来自{names}等的文字转语音语音目录，示例可在浏览器中播放。",
+    "homeJsonLd": "来自 {names} 等提供商的文字转语音语音目录，示例可在浏览器中播放。",
     "providerTitle": "{label} 文字转语音语音",
     "providerDescription": "试听 {label} 完整文字转语音目录的示例：{voices, number} 个语音覆盖 {languages, number} 种语言，可按{familyWord}、语言和性别筛选。",
     "providerShareDescription": "{label} 的完整文字转语音目录，每个语音都有可播放示例。",

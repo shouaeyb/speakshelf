@@ -12,7 +12,7 @@
   "home": {
     "eyebrow": "CATÁLOGO DE TEXTO PARA FALA",
     "title": "{voices, number} vozes. Uma só estante.",
-    "sub": "O Speakshelf cataloga as vozes de texto para fala de {names} e mais. Cada uma com uma amostra para ouvir no navegador. Sem conta, sem configuração, só as vozes.",
+    "sub": "O Speakshelf cataloga as vozes de texto para fala de {names} e outros. Cada uma com uma amostra para ouvir no navegador. Sem conta, sem configuração, só as vozes.",
     "jumpProviders": "PROVEDORES",
     "jumpAbout": "SOBRE",
     "providersTitle": "{count, plural, one {# provedor} other {# provedores}}",
@@ -206,7 +206,7 @@
     "siteTitle": "Speakshelf · vozes de texto para fala de {names}",
     "siteDescription": "Explore e ouça {voices, number} vozes de texto para fala de {names} em {languages, number} idiomas, cada uma com uma amostra para ouvir.",
     "shareDescription": "Explore e ouça os catálogos de texto para fala de {names}. Uma amostra para cada voz.",
-    "homeJsonLd": "Um catálogo de vozes de texto para fala de {names} e mais, com amostras para ouvir no navegador.",
+    "homeJsonLd": "Um catálogo de vozes de texto para fala de {names} e outros, com amostras para ouvir no navegador.",
     "providerTitle": "Vozes de texto para fala do {label}",
     "providerDescription": "Ouça amostras do catálogo completo de texto para fala do {label}: {voices, number} vozes em {languages, number} idiomas, com filtros por {familyWord}, idioma e gênero.",
     "providerShareDescription": "O catálogo completo de texto para fala do {label} com uma amostra para cada voz.",

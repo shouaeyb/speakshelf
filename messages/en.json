@@ -17,7 +17,7 @@
     "jumpAbout": "ABOUT",
     "providersTitle": "{count, plural, one {# provider} other {# providers}}",
     "providersSub": "Every provider keeps a full shelf: the complete voice list with filters and playback, notes on each model family, and a page per language. The shelf grows: the AI TTS Microservice unifies more providers, and new shelves open here once verified.",
-    "cardVoices": "{count, plural, other {voices, number}}",
+    "cardVoices": "{count, plural, other {voices}}",
     "cardMeta": "{languages, plural, one {# language} other {# languages}} · {familiesCount} {familyWord} · {samples, plural, one {# sample} other {# samples}}",
     "browse": "BROWSE →",
     "whyTitle": "Why one shelf",

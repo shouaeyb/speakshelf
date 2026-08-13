@@ -14,8 +14,9 @@ export default function ScrollGlide() {
   useEffect(() => {
     const intent = takeGlideIntent();
     if (!intent) return;
-    // A commit this stale is not the clicked navigation anymore.
-    if (Date.now() - intent.at > 3000) return;
+    // Generous cleanup only, never a latency boundary: a slow cold
+    // navigation must still glide, since Next's own scroll is off.
+    if (Date.now() - intent.at > 30000) return;
     if (intent.pathname !== window.location.pathname || intent.search !== window.location.search)
       return;
     glideTo(intent.hash);

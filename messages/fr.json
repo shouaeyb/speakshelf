@@ -12,7 +12,7 @@
   "home": {
     "eyebrow": "CATALOGUE DE SYNTHÈSE VOCALE",
     "title": "{voices, number} voix. Une seule étagère.",
-    "sub": "Speakshelf catalogue les voix de synthèse vocale de {names} et plus. Chacune avec un extrait à écouter dans le navigateur. Pas de compte, pas de configuration, juste les voix.",
+    "sub": "Speakshelf catalogue les voix de synthèse vocale de {names} et d'autres. Chacune avec un extrait à écouter dans le navigateur. Pas de compte, pas de configuration, juste les voix.",
     "jumpProviders": "FOURNISSEURS",
     "jumpAbout": "À PROPOS",
     "providersTitle": "{count, plural, one {# fournisseur} other {# fournisseurs}}",
@@ -206,7 +206,7 @@
     "siteTitle": "Speakshelf · voix de synthèse vocale de {names}",
     "siteDescription": "Parcourez et écoutez {voices, number} voix de synthèse vocale de {names} en {languages, number} langues, chacune avec un extrait à écouter.",
     "shareDescription": "Parcourez et écoutez les catalogues de synthèse vocale de {names}. Un extrait à écouter pour chaque voix.",
-    "homeJsonLd": "Un catalogue de voix de synthèse vocale de {names} et plus, avec des extraits à écouter dans le navigateur.",
+    "homeJsonLd": "Un catalogue de voix de synthèse vocale de {names} et d'autres, avec des extraits à écouter dans le navigateur.",
     "providerTitle": "Voix de synthèse vocale {label}",
     "providerDescription": "Écoutez des extraits du catalogue complet de synthèse vocale {label} : {voices, number} voix en {languages, number} langues, avec des filtres par {familyWord}, langue et genre.",
     "providerShareDescription": "Le catalogue complet de synthèse vocale {label}, avec un extrait à écouter pour chaque voix.",
