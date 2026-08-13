@@ -116,6 +116,12 @@ function ExplorerCore({ provider, voices, lockLanguage, models, paramsKey }: Cor
   // screen once the reader has scrolled into a long list.
   const [toast, setToast] = useState<string | null>(null);
   const toastTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  // Mirrors the family filter for callbacks that fire long after their
+  // click render (cold generations); see maybeToast.
+  const familyRef = useRef(family);
+  useEffect(() => {
+    familyRef.current = family;
+  }, [family]);
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const errTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const retryTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -208,6 +214,12 @@ function ExplorerCore({ provider, voices, lockLanguage, models, paramsKey }: Cor
   }, []);
 
   function maybeToast(fam: string) {
+    // The permanent inline note is already on screen when this family is
+    // the active filter; a toast on top of it would say the same twice.
+    // Read the filter through a ref: playback can start half a minute
+    // after the click on a cold render, and it is the filter at play
+    // time that decides what is visible.
+    if (familyRef.current === fam) return;
     const note = familyMeta(provider, fam)?.hasNote ? t(`families.${provider}.${fam}.note`) : "";
     if (!note) return;
     const key = `ss-note-${provider}-${fam}`;
@@ -336,13 +348,15 @@ function ExplorerCore({ provider, voices, lockLanguage, models, paramsKey }: Cor
     return () => clearTimeout(timer);
   }, [q, provider, locale]);
 
-  // A family's honesty note (Gemini's accent quirk today) surfaces only
-  // while that family is in view: filtered to it, or one of its voices is
-  // the active playback. Quiet by design.
+  // A family's honesty note (Gemini's accent quirk today) stays quiet by
+  // design: permanent only while the reader filters to that family, a
+  // one-per-session toast otherwise.
   const noteFor = (fam: string | undefined) =>
     fam && familyMeta(provider, fam)?.hasNote ? t(`families.${provider}.${fam}.note`) : "";
-  const activeFam = active ? all?.find((v) => v.id === active.id)?.family : undefined;
-  const familyNote = noteFor(family) || noteFor(activeFam);
+  // Permanent note only for an explicit family choice in the dropdown;
+  // under "all" the one-per-session toast carries the quirk instead
+  // (owner's call, 2026-08-14).
+  const familyNote = noteFor(family);
 
   function stop() {
     playGen.current++;
@@ -464,28 +478,61 @@ function ExplorerCore({ provider, voices, lockLanguage, models, paramsKey }: Cor
       lookup(0);
     }
 
+    // First listen renders the sample upstream, and the slow engines
+    // (Polly generative and long-form, Gemini sub-models) can take well
+    // over half a minute. Patience is a time budget, not a retry count,
+    // and a chain that saw 202 never ends in "unavailable": the contract
+    // says the sample is coming, so a blip mid-generation stays a blip.
+    const CHAIN_BUDGET_MS = 90_000;
+    const chainStart = Date.now();
+    const withinBudget = () => Date.now() - chainStart <= CHAIN_BUDGET_MS;
+    let sawGenerating = false;
+    let blips = 0;
+
+    function retryLater(seconds: number, attempt: number) {
+      setActive({ id: v.id, model, status: "generating" });
+      const wait = Math.min(Math.max(seconds, 4), 15) * 1000;
+      retryTimer.current = setTimeout(() => {
+        if (current()) lookup(attempt + 1);
+      }, wait);
+    }
+
     function lookup(attempt: number) {
-      fetch(`/api/sample?id=${encodeURIComponent(v.id)}${model ? `&model=${encodeURIComponent(model)}` : ""}`)
+      // The budget is a wall-clock hard stop, checked at dispatch so a
+      // wait scheduled near the edge cannot slip past it.
+      if (!withinBudget()) {
+        fail(sawGenerating ? "notePreparing" : "noteUnavailable");
+        return;
+      }
+      fetch(`/api/sample?id=${encodeURIComponent(v.id)}${model ? `&model=${encodeURIComponent(model)}` : ""}`, {
+        // A hung request must not strand the spinner; a timeout lands in
+        // the catch below as a blip.
+        signal: AbortSignal.timeout(15_000),
+      })
         .then(async (res) => {
           if (!current()) return;
           if (res.status === 202) {
-            // First listen for this voice: the sample is being generated.
-            if (attempt >= 3) {
-              fail("notePreparing");
-              return;
-            }
+            sawGenerating = true;
             const body = (await res.json().catch(() => null)) as { retry_after?: number } | null;
             if (!current()) return;
             track(EVENTS.SAMPLE_GENERATING, { provider, locale, voice_id: v.id, attempt });
-            setActive({ id: v.id, model, status: "generating" });
-            const wait = Math.min(Number(body?.retry_after) || 4, 12) * 1000;
-            retryTimer.current = setTimeout(() => {
-              if (current()) lookup(attempt + 1);
-            }, wait);
+            retryLater(Number(body?.retry_after) || 4, attempt);
+            return;
+          }
+          if (res.status === 503 || res.status === 429) {
+            fail("noteBusy");
             return;
           }
           if (!res.ok) {
-            fail(res.status === 503 || res.status === 429 ? "noteBusy" : "noteUnavailable");
+            // 404 can precede the generation trigger registering, and 5xx
+            // can be the upstream straining mid-render; both are "not yet",
+            // not "never", while the budget lasts.
+            if (withinBudget() && blips < 3) {
+              blips++;
+              retryLater(5, attempt);
+              return;
+            }
+            fail(sawGenerating ? "notePreparing" : "noteUnavailable");
             return;
           }
           const body = (await res.json().catch(() => null)) as { url?: string } | null;
@@ -497,7 +544,13 @@ function ExplorerCore({ provider, voices, lockLanguage, models, paramsKey }: Cor
           start(body.url, false);
         })
         .catch(() => {
-          if (current()) fail("noteUnavailable");
+          if (!current()) return;
+          if (withinBudget() && blips < 3) {
+            blips++;
+            retryLater(6, attempt);
+            return;
+          }
+          fail(sawGenerating ? "notePreparing" : "noteUnavailable");
         });
     }
 

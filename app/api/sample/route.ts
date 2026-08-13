@@ -12,12 +12,15 @@ const API_BASE = "https://aitts.theproductivepixel.com/api/v1";
 // voice share one upstream call instead of draining the rate bucket.
 // Upstream returns 202 while a sample is being generated for the first
 // time; that is relayed to the client, which retries after a short wait.
+// The generating answer is also kept for its retry interval, so every
+// retrier of a cold voice coalesces into at most one upstream lookup per
+// interval instead of each spending the process-wide miss budget.
 const TTL_MS = 20 * 60 * 60 * 1000;
 type Entry = { url: string; exp: number };
 type Pending = { generating: true; retryAfter: number };
 type Failure = { retryAfter: string | null; status: number };
 type Result = Entry | Pending | Failure;
-const cache = new Map<string, Entry | Promise<Result>>();
+const cache = new Map<string, Entry | (Pending & { exp: number }) | Promise<Result>>();
 
 // Audio hosts the production CSP allows (next.config.ts media-src and
 // connect-src): GCS today, Cloudflare R2 pre-added for the owner's
@@ -120,6 +123,11 @@ export async function GET(req: NextRequest) {
     pending.then(
       (r) => {
         if ("url" in r) cache.set(cacheKey, r);
+        else if ("generating" in r)
+          cache.set(cacheKey, {
+            ...r,
+            exp: Date.now() + Math.min(Math.max(r.retryAfter, 3), 15) * 1000,
+          });
         else cache.delete(cacheKey);
       },
       () => cache.delete(cacheKey),
