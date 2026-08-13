@@ -11,7 +11,7 @@ export const FAMILIES: FamilyMeta[] = [
   {
     key: "Gemini",
     label: "Gemini",
-    blurb: "Native speech from Gemini. Four sub-models share every voice, and delivery follows a written style prompt.",
+    blurb: "Native speech from Gemini. Each voice can be rendered by every sub-model, and delivery follows a written style prompt.",
   },
   {
     key: "Chirp3HD",
@@ -64,17 +64,25 @@ export function familyLabel(key: string): string {
   return FAMILIES.find((f) => f.key === key)?.label ?? key;
 }
 
-// Every Gemini voice can render its sample with any of these sub-models.
-// The API defaults to 2.5 Flash when no model is passed, so the first
-// entry doubles as the default. Other families have a single model.
-export interface GeminiModel {
-  id: string;
-  label: string;
-}
+// Sub-model lists come from the catalog data (available_models on each
+// voice), so new sub-models appear without a code change. Only the labels
+// live here: exact names for the sub-models known today, and a formatter
+// that turns any future id into something presentable.
+const MODEL_LABELS: Record<string, string> = {
+  "gemini-2.5-flash-tts": "2.5 Flash",
+  "gemini-2.5-pro-tts": "2.5 Pro",
+  "gemini-2.5-flash-lite-preview-tts": "2.5 Flash-Lite",
+  "gemini-3.1-flash-tts-preview": "3.1 Flash preview",
+};
 
-export const GEMINI_MODELS: GeminiModel[] = [
-  { id: "gemini-2.5-flash-tts", label: "2.5 Flash" },
-  { id: "gemini-2.5-pro-tts", label: "2.5 Pro" },
-  { id: "gemini-2.5-flash-lite-preview-tts", label: "2.5 Flash-Lite" },
-  { id: "gemini-3.1-flash-tts-preview", label: "3.1 Flash preview" },
-];
+export function modelLabel(id: string): string {
+  const known = MODEL_LABELS[id];
+  if (known) return known;
+  // e.g. "gemini-3.2-flash-tts-preview" turns into "3.2 Flash preview"
+  return id
+    .replace(/^gemini-/, "")
+    .split("-")
+    .filter((part) => part !== "tts")
+    .map((part) => (part === "preview" || /\d/.test(part) ? part : part.charAt(0).toUpperCase() + part.slice(1)))
+    .join(" ");
+}

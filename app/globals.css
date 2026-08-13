@@ -378,8 +378,19 @@ button {
 
 /* Explorer */
 
+/* Longhand only: this element also carries .shell, whose 24px side
+   gutters must survive. A padding shorthand here would zero them. */
 .explorer {
-  padding: 56px 0 80px;
+  padding-top: 56px;
+  padding-bottom: 80px;
+}
+
+/* Anchor targets sit below the sticky masthead. */
+#models,
+#voices,
+#languages,
+#about {
+  scroll-margin-top: 60px;
 }
 
 .toolbar {

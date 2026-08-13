@@ -1,10 +1,11 @@
-// Rebuilds data/voices.packed.json from the AI TTS API.
+// Rebuilds the committed fallback catalog, data/voices.packed.json.
 //
 // Usage: TTS_API_KEY=tts_... node scripts/build-data.mjs
 //
-// One free API call: the voice listing. Samples resolve on demand at
-// runtime (the API generates a missing sample and answers 202 while it
-// works), so there is no per-voice probing here.
+// The running site refreshes its catalog from the API by itself once a
+// day; this file is only the seed and the offline fallback, so running
+// this script occasionally keeps that fallback close to reality. One free
+// API call, no per-voice probing (samples resolve on demand at runtime).
 
 import { writeFileSync, mkdirSync } from "node:fs";
 
@@ -16,15 +17,6 @@ if (!KEY) {
 
 const BASE = "https://aitts.theproductivepixel.com/api/v1";
 
-// Mirrors GEMINI_MODELS in lib/families.ts. If the API starts reporting a
-// different set, update that file too; this script only warns.
-const KNOWN_GEMINI_MODELS = [
-  "gemini-2.5-flash-tts",
-  "gemini-2.5-pro-tts",
-  "gemini-2.5-flash-lite-preview-tts",
-  "gemini-3.1-flash-tts-preview",
-];
-
 const res = await fetch(`${BASE}/voices?provider=google`, {
   headers: { Authorization: `Bearer ${KEY}` },
 });
@@ -32,21 +24,20 @@ if (!res.ok) throw new Error(`voices list failed: ${res.status}`);
 const voices = (await res.json()).data.voices;
 console.log(`fetched ${voices.length} voices`);
 
-const seen = new Set(voices.flatMap((v) => v.available_models ?? []));
-const known = new Set(KNOWN_GEMINI_MODELS);
-const drift = [
-  ...[...seen].filter((m) => !known.has(m)),
-  ...[...known].filter((m) => !seen.has(m)),
-];
-if (drift.length) {
-  console.warn(`Gemini sub-model list changed, update lib/families.ts: ${drift.join(", ")}`);
-}
-
 const GENDER_CODE = { female: "f", male: "m", neutral: "n", unknown: "u" };
 
+const models = {};
+for (const v of voices) {
+  for (const m of v.available_models ?? []) {
+    const list = (models[v.family] ??= []);
+    if (!list.includes(m)) list.push(m);
+  }
+}
+
 const packed = {
-  version: 2,
+  version: 3,
   updated: new Date().toISOString().slice(0, 10),
+  models,
   voices: voices.map((v) => {
     const rebuilt = `google:${v.language}-${v.family}-${v.name}`;
     if (rebuilt !== v.voice_id) {
@@ -65,4 +56,7 @@ const packed = {
 
 mkdirSync("data", { recursive: true });
 writeFileSync("data/voices.packed.json", JSON.stringify(packed));
-console.log(`wrote data/voices.packed.json: ${packed.voices.length} voices`);
+const families = Object.entries(models)
+  .map(([f, list]) => `${f}: ${list.length} sub-models`)
+  .join(", ");
+console.log(`wrote data/voices.packed.json: ${packed.voices.length} voices${families ? ` (${families})` : ""}`);

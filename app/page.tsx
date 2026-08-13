@@ -2,18 +2,19 @@ import { Suspense } from "react";
 import type { Metadata } from "next";
 import Link from "next/link";
 import Explorer from "@/components/Explorer";
-import { catalogStats, familySummaries, languages } from "@/lib/catalog";
+import { getCatalog } from "@/lib/catalog";
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000";
+
+// The catalog refreshes itself from the live API once a day.
+export const revalidate = 86400;
 
 export const metadata: Metadata = {
   alternates: { canonical: "/" },
 };
 
-export default function Home() {
-  const stats = catalogStats();
-  const families = familySummaries();
-  const langs = languages();
+export default async function Home() {
+  const { stats, families, languages: langs, models } = await getCatalog();
   const fmt = (n: number) => n.toLocaleString("en-US");
 
   const jsonLd = {
@@ -61,7 +62,9 @@ export default function Home() {
 
       <section className="families" id="models">
         <div className="shell">
-          <h2 className="sec-title">Ten model families</h2>
+          <h2 className="sec-title">
+            {families.length} model {families.length === 1 ? "family" : "families"}
+          </h2>
           <p className="sec-sub">
             Google has shipped a new speech architecture roughly every two years, and all of them are still
             in service. The catalog runs from compact parametric voices to models you can direct with a
@@ -88,12 +91,6 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="explorer shell" id="voices">
-        <Suspense fallback={<div className="results-line"><span className="results-count">Loading catalog</span></div>}>
-          <Explorer />
-        </Suspense>
-      </section>
-
       <section className="lang-band" id="languages">
         <div className="shell">
           <h2 className="sec-title">{stats.languages} languages</h2>
@@ -117,21 +114,30 @@ export default function Home() {
           <h2 className="sec-title">About this catalog</h2>
           <div className="about-cols">
             <p>
-              Google Cloud runs one of the largest text to speech catalogs of any cloud provider. It spans ten model
-              families, from the WaveNet voices that made neural speech mainstream to Gemini voices that
-              change their delivery when you describe the tone you want. Gemini is really four models in
-              one, with every Gemini voice available on 2.5 Flash, 2.5 Pro, 2.5 Flash-Lite and the 3.1
-              Flash preview. Every voice in the catalog has a sample here, and Gemini voices have one
-              per sub-model.
+              Google Cloud runs one of the largest text to speech catalogs of any cloud provider. It spans{" "}
+              {stats.families} model families, from the WaveNet voices that made neural speech mainstream to Gemini voices that
+              change their delivery when you describe the tone you want. Gemini is really{" "}
+              {models.Gemini?.length ?? "several"} models in one: every Gemini voice can be rendered by
+              any of its sub-models, and each render has its own sample here. Every other voice in the
+              catalog has a sample too.
             </p>
             <p>
               Voice Atlas is an independent reference and is not affiliated with Google. Voice data and
-              audio come from the <a href="https://aitts.theproductivepixel.com">AI TTS API</a>, a service
+              audio come from the <a href="https://aitts.theproductivepixel.com">AI TTS Microservice</a>, a service
               that unifies Google, Amazon and other speech providers behind a single endpoint. Samples
               stream on demand, so listening is free.
             </p>
           </div>
         </div>
+      </section>
+
+      {/* The voice list grows and re-measures as it renders, so it stays
+          last: every anchor target above it keeps a stable position. */}
+      <section className="explorer shell" id="voices">
+        <h2 className="sec-title">All voices</h2>
+        <Suspense fallback={<div className="results-line"><span className="results-count">Loading catalog</span></div>}>
+          <Explorer models={models} />
+        </Suspense>
       </section>
     </main>
   );

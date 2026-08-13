@@ -1,6 +1,5 @@
 import type { NextRequest } from "next/server";
-import { getVoice } from "@/lib/catalog";
-import { GEMINI_MODELS } from "@/lib/families";
+import { getCatalog } from "@/lib/catalog";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -39,14 +38,15 @@ async function lookup(id: string, model: string, key: string): Promise<Result> {
 }
 
 export async function GET(req: NextRequest) {
+  const catalog = await getCatalog();
   const id = req.nextUrl.searchParams.get("id") ?? "";
-  const voice = getVoice(id);
+  const voice = catalog.byId.get(id);
   if (!voice) {
     return Response.json({ error: "Unknown voice id" }, { status: 404 });
   }
 
   const model = req.nextUrl.searchParams.get("model") ?? "";
-  if (model && (voice.family !== "Gemini" || !GEMINI_MODELS.some((m) => m.id === model))) {
+  if (model && !(catalog.models[voice.family] ?? []).includes(model)) {
     return Response.json({ error: "Invalid model for this voice" }, { status: 400 });
   }
 

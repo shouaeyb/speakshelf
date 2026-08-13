@@ -6,7 +6,10 @@ export default function robots(): MetadataRoute.Robots {
   return {
     rules: {
       userAgent: "*",
-      allow: "/",
+      // The catalog JSON and sample resolver are part of the public
+      // surface for AI agents (documented in llms.txt); the rest of
+      // /api/ stays out of crawlers.
+      allow: ["/", "/api/catalog", "/api/sample"],
       disallow: "/api/",
     },
     sitemap: `${SITE_URL}/sitemap.xml`,

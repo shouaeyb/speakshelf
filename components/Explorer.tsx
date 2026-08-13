@@ -5,13 +5,17 @@ import { useSearchParams } from "next/navigation";
 import type { Voice, PackedCatalog } from "@/lib/data";
 import { unpack } from "@/lib/data";
 import { languageName } from "@/lib/lang";
-import { FAMILIES, GEMINI_MODELS, familyLabel } from "@/lib/families";
+import { FAMILIES, familyLabel, modelLabel } from "@/lib/families";
 
 interface ExplorerProps {
   /** Preloaded subset (language pages). When absent the full catalog loads on the client. */
   voices?: Voice[];
   /** Hide the language filter and group headers, e.g. on a single language page. */
   lockLanguage?: string;
+  /** Sub-model ids per family from the server catalog, first entry is the
+   *  API default. Gemini is the only such family today; the sample math
+   *  stays generic so a second one just works. */
+  models: Record<string, string[]>;
 }
 
 interface CoreProps extends ExplorerProps {
@@ -27,7 +31,33 @@ type Active = {
   note?: string;
 } | null;
 
-const DEFAULT_GMODEL = GEMINI_MODELS[0].id;
+// Module level so both caches survive route changes within the session.
+// Safari re-downloads media URLs even when they are fresh, so after the
+// first successful play the audio bytes are kept as a blob; replays then
+// come from memory in every engine. Signed URLs expire upstream after 24
+// hours; cached ones are dropped after 18 so a long-lived tab cannot
+// replay a dead link.
+const URL_TTL_MS = 18 * 60 * 60 * 1000;
+const BLOB_MAX = 24;
+const urlCache = new Map<string, { url: string; t: number }>();
+const blobCache = new Map<string, string>();
+
+function warmBlob(key: string, url: string) {
+  if (blobCache.has(key)) return;
+  fetch(url)
+    .then((res) => (res.ok ? res.blob() : null))
+    .then((blob) => {
+      if (!blob || blobCache.has(key)) return;
+      while (blobCache.size >= BLOB_MAX) {
+        const oldest = blobCache.entries().next().value;
+        if (!oldest) break;
+        URL.revokeObjectURL(oldest[1]);
+        blobCache.delete(oldest[0]);
+      }
+      blobCache.set(key, URL.createObjectURL(blob));
+    })
+    .catch(() => {});
+}
 
 const PlayGlyph = () => (
   <svg width="10" height="12" viewBox="0 0 10 12" aria-hidden="true">
@@ -56,32 +86,37 @@ export function ExplorerList(props: ExplorerProps) {
   return <ExplorerCore {...props} />;
 }
 
-function ExplorerCore({ voices, lockLanguage, paramsKey }: CoreProps) {
+function ExplorerCore({ voices, lockLanguage, models, paramsKey }: CoreProps) {
+  const geminiModels = models.Gemini ?? [];
   const [all, setAll] = useState<Voice[] | null>(voices ?? null);
   const [q, setQ] = useState("");
   const [family, setFamily] = useState("");
   const [lang, setLang] = useState("");
   const [gender, setGender] = useState("");
-  const [gmodel, setGmodel] = useState(DEFAULT_GMODEL);
+  // "" means the API default, which is the first listed sub-model.
+  const [gmodel, setGmodel] = useState("");
   const [active, setActive] = useState<Active>(null);
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const errTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const retryTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   // Guards against stale media events after switching voices or stopping.
   const playGen = useRef(0);
-  // Signed URLs expire upstream after 24 hours; cached ones are dropped
-  // after 18 so a long-lived tab cannot replay a dead link.
-  const urlCache = useRef(new Map<string, { url: string; t: number }>());
   // The write effect must not run before the URL has been applied once.
   const urlApplied = useRef(false);
 
-  // Full catalog loads as a separate chunk so page HTML stays small.
+  // Full catalog loads after mount so page HTML stays small. The API route
+  // serves the server's current view of the catalog, which refreshes daily;
+  // the bundled copy is the offline fallback.
   useEffect(() => {
     if (voices) return;
     let live = true;
-    import("@/data/voices.packed.json").then((m) => {
-      if (live) setAll(unpack(m.default as unknown as PackedCatalog));
-    });
+    fetch("/api/catalog")
+      .then((res) => (res.ok ? res.json() : Promise.reject(new Error(String(res.status)))))
+      .catch(() => import("@/data/voices.packed.json").then((m) => m.default))
+      .then((packed) => {
+        if (live) setAll(unpack(packed as PackedCatalog));
+      })
+      .catch(() => {});
     return () => {
       live = false;
     };
@@ -89,7 +124,10 @@ function ExplorerCore({ voices, lockLanguage, paramsKey }: CoreProps) {
 
   // Apply ?family= etc. whenever the router navigates, so family tiles work
   // both on a fresh load and on same-page client transitions. Re-runs when
-  // the catalog arrives so the language code can be validated against it.
+  // the catalog arrives so family and language can be validated against it.
+  // A field the reader has already touched since the last apply is left
+  // alone, so typing during the catalog load is not wiped.
+  const applied = useRef<{ f: string; l: string; g: string; m: string; s: string } | null>(null);
   useEffect(() => {
     if (lockLanguage || paramsKey === undefined) return;
     const p = new URLSearchParams(paramsKey);
@@ -97,15 +135,23 @@ function ExplorerCore({ voices, lockLanguage, paramsKey }: CoreProps) {
     const l = p.get("language") ?? "";
     const g = p.get("gender") ?? "";
     const m = p.get("gmodel") ?? "";
-    const s = p.get("q") ?? "";
+    const want = {
+      f: f && (!all || all.some((v) => v.family === f)) ? f : "",
+      l: !all || all.some((v) => v.lang === l) ? l : "",
+      g: ["female", "male", "neutral"].includes(g) ? g : "",
+      m: geminiModels.includes(m) && m !== geminiModels[0] ? m : "",
+      s: p.get("q") ?? "",
+    };
+    const prev = applied.current;
     // eslint-disable-next-line react-hooks/set-state-in-effect
-    setFamily(FAMILIES.some((x) => x.key === f) ? f : "");
-    setLang(!all || all.some((v) => v.lang === l) ? l : "");
-    setGender(["female", "male", "neutral"].includes(g) ? g : "");
-    setGmodel(GEMINI_MODELS.some((x) => x.id === m) ? m : DEFAULT_GMODEL);
-    setQ(s);
+    setFamily((cur) => (!prev || cur === prev.f ? want.f : cur));
+    setLang((cur) => (!prev || cur === prev.l ? want.l : cur));
+    setGender((cur) => (!prev || cur === prev.g ? want.g : cur));
+    setGmodel((cur) => (!prev || cur === prev.m ? want.m : cur));
+    setQ((cur) => (!prev || cur === prev.s ? want.s : cur));
+    applied.current = want;
     urlApplied.current = true;
-  }, [paramsKey, lockLanguage, all]);
+  }, [paramsKey, lockLanguage, all, geminiModels]);
 
   // Keep the URL shareable without triggering navigation. replaceState does
   // not feed back into useSearchParams, so this cannot loop.
@@ -115,7 +161,7 @@ function ExplorerCore({ voices, lockLanguage, paramsKey }: CoreProps) {
     if (family) p.set("family", family);
     if (lang) p.set("language", lang);
     if (gender) p.set("gender", gender);
-    if (gmodel !== DEFAULT_GMODEL) p.set("gmodel", gmodel);
+    if (gmodel) p.set("gmodel", gmodel);
     if (q) p.set("q", q);
     const qs = p.toString();
     const url = qs ? `?${qs}${window.location.hash}` : window.location.pathname + window.location.hash;
@@ -146,6 +192,17 @@ function ExplorerCore({ voices, lockLanguage, paramsKey }: CoreProps) {
       .sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0]))
       .map(([code]) => ({ code, name: languageName(code) }));
   }, [all, langOrder, lockLanguage]);
+
+  // Family choices come from the data, so a family this code has never
+  // heard of is still filterable; FAMILIES only provides the order.
+  const familyOptions = useMemo(() => {
+    if (!all) return FAMILIES.map((f) => f.key);
+    const present = new Set(all.map((v) => v.family));
+    const rank = new Map(FAMILIES.map((f, i) => [f.key, i]));
+    return [...present].sort(
+      (a, b) => (rank.get(a) ?? 99) - (rank.get(b) ?? 99) || a.localeCompare(b),
+    );
+  }, [all]);
 
   const filtered = useMemo(() => {
     if (!all) return [];
@@ -178,18 +235,17 @@ function ExplorerCore({ voices, lockLanguage, paramsKey }: CoreProps) {
       .map(([code, items]) => ({ code, items: items.sort(byFamily) }));
   }, [filtered, lockLanguage, langOrder]);
 
-  // Gemini voices carry one sample per sub-model, everything else has one.
-  const sampleCount = useMemo(() => {
-    const gemini = filtered.reduce((n, v) => n + (v.family === "Gemini" ? 1 : 0), 0);
-    return filtered.length + gemini * (GEMINI_MODELS.length - 1);
-  }, [filtered]);
-
-  const showGemini = useMemo(
-    () => (voices ? voices.some((v) => v.family === "Gemini") : true),
-    [voices],
+  // A voice carries one sample per sub-model of its family, or just one.
+  const sampleCount = useMemo(
+    () =>
+      filtered.reduce((n, v) => n + Math.max((models[v.family]?.length ?? 1) - 1, 0), filtered.length),
+    [filtered, models],
   );
 
-  const hasFilters = q !== "" || family !== "" || lang !== "" || gender !== "" || gmodel !== DEFAULT_GMODEL;
+  const showGemini =
+    geminiModels.length > 1 && (voices ? voices.some((v) => v.family === "Gemini") : true);
+
+  const hasFilters = q !== "" || family !== "" || lang !== "" || gender !== "" || gmodel !== "";
 
   function stop() {
     playGen.current++;
@@ -199,7 +255,7 @@ function ExplorerCore({ voices, lockLanguage, paramsKey }: CoreProps) {
   }
 
   function play(v: Voice) {
-    const model = v.family === "Gemini" && gmodel !== DEFAULT_GMODEL ? gmodel : "";
+    const model = v.family === "Gemini" ? gmodel : "";
     const cacheKey = model ? `${v.id}|${model}` : v.id;
     if (active?.id === v.id && active.model === model && active.status !== "error") {
       stop();
@@ -222,37 +278,64 @@ function ExplorerCore({ voices, lockLanguage, paramsKey }: CoreProps) {
       }, 3000);
     };
 
-    const start = (url: string) => {
+    const markPlaying = () => {
+      if (current()) setActive({ id: v.id, model, status: "playing" });
+    };
+
+    function start(url: string, fromBlob: boolean) {
       if (!current()) return;
-      a.onplaying = () => {
-        if (current()) setActive({ id: v.id, model, status: "playing" });
+      a.onplaying = markPlaying;
+      // Safari does not reliably fire onplaying for cached replays; any
+      // playback progress at all means audio is running.
+      a.ontimeupdate = () => {
+        if (a.currentTime > 0) {
+          a.ontimeupdate = null;
+          markPlaying();
+        }
       };
       a.onended = () => {
         if (current()) setActive((cur) => (cur?.id === v.id ? null : cur));
       };
       a.onerror = () => {
         if (!current()) return;
+        if (fromBlob) {
+          // A dead object URL falls back to the network path once.
+          const stale = blobCache.get(cacheKey);
+          if (stale) URL.revokeObjectURL(stale);
+          blobCache.delete(cacheKey);
+          resolve();
+          return;
+        }
         // A URL that failed to load should not be replayed from cache.
-        urlCache.current.delete(cacheKey);
+        urlCache.delete(cacheKey);
         fail("sample unavailable");
       };
       a.src = url;
-      a.play().catch(() => {
-        // A rejection for the live generation is real, usually an autoplay
-        // block because the lookup left the click gesture. The repeat tap
-        // plays synchronously from the cached URL. Stale rejections come
-        // from row switches and are ignored.
-        if (current()) fail("tap play again");
-      });
-    };
-
-    const known = urlCache.current.get(cacheKey);
-    if (known && Date.now() - known.t < 18 * 60 * 60 * 1000) {
-      start(known.url);
-      return;
+      a.play()
+        .then(() => {
+          // First streamed play warms the blob cache in the background,
+          // so every replay is served from memory.
+          if (!fromBlob) warmBlob(cacheKey, url);
+        })
+        .catch(() => {
+          // A rejection for the live generation is real, usually an
+          // autoplay block because the lookup left the click gesture. The
+          // repeat tap plays synchronously from the cache. Stale
+          // rejections come from row switches and are ignored.
+          if (current()) fail("tap play again");
+        });
     }
 
-    const lookup = (attempt: number) => {
+    function resolve() {
+      const known = urlCache.get(cacheKey);
+      if (known && Date.now() - known.t < URL_TTL_MS) {
+        start(known.url, false);
+        return;
+      }
+      lookup(0);
+    }
+
+    function lookup(attempt: number) {
       fetch(`/api/sample?id=${encodeURIComponent(v.id)}${model ? `&model=${encodeURIComponent(model)}` : ""}`)
         .then(async (res) => {
           if (!current()) return;
@@ -280,14 +363,20 @@ function ExplorerCore({ voices, lockLanguage, paramsKey }: CoreProps) {
             fail("sample unavailable");
             return;
           }
-          urlCache.current.set(cacheKey, { url: body.url, t: Date.now() });
-          start(body.url);
+          urlCache.set(cacheKey, { url: body.url, t: Date.now() });
+          start(body.url, false);
         })
         .catch(() => {
           if (current()) fail("sample unavailable");
         });
-    };
-    lookup(0);
+    }
+
+    const blobbed = blobCache.get(cacheKey);
+    if (blobbed) {
+      start(blobbed, true);
+      return;
+    }
+    resolve();
   }
 
   const fmt = (n: number) => n.toLocaleString("en-US");
@@ -314,9 +403,9 @@ function ExplorerCore({ voices, lockLanguage, paramsKey }: CoreProps) {
           </label>
           <select id="f-family" className="select" value={family} onChange={(e) => setFamily(e.target.value)}>
             <option value="">All</option>
-            {FAMILIES.map((f) => (
-              <option key={f.key} value={f.key}>
-                {f.label}
+            {familyOptions.map((key) => (
+              <option key={key} value={key}>
+                {familyLabel(key)}
               </option>
             ))}
           </select>
@@ -358,14 +447,14 @@ function ExplorerCore({ voices, lockLanguage, paramsKey }: CoreProps) {
             <select
               id="f-gmodel"
               className="select"
-              value={gmodel}
+              value={gmodel || geminiModels[0]}
               disabled={family !== "" && family !== "Gemini"}
               title="Gemini voices have a sample per sub-model. This picks which one plays."
-              onChange={(e) => setGmodel(e.target.value)}
+              onChange={(e) => setGmodel(e.target.value === geminiModels[0] ? "" : e.target.value)}
             >
-              {GEMINI_MODELS.map((m) => (
-                <option key={m.id} value={m.id}>
-                  {m.label}
+              {geminiModels.map((m) => (
+                <option key={m} value={m}>
+                  {modelLabel(m)}
                 </option>
               ))}
             </select>
@@ -382,7 +471,7 @@ function ExplorerCore({ voices, lockLanguage, paramsKey }: CoreProps) {
           <button
             type="button"
             className="clear-btn"
-            onClick={() => (setQ(""), setFamily(""), setLang(""), setGender(""), setGmodel(DEFAULT_GMODEL))}
+            onClick={() => (setQ(""), setFamily(""), setLang(""), setGender(""), setGmodel(""))}
           >
             Clear filters
           </button>

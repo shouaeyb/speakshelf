@@ -1,9 +1,10 @@
 import type { MetadataRoute } from "next";
-import { languages } from "@/lib/catalog";
+import { getCatalog } from "@/lib/catalog";
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000";
 
-export default function sitemap(): MetadataRoute.Sitemap {
+export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
+  const { languages } = await getCatalog();
   const now = new Date();
   return [
     {
@@ -12,7 +13,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
       changeFrequency: "weekly",
       priority: 1,
     },
-    ...languages().map((l) => ({
+    ...languages.map((l) => ({
       url: `${SITE_URL}/voices/${l.code}`,
       lastModified: now,
       changeFrequency: "monthly" as const,

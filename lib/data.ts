@@ -21,6 +21,9 @@ export type PackedVoice = [string, string, string, string, string, string];
 export interface PackedCatalog {
   version: number;
   updated: string;
+  /** Sub-model ids per family, first entry is the API default. Only
+   *  families with more than one model appear (Gemini today). */
+  models?: Record<string, string[]>;
   voices: PackedVoice[];
 }
 

@@ -1,7 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import { IBM_Plex_Sans, IBM_Plex_Mono } from "next/font/google";
 import Link from "next/link";
-import { catalogStats, catalogUpdated } from "@/lib/catalog";
+import { getCatalog } from "@/lib/catalog";
 import "./globals.css";
 
 const plexSans = IBM_Plex_Sans({
@@ -20,14 +20,21 @@ const plexMono = IBM_Plex_Mono({
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000";
 
-export const metadata: Metadata = {
+export async function generateMetadata(): Promise<Metadata> {
+  const { stats } = await getCatalog();
+  const description = `Play samples of the full Google Cloud text to speech catalog: Gemini, Chirp 3 HD, Neural2, WaveNet, Studio and Standard voices in ${stats.languages} languages.`;
+  return {
+    ...metadata,
+    description,
+  };
+}
+
+const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
   title: {
     default: "Voice Atlas · every Google Cloud text to speech voice",
     template: "%s · Voice Atlas",
   },
-  description:
-    "Play samples of the full Google Cloud text to speech catalog: Gemini, Chirp 3 HD, Neural2, WaveNet, Studio and Standard voices in 93 languages.",
   applicationName: "Voice Atlas",
   keywords: [
     "Google text to speech",
@@ -64,8 +71,8 @@ export const viewport: Viewport = {
   themeColor: "#161616",
 };
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
-  const stats = catalogStats();
+export default async function RootLayout({ children }: { children: React.ReactNode }) {
+  const { stats, updated: catalogUpdated } = await getCatalog();
   return (
     <html lang="en" className={`${plexSans.variable} ${plexMono.variable}`}>
       <body>
@@ -100,7 +107,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
               Catalog updated {catalogUpdated} · {stats.voices.toLocaleString("en-US")} voices across{" "}
               {stats.languages} languages
               <br />
-              Samples served by the <a href="https://aitts.theproductivepixel.com">AI TTS API</a> · Not
+              Samples served by the <a href="https://aitts.theproductivepixel.com">AI TTS Microservice</a> · Not
               affiliated with Google
             </p>
           </div>
