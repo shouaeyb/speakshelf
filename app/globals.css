@@ -115,10 +115,14 @@ button {
   color: var(--text);
 }
 
-/* The Speakshelf mark: two offset squares, same layout as the favicon.
-   No background box in the app; the blue square is constant and the
-   companion square takes the surface's text color via currentColor, so
-   it is near black on light surfaces and white on dark ones. */
+.wordmark-icon {
+  display: block;
+  flex: none;
+}
+
+/* The bare Speakshelf mark for dark grounds (footer, OG card): the two
+   favicon squares without the tile, since the surface is the tile. The
+   companion square takes the surface's text color via currentColor. */
 .wordmark-sq {
   width: 14px;
   height: 14px;

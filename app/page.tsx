@@ -66,9 +66,8 @@ export default async function Home() {
             {families.length} model {families.length === 1 ? "family" : "families"}
           </h2>
           <p className="sec-sub">
-            Google has shipped a new speech architecture roughly every two years, and all of them are still
-            in service. The catalog runs from compact parametric voices to models you can direct with a
-            sentence.
+            Google keeps shipping new speech architectures and every generation is still in service. The
+            catalog runs from compact parametric voices to models you can direct with a sentence.
           </p>
           <div className="fam-grid">
             {families.map((f) => (

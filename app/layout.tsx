@@ -79,7 +79,11 @@ export default async function RootLayout({ children }: { children: React.ReactNo
         <header className="masthead">
           <div className="shell masthead-in">
             <Link href="/" className="wordmark">
-              <span className="wordmark-sq"></span>Speakshelf
+              {/* The masthead carries the favicon itself, tile and all, so
+                  the header matches the browser tab above it. The footer
+                  keeps the bare squares on its own dark ground. */}
+              <img className="wordmark-icon" src="/icon.svg" alt="" width={20} height={20} />
+              Speakshelf
             </Link>
             <nav className="mast-nav" aria-label="Main">
               <Link className="mast-link" href="/#models">

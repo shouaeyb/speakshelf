@@ -21,6 +21,9 @@ Keep these docs true: when your change alters how something works, update `docs/
 
 ## Ground rules
 
+- Never ship a claim you cannot back. Numbers, dates, timelines and superlatives come from the catalog data, our own measurements, or a source you actually checked; otherwise soften the sentence or cut it. When reporting to the owner, label inference as inference, and say "I have not checked that" instead of guessing.
+- Keep trouble words out of shipped copy: official, endorsed, partner, guaranteed, "the largest". This is an independent site; the "not affiliated with Google" line stays.
+- Kill the server on port 3000 before running a build (`lsof -ti:3000 | xargs kill`). A build rewrites `.next` under a live server and its pages start pointing at chunk files that no longer exist, which shows up as 500s on css and js. If a build ever gets interrupted, delete `.next` and build again.
 - `TTS_API_KEY` lives in `.env` (gitignored, also in `TTS_API_KEY.rtf`, gitignored). Server side only. Never commit it, log it, or paste it into anything user facing.
 - Never call `POST /tts` on the AI TTS Microservice. It spends the owner's real credits. The voice listing and `sample-url` endpoints are free; `sample-url` draws from a rate bucket of roughly 1000 requests per rolling hour, so batch jobs must honor 429 and `x-ratelimit-reset`.
 - All shipped writing is human: no em dashes, no AI boilerplate phrases, plain sentences. Details in `docs/design.md`.
