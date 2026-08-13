@@ -10,7 +10,7 @@ This block is written and re-added by `next dev` — verify at `node_modules/nex
 
 # Speakshelf, working guide for agents
 
-Speakshelf is a public catalog of text to speech voices with playable samples: Google Cloud, Amazon Polly and Kokoro today, built so more providers slot in under one roof. A provider goes live only through the bless config (`lib/providers.ts`, `lib/families.ts`, the BLESSED list in `scripts/build-data.mjs`), a data refresh, honest copy, and a real browser playback pass; unblessed providers appearing upstream just console-log. Before substantial work, read the docs that matter to your task:
+Speakshelf is a public catalog of text to speech voices with playable samples: Google Cloud, Amazon Polly and Kokoro today, built so more providers slot in under one roof. A provider goes live only through the bless config (`lib/providers.ts`, `lib/families.ts`, the BLESSED list in `scripts/build-data.mjs`), a data refresh, honest copy, a real browser playback pass, and a regenerated `public/og.png` (the share card names the providers but carries no counts; see decisions); unblessed providers appearing upstream just console-log. Before substantial work, read the docs that matter to your task:
 
 - `docs/architecture.md` explains how the system works and lists the invariants you must not break
 - `docs/decisions.md` is the dated log of settled decisions; do not quietly relitigate them

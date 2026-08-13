@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ExplorerList } from "@/components/Explorer";
-import { getProviderCatalog, sampleCount } from "@/lib/catalog";
+import { getProviderCatalog, sampleCount, voiceCount } from "@/lib/catalog";
 import { PROVIDERS, getProvider } from "@/lib/providers";
 import { languageName } from "@/lib/lang";
 
@@ -37,15 +37,17 @@ export async function generateMetadata({ params }: { params: Promise<Params> }):
   const catalog = await getProviderCatalog(provider);
   if (!meta || !catalog) return {};
   const name = languageName(lang);
-  const count = catalog.voices.filter((v) => v.lang === lang).length;
-  if (count === 0) return {};
+  const inLang = catalog.voices.filter((v) => v.lang === lang);
+  if (inLang.length === 0) return {};
+  const count = voiceCount(inLang, meta.voiceIdentity);
   return {
     title: `${meta.label} ${name} voices`,
     description: `All ${count} ${meta.label} text to speech voices for ${name} (${lang}), with samples you can play in the browser.`,
     alternates: { canonical: `/${provider}/voices/${lang}` },
     openGraph: {
       title: `${meta.label} ${name} voices · Speakshelf`,
-      description: `All ${count} ${meta.label} text to speech voices for ${name}, with playable samples.`,
+      // No counts on share surfaces: platforms cache previews for weeks.
+      description: `${meta.label} text to speech voices for ${name}, with playable samples.`,
       images: ["/og.png"],
     },
   };
@@ -59,6 +61,7 @@ export default async function LanguagePage({ params }: { params: Promise<Params>
   const voices = catalog.voices.filter((v) => v.lang === lang);
   if (voices.length === 0) notFound();
   const name = languageName(lang);
+  const count = voiceCount(voices, meta.voiceIdentity);
   const families = new Set(voices.map((v) => v.family)).size;
   const samples = sampleCount(voices, catalog.models);
   const famWord = families === 1 ? meta.familyWord.one : meta.familyWord.many;
@@ -82,7 +85,7 @@ export default async function LanguagePage({ params }: { params: Promise<Params>
           </Link>
           <h1>{name}</h1>
           <p className="subhead-meta">
-            {lang} · {voices.length} {voices.length === 1 ? "voice" : "voices"} · {families} {famWord} ·{" "}
+            {lang} · {count} {count === 1 ? "voice" : "voices"} · {families} {famWord} ·{" "}
             {samples} playable {samples === 1 ? "sample" : "samples"}
           </p>
         </div>

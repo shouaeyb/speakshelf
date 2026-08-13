@@ -23,6 +23,15 @@ export interface ProviderMeta {
   heroSub: string;
   /** What this provider calls its voice groupings. */
   familyWord: { one: string; many: string; jump: string };
+  /** What counts as one voice, following the provider's own published
+   *  voice list. "row" counts every catalog entry (google lists each
+   *  language+family+name as its own voice; kokoro is flat). "langName"
+   *  counts distinct language+name pairs (AWS's table lists a voice once
+   *  per language with engines as capability columns, so Polly's
+   *  per-engine rows are renders of one voice). Samples always count
+   *  renders. Cross-language name reuse stays counted per language,
+   *  because both providers' own tables do exactly that. */
+  voiceIdentity: "row" | "langName";
   /** Line under the families section title. */
   familiesIntro: string;
   /** Umbrella card paragraph. */
@@ -46,6 +55,7 @@ export const PROVIDERS: ProviderMeta[] = [
     key: "google",
     label: "Google Cloud",
     short: "Google",
+    voiceIdentity: "row" as const,
     eyebrow: "GOOGLE CLOUD TEXT TO SPEECH",
     heroTitle: "Every Google voice, on one page.",
     heroSub:
@@ -63,6 +73,7 @@ export const PROVIDERS: ProviderMeta[] = [
     key: "polly",
     label: "Amazon Polly",
     short: "Polly",
+    voiceIdentity: "langName" as const,
     eyebrow: "AMAZON POLLY TEXT TO SPEECH",
     heroTitle: "Every Amazon Polly voice, on one page.",
     heroSub:
@@ -80,6 +91,7 @@ export const PROVIDERS: ProviderMeta[] = [
     key: "kokoro",
     label: "Kokoro",
     short: "Kokoro",
+    voiceIdentity: "row" as const,
     eyebrow: "KOKORO TEXT TO SPEECH",
     heroTitle: "Every Kokoro voice, on one page.",
     heroSub:

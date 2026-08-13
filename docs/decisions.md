@@ -2,6 +2,14 @@
 
 Settled decisions, newest first. Append a dated entry when something gets decided; correct an old entry by appending, not rewriting. Do not relitigate these silently: if you believe one is wrong, say so to the owner with evidence.
 
+## 2026-08-13: share surfaces carry no counts
+
+Share platforms (Twitter, WhatsApp, Slack, iMessage) cache link previews for days or weeks, so any number on og.png or in og/twitter descriptions goes stale in the wild no matter how it is generated; even a dynamically rendered card cannot beat the platform cache. The og.png card and all og/twitter descriptions are therefore timeless: name, provider list, the sample promise, no counts. Counts stay in SEO meta descriptions and on the pages themselves, which crawlers re-fetch. The card names the blessed providers, so regenerating it (scratchpad og.html pattern) is one step of the provider blessing ritual.
+
+## 2026-08-13: a voice is a provider voice-list entry; a sample is a playable render
+
+The owner caught the site counting Polly's 177 per-engine rows as 177 voices while counting Gemini's per-sub-model takes as samples: the same concept, two treatments. Settled definition: a voice is one entry in the provider's own published voice list, a sample is one playable render of it, and the mapping is per provider (`voiceIdentity` in the bless config). Google's list counts every language+family+name row (en-US-Standard-A and en-US-Wavenet-A are distinct voices in Google's docs), so google stays row-counted at 4,586. AWS's Available Voices table lists a voice once per language with engines as capability columns, so polly counts distinct language+name: 113 voices, 177 samples. Kokoro is flat: 54 and 54. Cross-language name reuse is counted once per language, matching both providers' own tables (AWS lists bilingual Aditi under both of its languages; Google lists Achernar per language). Site totals became 4,753 voices, 12,647 samples. Grouping Polly's list rows by voice with a per-row engine picker was considered and parked: the flat per-engine rows keep every render directly playable and comparable.
+
 ## 2026-08-13: providers go live by blessing; the machinery is generic
 
 The multi-provider shelf shipped with Amazon Polly (177 voices) and Kokoro (54) beside Google (4,586). Data, routing, playback and SEO surfaces are generic over a provider dimension, but a provider only goes live through the curated config in `lib/providers.ts` (copy, family metadata, the provider's own vocabulary) plus a refreshed data pack and a real browser playback pass. The bare `/voices` endpoint reports every provider upstream; unblessed ones are console-logged and stay invisible. The owner explicitly declined webhook or CI alerting for newcomers: logs are enough. Rationale: honest copy and verified playback cannot be automated, and a provider appearing on the site should never be a surprise.

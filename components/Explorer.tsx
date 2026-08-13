@@ -254,6 +254,18 @@ function ExplorerCore({ provider, voices, lockLanguage, models, paramsKey }: Cor
     [filtered, models],
   );
 
+  // Voices follow the provider's own accounting (see voiceIdentity in the
+  // bless config): polly's per-engine rows are renders of one voice, so
+  // the count collapses language+name pairs while every row stays listed.
+  const identity = getProvider(provider)?.voiceIdentity ?? "row";
+  const shownVoices = useMemo(
+    () =>
+      identity === "row"
+        ? filtered.length
+        : new Set(filtered.map((v) => `${v.lang}|${v.name}`)).size,
+    [filtered, identity],
+  );
+
   const showModelPick =
     subModels.length > 1 && (voices ? voices.some((v) => v.family === multiFamily) : true);
 
@@ -480,7 +492,7 @@ function ExplorerCore({ provider, voices, lockLanguage, models, paramsKey }: Cor
 
       <div className="results-line">
         <span className="results-count" role="status">
-          {all ? `${fmt(filtered.length)} voices · ${fmt(sampleCount)} samples` : "Loading catalog"}
+          {all ? `${fmt(shownVoices)} voices · ${fmt(sampleCount)} samples` : "Loading catalog"}
         </span>
         {hasFilters && (
           <button
@@ -505,7 +517,9 @@ function ExplorerCore({ provider, voices, lockLanguage, models, paramsKey }: Cor
                 {languageName(g.code)}
               </a>
               <span className="lang-code">{g.code}</span>
-              <span className="lang-count">{fmt(g.items.length)} voices</span>
+              <span className="lang-count">
+                {fmt(identity === "row" ? g.items.length : new Set(g.items.map((v) => v.name)).size)} voices
+              </span>
             </div>
           )}
           {g.items.map((v) => {

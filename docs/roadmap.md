@@ -20,4 +20,5 @@ Nothing is queued. The multi-provider shelf (umbrella home, /google move with pe
 - IndexNow pings on catalog changes (Bing and friends only; Google never joined).
 - Per-provider accent hue on tags, only with owner sign-off (see design doc).
 - Per-provider OG images (today one umbrella card serves every page).
+- Polly rows grouped by voice with a per-row engine picker (today the list keeps one row per engine render; only the counts collapse to AWS's per-voice accounting).
 - Louder unblessed-provider alerting (webhook or CI check). Owner declined for now: console logs are enough.

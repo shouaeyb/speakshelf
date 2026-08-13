@@ -35,7 +35,8 @@ export async function generateMetadata({ params }: { params: Promise<Params> }):
     alternates: { canonical: `/${provider}` },
     openGraph: {
       title: `${meta.label} text to speech voices · Speakshelf`,
-      description,
+      // No counts on share surfaces: platforms cache previews for weeks.
+      description: `The full ${meta.label} text to speech catalog with a playable sample for every voice.`,
       images: ["/og.png"],
     },
   };

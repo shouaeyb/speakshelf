@@ -197,9 +197,22 @@ export function sampleCount(voices: Voice[], models: Record<string, string[]>): 
   return n;
 }
 
+// A voice is one entry in the provider's own published voice list; a
+// sample is one playable render of it. Google's list counts every
+// language+family+name row; AWS's table counts language+name once with
+// engines as capability columns, so Polly's per-engine rows collapse.
+// See voiceIdentity in lib/providers.ts.
+export function voiceCount(voices: Voice[], identity: "row" | "langName"): number {
+  if (identity === "row") return voices.length;
+  const seen = new Set<string>();
+  for (const v of voices) seen.add(`${v.lang}|${v.name}`);
+  return seen.size;
+}
+
 function buildProviderCatalog(provider: string, updated: string, packed: PackedProvider): ProviderCatalog {
   const voices = unpack(provider, packed);
   const models = packed.models ?? {};
+  const identity = getProvider(provider)?.voiceIdentity ?? "row";
 
   const byLang = new Map<string, Voice[]>();
   for (const v of voices) {
@@ -211,7 +224,7 @@ function buildProviderCatalog(provider: string, updated: string, packed: PackedP
     .map(([code, list]) => ({
       code,
       name: languageName(code),
-      voices: list.length,
+      voices: voiceCount(list, identity),
       samples: sampleCount(list, models),
       families: new Set(list.map((v) => v.family)).size,
     }))
@@ -256,7 +269,7 @@ function buildProviderCatalog(provider: string, updated: string, packed: PackedP
     languages,
     families,
     stats: {
-      voices: voices.length,
+      voices: voiceCount(voices, identity),
       languages: byLang.size,
       families: byFamily.size,
       samples: sampleCount(voices, models),

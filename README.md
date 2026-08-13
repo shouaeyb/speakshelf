@@ -1,6 +1,6 @@
 # Speakshelf
 
-A catalog of text to speech voices with samples you can play in the browser: Google Cloud, Amazon Polly and Kokoro, side by side. At last count: 4,817 voices from 3 providers in 105 languages, with more than twelve thousand playable samples once Gemini's one-take-per-sub-model is counted. The site refreshes its own catalog from the API daily, so those numbers grow on their own.
+A catalog of text to speech voices with samples you can play in the browser: Google Cloud, Amazon Polly and Kokoro, side by side. At last count: 4,753 voices from 3 providers in 105 languages, with more than twelve thousand playable samples once Gemini's one-take-per-sub-model is counted. The site refreshes its own catalog from the API daily, so those numbers grow on their own.
 
 Built with Next.js and styled after IBM's design language: IBM Plex type, sharp corners, thin rules, Carbon blue.
 
