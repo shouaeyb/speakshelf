@@ -14,7 +14,7 @@ Trigger: the AI TTS Microservice exposes a second provider worth listing (Polly,
 
 1. Umbrella home at `/`: provider tiles with counts, aggregate stats, the same hero language. Design the page as a mockup first (see the Claude Design note in `docs/design.md`), screenshot-check it, then port.
 2. Move the Google catalog to `/google` (`/google/voices/en-US` and so on) with 301 redirects from every current URL. One codebase; provider becomes a route segment and a `provider=` param upstream.
-3. Generalize `lib/catalog.ts` to fetch per provider; the packed format already carries family and models maps that are provider-shaped.
+3. Generalize `lib/catalog.ts` to fetch per provider. The family and models maps generalize naturally, but the packed format needs a provider dimension: `unpack()` currently hardcodes the `google:` id prefix.
 4. Keep one design token sheet for every provider section. Provider identity is words (eyebrow, breadcrumbs), not palettes; the only allowed differentiator is the small tag accent, and only if the owner asks for it.
 
 ## Parking lot (ideas, none committed)

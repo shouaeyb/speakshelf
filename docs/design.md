@@ -11,13 +11,13 @@ All colors, spacing and type run through the CSS variables at the top of `global
 | Page background | #f4f4f4 |
 | Layer (cards, rows, fields) | #ffffff |
 | Borders | #e0e0e0, strong #8d8d8d |
-| Text | #161616, secondary #525252, tertiary #a8a8a8 |
-| Inverse sections (hero, subheads, footer) | #161616 background |
+| Text | #161616, secondary #525252, tertiary #6f6f6f |
+| Inverse sections (hero, subheads, footer) | #161616 background, secondary text #a8a8a8 |
 | The blue | #0f62fe, soft #78a9ff |
 | Tag blue | #d0e2ff on #0043ce |
 | Tag purple (ultra tier) | #e8daff on #6929c4 |
 
-Rules that make it Carbon: border radius is 0 everywhere, hairline 1px borders, grids with 1px gaps showing the border color through, IBM Plex Sans for prose and IBM Plex Mono for labels, codes and counts. Type gets light weights at display sizes (300) and the scale uses clamp() in the hero. Motion is minimal: the staggered `.rise` on load and the `.eq` equalizer on a playing row, both gated behind prefers-reduced-motion.
+Rules that make it Carbon: border radius is 0 everywhere, hairline 1px borders, grids with 1px gaps showing the border color through, IBM Plex Sans for prose and IBM Plex Mono for labels, codes and counts. Type gets light weights at display sizes (300) and the scale uses clamp() in the hero. Motion is minimal: the staggered `.rise` on load, the `.eq` equalizer on a playing row, and the loading spinner, all gated behind prefers-reduced-motion.
 
 Every provider section present and future uses this same sheet. Provider identity comes from words (the eyebrow label, breadcrumbs), never from a palette swap. The one permitted differentiator, and only with owner sign-off, is the tag accent hue.
 

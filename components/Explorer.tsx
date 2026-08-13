@@ -373,6 +373,9 @@ function ExplorerCore({ voices, lockLanguage, models, paramsKey }: CoreProps) {
 
     const blobbed = blobCache.get(cacheKey);
     if (blobbed) {
+      // Re-insert so eviction hits the least recently played entry.
+      blobCache.delete(cacheKey);
+      blobCache.set(cacheKey, blobbed);
       start(blobbed, true);
       return;
     }

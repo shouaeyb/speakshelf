@@ -20,7 +20,7 @@ No hardcoded voice, language, family, or sub-model lists anywhere. The server re
 
 ## 2026-08-13: playback caching copies tts-microutil's good half only
 
-The owner's other product (`/Users/me/mDevs/tts-microutil`, the AI TTS Microservice repo) validated the pattern in production: stream the first play from the signed URL, then warm an in-memory blob cache so replays are local object URLs, which is what Safari needs. Copied: that two-step, the staleness counter, warm-after-first-play. Deliberately not copied: its four unsynchronized cache layers, the dead v2 hook, the localStorage cache written by nothing.
+The owner's other product at `/Users/me/mDevs/tts-microutil` validated the pattern in production: stream the first play from the signed URL, then warm an in-memory blob cache so replays are local object URLs, which is what Safari needs. Copied: that two-step, the staleness counter, warm-after-first-play. Deliberately not copied: its four unsynchronized cache layers, the dead v2 hook, the localStorage cache written by nothing.
 
 ## 2026-08-13: the voice list renders last on the home page
 
@@ -34,6 +34,6 @@ Ship: llms.txt (daily regenerated), robots open for exactly the two public API p
 
 `POST /tts` is never called by this codebase or by any agent working on it; it spends real credits. Everything the site does is free (listing, sample-url). The API key stays server side, gitignored, and out of logs. The balance was checked before and after the entire build: unchanged at $147.64.
 
-## 2026-08-12 (overnight build): foundations
+## 2026-08-13 (overnight build, 1am to 4:30am): foundations
 
 IBM Carbon-inspired design system, IBM Plex via next/font, square corners, one blue. Human copy everywhere: no em dashes, no AI phrasing. Next.js App Router with SSG for language pages and a client-loaded home list. Design-first flow through a Claude Design mockup, then ported to the app.
