@@ -1,6 +1,6 @@
 import type { NextRequest } from "next/server";
 import { getSite, getSiteFresh } from "@/lib/catalog";
-import { rateLimit } from "@/lib/ratelimit";
+import { rateLimit, upstreamMissAllowed } from "@/lib/ratelimit";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -83,6 +83,14 @@ export async function GET(req: NextRequest) {
     entry = undefined;
   }
   if (!entry) {
+    // Cache miss: this is the only path that spends the shared upstream
+    // allowance, so it carries its own process-wide budget.
+    if (!upstreamMissAllowed()) {
+      return Response.json(
+        { error: "Busy fetching new samples, try again shortly" },
+        { status: 503, headers: { "Retry-After": "60" } },
+      );
+    }
     const pending = lookup(id, model, key);
     cache.set(cacheKey, pending);
     pending.then(

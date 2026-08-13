@@ -2,6 +2,22 @@
 
 Settled decisions, newest first. Append a dated entry when something gets decided; correct an old entry by appending, not rewriting. Do not relitigate these silently: if you believe one is wrong, say so to the owner with evidence.
 
+## 2026-08-13: voice traits are retained, not dropped
+
+The owner caught the packed format silently dropping voice characteristics: Amazon Polly's child voices (Ivy, Justin, Kevin, marked age "child" by the API and "Female (child)" in AWS's own table) rendered as plain female or male here. The tuple gained an optional seventh slot carrying non-style characteristics keyed exactly as the API keys them; it turned out to also preserve per-voice pitch on 2,610 Google rows. Displayed today: age only ("female (child)" in the voice row, searchable). Pitch, accent, use_case and roles are retained in data and the catalog API but not yet surfaced; Azure's richer characteristics will flow through the same slot when that provider lands. Principle: the pack never discards a characteristic the API provides, and display grows deliberately, not automatically.
+
+## 2026-08-13: analytics are always-on pass-through; the owner's legal owns the posture
+
+Mixpanel (autocapture, 100 percent session replay) and GA4 run for every visitor with no consent gate, by the owner's explicit decision; their legal team is working the compliance posture and will dictate whatever consent surface follows. Costs flagged and accepted: full replay is a standing data-volume commitment, and ignore_dnt is on. Implementation follows the proven tts-microutil pattern where it earns its keep (single vendor-boundary module, query-stripped page locations) and skips its scale (no consent UI, no governance registry, no identity hashing: this site has no accounts). The GA measurement id supplied was numeric; GA4 web streams use a G- prefixed id, so gtag loads but sends nothing until the owner swaps the real id into .env (verified live: zero collect beacons).
+
+## 2026-08-13: security headers with a deliberately boring CSP
+
+Every route ships X-Frame-Options DENY, nosniff, strict-origin-when-cross-origin, COOP same-origin, and a Permissions-Policy denying microphone, camera and geolocation; production adds HSTS and a CSP. The CSP keeps `script-src 'unsafe-inline'`: it is load-bearing for the pages' inline JSON-LD blocks, so it must not be misread as analytics-only and "tightened" away later. Known accepted gap, recorded on the reviewer's advice: without nonces, unsafe-inline means CSP does not stop script injection if an XSS ever exists; this site renders no user-supplied HTML, so nonce plumbing was rejected as over-engineering. Verified against a production build: playback, session replay and beacons run with zero violations.
+
+## 2026-08-13: the roadmap belongs to the owner
+
+The parking lot is gone and stays gone: agent ideas do not get stored in the owner's planning docs. Unadopted proposals die in conversation; docs/roadmap.md carries owner direction only. Same day, the previously parked scale concerns the owner did adopt were built: masthead collapse, hero name cap, share name cap.
+
 ## 2026-08-13: share surfaces carry no counts
 
 Share platforms (Twitter, WhatsApp, Slack, iMessage) cache link previews for days or weeks, so any number on og.png or in og/twitter descriptions goes stale in the wild no matter how it is generated; even a dynamically rendered card cannot beat the platform cache. The og.png card and all og/twitter descriptions are therefore timeless: name, provider list, the sample promise, no counts. Counts stay in SEO meta descriptions and on the pages themselves, which crawlers re-fetch. The card names the blessed providers, so regenerating it (scratchpad og.html pattern) is one step of the provider blessing ritual.

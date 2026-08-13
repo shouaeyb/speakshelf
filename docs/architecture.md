@@ -4,7 +4,15 @@ How Speakshelf works, and the invariants that keep it working. Update this file 
 
 ## The shape
 
-Next.js 16 App Router, classic caching model (cacheComponents is off, and stays off: `dynamicParams` on the language pages depends on it), TypeScript, no UI libraries, no Tailwind. One interactive component (`components/Explorer.tsx`), a small client nav (`components/MastNav.tsx`), a server catalog library (`lib/catalog.ts`), a provider bless config (`lib/providers.ts`), two API route families, and static pages around them.
+Next.js 16 App Router, classic caching model (cacheComponents is off, and stays off: `dynamicParams` on the language pages depends on it), TypeScript, no UI libraries, no Tailwind. One interactive component (`components/Explorer.tsx`), a small client nav (`components/MastNav.tsx`), an analytics boundary (`lib/analytics.ts` + `components/Analytics.tsx`), a server catalog library (`lib/catalog.ts`), a provider bless config (`lib/providers.ts`), two API route families, and static pages around them. Files stay small (hard cap 1,000 lines, aim far below); split along module seams before a file bloats.
+
+## Analytics
+
+`lib/analytics.ts` is the sole vendor boundary: nothing else imports mixpanel-browser or touches gtag. Mixpanel runs with autocapture and 100 percent session replay; GA4 loads gtag.js with a queued stub (no inline script) and gets one page_view per route change from `components/Analytics.tsx`. Page locations and referrers are query-and-hash-stripped before emission (the tts-microutil pattern): here that is pageview-dimension hygiene, since the explorer keeps filter state in the query string. Precision events beside autocapture: sample_played (with cache tier memory|cached|network), sample_failed, sample_generating, filter_changed, search_used (debounced), provider_opened. Always-on by the owner's decision; their legal owns the consent posture (see decisions). Ids live in `.env` as NEXT_PUBLIC_ vars, baked into the client bundle at build, public by nature.
+
+## Security headers
+
+`next.config.ts` sets on every route: X-Frame-Options DENY, nosniff, Referrer-Policy strict-origin-when-cross-origin, COOP same-origin, Permissions-Policy denying microphone/camera/geolocation, plus HSTS and a CSP in production only (dev needs HMR's unsafe-eval). CSP notes that matter: `script-src 'unsafe-inline'` is load-bearing for the pages' inline JSON-LD, not just analytics; `style-src 'unsafe-inline'` covers next/font's injected font-face styles; `worker-src 'self' blob:` and the mixpanel hosts carry session replay; `storage.googleapis.com` sits in connect-src (blob warm fetch) and media-src (the audio element). Verified against a production build: playback, replay recording and event beacons all clean of violations.
 
 ## The provider dimension
 
@@ -19,7 +27,7 @@ Everything is generic over providers; going live is not. The split is deliberate
 
 1. `lib/catalog.ts#getSite()` is the single entry point. `livePacked()` fetches the bare `GET /voices` (all providers, one call), groups by the `provider` field, drops unblessed providers with a warning, and packs the rest.
 2. Validation before adoption: every voice id must be reconstructable as `{provider}:{language}-{Family}-{Name}`, and each blessed provider present in the committed fallback must come back at 80 percent strength or the whole fallback is used. A provider blessed before its first data refresh has no yardstick and passes on live data alone. Every rejection logs a `catalog refresh` warning.
-3. `data/voices.packed.json` (version 4) is the committed seed and fallback: `{providers: {key: {models, voices}}}` with one tuple per voice, `[language, family, name, gender(f|m|n|u), tier(p|u), stylesCsv]`. `scripts/build-data.mjs` regenerates it in one API call.
+3. `data/voices.packed.json` (version 4) is the committed seed and fallback: `{providers: {key: {models, voices}}}` with one tuple per voice, `[language, family, name, gender(f|m|n|u), tier(p|u), stylesCsv, traitsJson?]`. The optional seventh slot carries non-style characteristics exactly as the API keys them (age, pitch, accent, use_case, roles) and only when non-empty: Polly's child voices and Google's per-voice pitch ride there today, and Azure's roles will land without a format change. The UI currently surfaces `age` (the gender cell reads "female (child)", searchable); the rest is retained data, served by /api/catalog, awaiting a designed use. `scripts/build-data.mjs` regenerates it in one API call.
 4. The all-provider response is about 2.9MB, which is over the Next data cache's 2MB item limit; the fetch cache stores nothing (the build logs "items over 2MB can not be cached"). The process memo is therefore the effective cache: the built site (per-provider catalogs, site-wide byId, umbrella stats) is held six hours per process, keyed by source (live or fallback) plus date and count. `/api/sample` uses a fresh-floor variant (`getSiteFresh`, 60s) when an id misses, so a voice that appeared upstream is playable without waiting out the memo; the floor keeps id-guessing from becoming an upstream fetch storm.
 
 Pages export `revalidate = 86400`. `/[provider]` uses `dynamicParams = false` (unknown providers 404 at routing); `/[provider]/voices/[lang]` uses `dynamicParams = true` so a new upstream language renders on first request, and therefore validates both params itself and calls `notFound()` (routing alone cannot 404 `/bogus/voices/en-US`).
@@ -33,6 +41,7 @@ Sub-model lists ride the same pipe: each provider's `models` map is built from `
 - `/{provider}/voices/{lang}` are the SSR language pages.
 - Google lived at the root before the umbrella. `next.config.ts` issues permanent redirects (Next answers **308**, the method-preserving permanent code): `/voices/:lang` to `/google/voices/:lang`, and `/` to `/google` when any explorer query param is present. `has` entries AND together, so that second rule is five rules, one per param (family, language, gender, gmodel, q); query strings pass through automatically.
 - Masthead nav (`MastNav`, client, `usePathname`) is global provider tabs with the active provider underlined. Section wayfinding lives in each page's hero jump links, so the masthead never needs to know a page's sections.
+- Scale caps, so twenty providers can never break chrome or copy: the masthead names at most four shelves (past that: three plus an "All providers" link), the umbrella hero names at most three then "and N more", cached share lines always name two plus "and more" (one provider: just its name, no claim of more).
 
 ## Sample playback
 

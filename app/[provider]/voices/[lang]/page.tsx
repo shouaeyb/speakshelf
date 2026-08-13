@@ -3,6 +3,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ExplorerList } from "@/components/Explorer";
 import { getProviderCatalog, sampleCount, voiceCount } from "@/lib/catalog";
+import { jsonLdSafe } from "@/lib/jsonld";
 import { PROVIDERS, getProvider } from "@/lib/providers";
 import { languageName } from "@/lib/lang";
 
@@ -77,7 +78,7 @@ export default async function LanguagePage({ params }: { params: Promise<Params>
 
   return (
     <main>
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: jsonLdSafe(jsonLd) }} />
       <section className="subhead">
         <div className="shell">
           <Link className="crumb" href={`/${provider}#languages`}>

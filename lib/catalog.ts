@@ -25,11 +25,31 @@ interface ApiVoice {
   name: string;
   gender: string;
   model_type: string;
-  characteristics?: { styles?: string[] };
+  characteristics?: {
+    styles?: string[];
+    roles?: string[];
+    age?: string | null;
+    accent?: string | null;
+    pitch?: string | null;
+    use_case?: string | null;
+  };
   available_models?: string[];
 }
 
 const GENDER_CODE: Record<string, string> = { female: "f", male: "m", neutral: "n", unknown: "u" };
+
+// Non-style characteristics worth keeping (Polly's child voices carry
+// age; Azure will bring roles). Packed only when non-empty.
+function packTraits(c: ApiVoice["characteristics"]): string {
+  if (!c) return "";
+  const traits: Record<string, unknown> = {};
+  if (c.age) traits.age = c.age;
+  if (c.accent) traits.accent = c.accent;
+  if (c.pitch) traits.pitch = c.pitch;
+  if (c.use_case) traits.use_case = c.use_case;
+  if (c.roles && c.roles.length > 0) traits.roles = c.roles;
+  return Object.keys(traits).length > 0 ? JSON.stringify(traits) : "";
+}
 
 function toPackedProvider(key: string, list: ApiVoice[]): PackedProvider | null {
   const models: Record<string, string[]> = {};
@@ -44,14 +64,19 @@ function toPackedProvider(key: string, list: ApiVoice[]): PackedProvider | null 
   }
   return {
     models,
-    voices: list.map((v) => [
-      v.language,
-      v.family,
-      v.name,
-      GENDER_CODE[v.gender] ?? "u",
-      v.model_type === "ultra" ? "u" : "p",
-      (v.characteristics?.styles ?? []).slice(0, 2).join(","),
-    ]),
+    voices: list.map((v) => {
+      const base: string[] = [
+        v.language,
+        v.family,
+        v.name,
+        GENDER_CODE[v.gender] ?? "u",
+        v.model_type === "ultra" ? "u" : "p",
+        (v.characteristics?.styles ?? []).slice(0, 2).join(","),
+      ];
+      const traits = packTraits(v.characteristics);
+      if (traits) base.push(traits);
+      return base as PackedProvider["voices"][number];
+    }),
   };
 }
 

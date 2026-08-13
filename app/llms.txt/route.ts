@@ -41,7 +41,7 @@ ${providerLines}
 
 - [Sitemap](${SITE_URL}/sitemap.xml)
 - Sample audio resolves through ${SITE_URL}/api/sample?id={voice_id} (optional &model= for Gemini sub-models), answering {url} when ready and 202 while a sample is generated
-- Per provider catalog JSON at ${SITE_URL}/api/catalog/{provider} packs each voice as [language, family, name, gender(f|m|n|u), tier(p premium|u ultra), styles], plus a models map of sub-model ids per family
+- Per provider catalog JSON at ${SITE_URL}/api/catalog/{provider} packs each voice as [language, family, name, gender(f|m|n|u), tier(p premium|u ultra), styles, traitsJson?], plus a models map of sub-model ids per family. The optional seventh slot is a JSON object of extra characteristics when a voice has any (age, pitch, accent, use_case, roles)
 `;
   return new Response(body, {
     headers: {

@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { getSite } from "@/lib/catalog";
+import { jsonLdSafe } from "@/lib/jsonld";
 import { PROVIDERS } from "@/lib/providers";
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000";
@@ -16,11 +17,15 @@ export default async function Home() {
   const site = await getSite();
   const { stats } = site;
   const fmt = (n: number) => n.toLocaleString("en-US");
+  // Scale cap: the hero sentence names at most three shelves, then counts
+  // the rest, so twenty providers never turn it into a paragraph.
   const providerNames = PROVIDERS.filter((p) => site.providers.has(p.key)).map((p) => p.label);
   const nameList =
-    providerNames.length > 1
-      ? `${providerNames.slice(0, -1).join(", ")} and ${providerNames[providerNames.length - 1]}`
-      : (providerNames[0] ?? "");
+    providerNames.length > 3
+      ? `${providerNames.slice(0, 3).join(", ")} and ${providerNames.length - 3} more`
+      : providerNames.length > 1
+        ? `${providerNames.slice(0, -1).join(", ")} and ${providerNames[providerNames.length - 1]}`
+        : (providerNames[0] ?? "");
 
   // "Coverage adds up" derives from data, and stays modest by design:
   // compare by primary language subtag so two codes for the same language
@@ -55,7 +60,7 @@ export default async function Home() {
 
   return (
     <main>
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: jsonLdSafe(jsonLd) }} />
 
       <section className="hero">
         <div className="shell">

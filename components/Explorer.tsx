@@ -7,6 +7,7 @@ import { unpack } from "@/lib/data";
 import { languageName } from "@/lib/lang";
 import { PROVIDER_FAMILIES, familyLabel, familyRank, modelLabel } from "@/lib/families";
 import { getProvider } from "@/lib/providers";
+import { EVENTS, track } from "@/lib/analytics";
 
 interface ExplorerProps {
   /** Provider key; scopes data, links and deep-link params. */
@@ -225,7 +226,8 @@ function ExplorerCore({ provider, voices, lockLanguage, models, paramsKey }: Cor
       if (lang && v.lang !== lang) return false;
       if (gender && v.gender !== gender) return false;
       if (needle) {
-        const hay = `${v.name} ${v.family} ${familyLabel(provider, v.family)} ${v.lang} ${languageName(v.lang)}`.toLowerCase();
+        const hay =
+          `${v.name} ${v.family} ${familyLabel(provider, v.family)} ${v.lang} ${languageName(v.lang)} ${v.traits.age ?? ""}`.toLowerCase();
         if (!hay.includes(needle)) return false;
       }
       return true;
@@ -271,6 +273,14 @@ function ExplorerCore({ provider, voices, lockLanguage, models, paramsKey }: Cor
 
   const hasFilters = q !== "" || family !== "" || lang !== "" || gender !== "" || gmodel !== "";
 
+  // Search analytics: one event per settled query, not per keystroke.
+  useEffect(() => {
+    const query = q.trim();
+    if (!query) return;
+    const t = setTimeout(() => track(EVENTS.SEARCH_USED, { provider, query }), 800);
+    return () => clearTimeout(t);
+  }, [q, provider]);
+
   // A family's honesty note (Gemini's accent quirk today) surfaces only
   // while that family is in view: filtered to it, or one of its voices is
   // the active playback. Quiet by design.
@@ -302,8 +312,23 @@ function ExplorerCore({ provider, voices, lockLanguage, models, paramsKey }: Cor
     const current = () => playGen.current === gen;
     setActive({ id: v.id, model, status: "loading" });
 
+    // Which cache tier served this playback; reported once on first audio
+    // progress so replays and cold plays can be told apart in analytics.
+    let source: "memory" | "cached" | "network" = "network";
+    let reported = false;
+    // One failure per playback attempt: a dead media load can surface as
+    // both an element error event and a play() rejection.
+    let failedOnce = false;
+
     const fail = (note: string) => {
-      if (!current()) return;
+      if (!current() || failedOnce) return;
+      failedOnce = true;
+      track(EVENTS.SAMPLE_FAILED, {
+        provider,
+        voice_id: v.id,
+        model: model || undefined,
+        reason: note,
+      });
       setActive({ id: v.id, model, status: "error", note });
       errTimer.current = setTimeout(() => {
         setActive((cur) => (cur?.id === v.id && cur.status === "error" ? null : cur));
@@ -311,7 +336,19 @@ function ExplorerCore({ provider, voices, lockLanguage, models, paramsKey }: Cor
     };
 
     const markPlaying = () => {
-      if (current()) setActive({ id: v.id, model, status: "playing" });
+      if (!current()) return;
+      if (!reported) {
+        reported = true;
+        track(EVENTS.SAMPLE_PLAYED, {
+          provider,
+          voice_id: v.id,
+          family: v.family,
+          language: v.lang,
+          model: model || undefined,
+          source,
+        });
+      }
+      setActive({ id: v.id, model, status: "playing" });
     };
 
     function start(url: string, fromBlob: boolean) {
@@ -361,9 +398,11 @@ function ExplorerCore({ provider, voices, lockLanguage, models, paramsKey }: Cor
     function resolve() {
       const known = urlCache.get(cacheKey);
       if (known && Date.now() - known.t < URL_TTL_MS) {
+        source = "cached";
         start(known.url, false);
         return;
       }
+      source = "network";
       lookup(0);
     }
 
@@ -379,6 +418,7 @@ function ExplorerCore({ provider, voices, lockLanguage, models, paramsKey }: Cor
             }
             const body = (await res.json().catch(() => null)) as { retry_after?: number } | null;
             if (!current()) return;
+            track(EVENTS.SAMPLE_GENERATING, { provider, voice_id: v.id, attempt });
             setActive({ id: v.id, model, status: "generating" });
             const wait = Math.min(Number(body?.retry_after) || 4, 12) * 1000;
             retryTimer.current = setTimeout(() => {
@@ -408,6 +448,7 @@ function ExplorerCore({ provider, voices, lockLanguage, models, paramsKey }: Cor
       // Re-insert so eviction hits the least recently played entry.
       blobCache.delete(cacheKey);
       blobCache.set(cacheKey, blobbed);
+      source = "memory";
       start(blobbed, true);
       return;
     }
@@ -436,7 +477,15 @@ function ExplorerCore({ provider, voices, lockLanguage, models, paramsKey }: Cor
           <label className="field-label" htmlFor="f-family">
             {(getProvider(provider)?.familyWord.one ?? "family").toUpperCase()}
           </label>
-          <select id="f-family" className="select" value={family} onChange={(e) => setFamily(e.target.value)}>
+          <select
+            id="f-family"
+            className="select"
+            value={family}
+            onChange={(e) => {
+              setFamily(e.target.value);
+              track(EVENTS.FILTER_CHANGED, { provider, kind: "family", value: e.target.value || "all" });
+            }}
+          >
             <option value="">All</option>
             {familyOptions.map((key) => (
               <option key={key} value={key}>
@@ -451,7 +500,15 @@ function ExplorerCore({ provider, voices, lockLanguage, models, paramsKey }: Cor
             <label className="field-label" htmlFor="f-lang">
               LANGUAGE
             </label>
-            <select id="f-lang" className="select" value={lang} onChange={(e) => setLang(e.target.value)}>
+            <select
+              id="f-lang"
+              className="select"
+              value={lang}
+              onChange={(e) => {
+                setLang(e.target.value);
+                track(EVENTS.FILTER_CHANGED, { provider, kind: "language", value: e.target.value || "all" });
+              }}
+            >
               <option value="">All</option>
               {languageOptions.map((l) => (
                 <option key={l.code} value={l.code}>
@@ -466,7 +523,15 @@ function ExplorerCore({ provider, voices, lockLanguage, models, paramsKey }: Cor
           <label className="field-label" htmlFor="f-gender">
             GENDER
           </label>
-          <select id="f-gender" className="select" value={gender} onChange={(e) => setGender(e.target.value)}>
+          <select
+            id="f-gender"
+            className="select"
+            value={gender}
+            onChange={(e) => {
+              setGender(e.target.value);
+              track(EVENTS.FILTER_CHANGED, { provider, kind: "gender", value: e.target.value || "any" });
+            }}
+          >
             <option value="">Any</option>
             <option value="female">Female</option>
             <option value="male">Male</option>
@@ -485,7 +550,10 @@ function ExplorerCore({ provider, voices, lockLanguage, models, paramsKey }: Cor
               value={gmodel || subModels[0]}
               disabled={family !== "" && family !== multiFamily}
               title={`${familyLabel(provider, multiFamily)} voices have a sample per sub-model. This picks which one plays.`}
-              onChange={(e) => setGmodel(e.target.value === subModels[0] ? "" : e.target.value)}
+              onChange={(e) => {
+                setGmodel(e.target.value === subModels[0] ? "" : e.target.value);
+                track(EVENTS.FILTER_CHANGED, { provider, kind: "model", value: e.target.value });
+              }}
             >
               {subModels.map((m) => (
                 <option key={m} value={m}>
@@ -506,7 +574,14 @@ function ExplorerCore({ provider, voices, lockLanguage, models, paramsKey }: Cor
           <button
             type="button"
             className="clear-btn"
-            onClick={() => (setQ(""), setFamily(""), setLang(""), setGender(""), setGmodel(""))}
+            onClick={() => {
+              setQ("");
+              setFamily("");
+              setLang("");
+              setGender("");
+              setGmodel("");
+              track(EVENTS.FILTER_CHANGED, { provider, kind: "clear", value: "all" });
+            }}
           >
             Clear filters
           </button>
@@ -571,7 +646,10 @@ function ExplorerCore({ provider, voices, lockLanguage, models, paramsKey }: Cor
                       preparing sample
                     </span>
                   )}
-                  <span className="vgender">{v.gender === "unknown" ? "" : v.gender}</span>
+                  <span className="vgender">
+                    {v.gender === "unknown" ? "" : v.gender}
+                    {v.traits.age ? ` (${v.traits.age})` : ""}
+                  </span>
                 </span>
               </div>
             );

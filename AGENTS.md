@@ -14,10 +14,12 @@ Speakshelf is a public catalog of text to speech voices with playable samples: G
 
 - `docs/architecture.md` explains how the system works and lists the invariants you must not break
 - `docs/decisions.md` is the dated log of settled decisions; do not quietly relitigate them
-- `docs/roadmap.md` says where the product goes next and parks unbuilt ideas
+- `docs/roadmap.md` says where the product goes next. It carries the owner's direction only: never park your own ideas there (no parking lots, no wishlists). Propose ideas to the owner in conversation; unadopted ideas are dropped, not stored.
 - `docs/design.md` holds the design system, the copy voice, and the design workflow
 
-Keep these docs true: when your change alters how something works, update `docs/architecture.md` in the same commit, and append to `docs/decisions.md` when something new gets settled.
+Keep these docs true: when your change alters how something works, update `docs/architecture.md` in the same commit, and append to `docs/decisions.md` when something new gets settled. This is not optional and not deferrable: a change whose docs lag is unfinished work.
+
+Keep files small and the code modular: no source file over 1,000 lines, and aim well below that. When a file grows past a few hundred lines, look for the module trying to get out (a cache, a state machine, a config block) and split it along that seam rather than letting one file absorb everything. Future maintainability outranks the convenience of one big file.
 
 ## Ground rules
 

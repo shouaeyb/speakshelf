@@ -63,7 +63,7 @@ for (const key of BLESSED) {
       if (rebuilt !== v.voice_id) {
         throw new Error(`voice id does not match packed layout: ${v.voice_id}`);
       }
-      return [
+      const row = [
         v.language,
         v.family,
         v.name,
@@ -71,6 +71,17 @@ for (const key of BLESSED) {
         v.model_type === "ultra" ? "u" : "p",
         (v.characteristics?.styles ?? []).slice(0, 2).join(","),
       ];
+      // Non-style characteristics ride an optional seventh slot, keyed
+      // as the API keys them (age, accent, pitch, use_case, roles).
+      const c = v.characteristics ?? {};
+      const traits = {};
+      if (c.age) traits.age = c.age;
+      if (c.accent) traits.accent = c.accent;
+      if (c.pitch) traits.pitch = c.pitch;
+      if (c.use_case) traits.use_case = c.use_case;
+      if (c.roles?.length) traits.roles = c.roles;
+      if (Object.keys(traits).length > 0) row.push(JSON.stringify(traits));
+      return row;
     }),
   };
 }

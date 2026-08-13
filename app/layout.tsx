@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import { IBM_Plex_Sans, IBM_Plex_Mono } from "next/font/google";
 import Link from "next/link";
+import Analytics from "@/components/Analytics";
 import MastNav from "@/components/MastNav";
 import { getSite } from "@/lib/catalog";
 import { PROVIDERS } from "@/lib/providers";
@@ -41,7 +42,14 @@ export async function generateMetadata(): Promise<Metadata> {
   // numbers, and they name one provider fewer than the shelf carries plus
   // "and more": platforms cache previews for weeks, so the cached line
   // stays literally true when the next provider lands.
-  const shareNames = `${names.slice(0, Math.max(1, names.length - 1)).join(", ")} and more`;
+  // Cap at two named providers regardless of how many exist, so a long
+  // roster never turns the cached share line into a list of nineteen.
+  // Always name fewer than the shelf carries, so "and more" stays
+  // literally true; a single-provider shelf claims nothing extra.
+  const shareNames =
+    names.length <= 1
+      ? (names[0] ?? "Speakshelf")
+      : `${names.slice(0, Math.min(2, names.length - 1)).join(", ")} and more`;
   const shareTitle = `Speakshelf · text to speech voices from ${shareNames}`;
   const description = `Browse and play ${site.stats.voices.toLocaleString(
     "en-US",
@@ -116,6 +124,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
           </div>
         </header>
         {children}
+        <Analytics />
         <footer className="footer">
           <div className="shell footer-in">
             <span className="wordmark">

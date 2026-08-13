@@ -8,7 +8,52 @@ import type { NextConfig } from "next";
 // permanently cached redirect, and no pre-umbrella links were ever public.
 const EXPLORER_PARAMS = ["family", "language", "gender", "gmodel"];
 
+// Production CSP. Dev is exempt (HMR needs unsafe-eval and websockets).
+// script-src 'unsafe-inline' is load-bearing for the JSON-LD blocks the
+// pages inline, not only for analytics; style-src 'unsafe-inline' covers
+// next/font's injected font-face styles. Mixpanel session replay loads
+// its recorder from cdn.mxpnl.com and runs a worker, hence worker-src.
+// storage.googleapis.com is the signed sample audio (fetch warm + <audio>).
+const CSP = [
+  "default-src 'self'",
+  "script-src 'self' 'unsafe-inline' https://www.googletagmanager.com https://cdn.mxpnl.com",
+  "style-src 'self' 'unsafe-inline'",
+  "connect-src 'self' https://api-js.mixpanel.com https://*.mixpanel.com https://www.googletagmanager.com https://www.google-analytics.com https://*.google-analytics.com https://*.analytics.google.com https://storage.googleapis.com",
+  "img-src 'self' data: https://www.googletagmanager.com https://www.google-analytics.com",
+  "media-src 'self' blob: https://storage.googleapis.com",
+  "font-src 'self'",
+  "worker-src 'self' blob:",
+  "object-src 'none'",
+  "base-uri 'self'",
+  "form-action 'self'",
+  "frame-ancestors 'none'",
+].join("; ");
+
+const isProd = process.env.NODE_ENV === "production";
+
+const securityHeaders = [
+  { key: "X-Frame-Options", value: "DENY" },
+  { key: "X-Content-Type-Options", value: "nosniff" },
+  { key: "Referrer-Policy", value: "strict-origin-when-cross-origin" },
+  { key: "Cross-Origin-Opener-Policy", value: "same-origin" },
+  { key: "Permissions-Policy", value: "microphone=(), camera=(), geolocation=()" },
+  ...(isProd
+    ? [
+        { key: "Strict-Transport-Security", value: "max-age=31536000; includeSubDomains" },
+        { key: "Content-Security-Policy", value: CSP },
+      ]
+    : []),
+];
+
 const nextConfig: NextConfig = {
+  async headers() {
+    return [
+      {
+        source: "/:path*",
+        headers: securityHeaders,
+      },
+    ];
+  },
   async redirects() {
     return [
       {

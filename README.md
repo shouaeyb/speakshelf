@@ -23,7 +23,7 @@ npm run dev
 
 `TTS_API_KEY` comes from an [AI TTS Microservice](https://aitts.theproductivepixel.com) account. Without it the site still renders; only sample playback returns errors.
 
-For production, also set `NEXT_PUBLIC_SITE_URL` to your public origin so canonical URLs, the sitemap and Open Graph tags point at the right host.
+For production, also set `NEXT_PUBLIC_SITE_URL` to your public origin so canonical URLs, the sitemap and Open Graph tags point at the right host. Analytics are optional: set `NEXT_PUBLIC_MIXPANEL_TOKEN` and `NEXT_PUBLIC_GA_MEASUREMENT_ID` (a G-XXXXXXXXXX id from GA Admin, Data streams) and both vendors run always-on; leave them empty and the site tracks nothing.
 
 ## Refresh the catalog
 

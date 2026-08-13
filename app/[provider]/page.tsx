@@ -4,6 +4,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import Explorer from "@/components/Explorer";
 import { getProviderCatalog } from "@/lib/catalog";
+import { jsonLdSafe } from "@/lib/jsonld";
 import { PROVIDERS, getProvider } from "@/lib/providers";
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000";
@@ -62,7 +63,7 @@ export default async function ProviderPage({ params }: { params: Promise<Params>
 
   return (
     <main>
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: jsonLdSafe(jsonLd) }} />
 
       <section className="hero">
         <div className="shell">
