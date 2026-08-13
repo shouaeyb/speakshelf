@@ -1,0 +1,192 @@
+{
+  "masthead": {
+    "allProviders": "Todos os provedores",
+    "allProvidersShort": "Todos"
+  },
+  "stats": {
+    "voices": "VOZES",
+    "providers": "PROVEDORES",
+    "languages": "IDIOMAS",
+    "samples": "AMOSTRAS REPRODUZÍVEIS"
+  },
+  "home": {
+    "eyebrow": "CATÁLOGO DE TEXTO PARA FALA",
+    "title": "{voices} vozes. Uma só estante.",
+    "sub": "O Speakshelf cataloga as vozes de texto para fala de {names}, cada uma com uma amostra para ouvir no navegador. Sem conta, sem configuração, só as vozes.",
+    "namesMore": "{names} e mais {count}",
+    "jumpProviders": "PROVEDORES",
+    "jumpAbout": "SOBRE",
+    "providersTitle": "{count, plural, one {# provedor} other {# provedores}}",
+    "providersSub": "Cada provedor mantém uma estante completa: a lista inteira de vozes com filtros e reprodução, notas sobre cada família de modelos e uma página por idioma. A estante cresce: o AI TTS Microservice unifica mais provedores, e novas estantes abrem aqui depois de verificadas.",
+    "cardVoices": "vozes",
+    "cardMeta": "{languages, plural, one {# idioma} other {# idiomas}} · {families} · {samples, plural, one {# amostra} other {# amostras}}",
+    "browse": "EXPLORAR →",
+    "whyTitle": "Por que uma só estante",
+    "whySub": "Catálogos diferem em mais do que tamanho. Vê-los lado a lado mostra as lacunas, as sobreposições e o caráter de cada um.",
+    "why1Title": "A cobertura se soma",
+    "why1GapAndVariants": "O Amazon Polly traz o {gap}, que o Google Cloud não oferece de forma alguma, além de variantes regionais como {v1} e {v2}. Uma só estante mostra o que cada provedor tem e falta aos demais.",
+    "why1GapOnly": "O Amazon Polly traz o {gap}, que o Google Cloud não oferece de forma alguma. Uma só estante mostra o que cada provedor tem e falta aos demais.",
+    "why1VariantsOnly": "O Amazon Polly acrescenta variantes regionais como {v1} e {v2}. Uma só estante mostra o que cada provedor tem e falta aos demais.",
+    "why1Generic": "Uma só estante mostra o que cada provedor tem e falta aos demais.",
+    "why2Title": "Um só jeito de ouvir",
+    "why2Body": "Os mesmos filtros, o mesmo player, o mesmo esquema de identificadores em cada estante. Comparar vozes entre provedores são dois cliques, não dois consoles.",
+    "why3Title": "Atualiza sozinho",
+    "why3Body": "Cada estante se atualiza diariamente a partir do AI TTS Microservice. Vozes, idiomas e submodelos novos aparecem aqui sem que ninguém edite o site.",
+    "aboutTitle": "Sobre este catálogo",
+    "aboutBody": "O Speakshelf é um catálogo de referência de vozes de texto para fala. Hoje reúne {voices} vozes de {providers, plural, one {# provedor} other {# provedores}} em {languages, plural, one {# idioma} other {# idiomas}}, cada uma com uma amostra para ouvir. As vozes são agrupadas como seus provedores as agrupam, em famílias de modelos e motores, para que o que você ouve corresponda ao que implantaria."
+  },
+  "attribution": {
+    "body": "O Speakshelf é independente e não é afiliado ao Google, à Amazon nem ao projeto Kokoro. Os dados de vozes e o áudio vêm do <link>AI TTS Microservice</link>, um serviço que unifica Google, Amazon, Azure e outros provedores de fala atrás de um único ponto de acesso. As amostras são geradas sob demanda, então ouvir é grátis."
+  },
+  "providers": {
+    "google": {
+      "eyebrow": "TEXTO PARA FALA DO GOOGLE CLOUD",
+      "heroTitle": "Cada voz do Google, em uma só página.",
+      "heroSub": "Ouça uma amostra de cada voz do catálogo do Google Cloud. Filtre por família de modelos, idioma e gênero. Sem conta, sem configuração, só as vozes.",
+      "familyWord": "{count, plural, one {família de modelos} other {famílias de modelos}}",
+      "jump": "MODELOS",
+      "familiesIntro": "O Google não para de lançar novas arquiteturas de fala e todas as gerações seguem em serviço. O catálogo vai de vozes paramétricas compactas a modelos que você dirige com uma frase.",
+      "card": "A estante mais profunda: famílias de modelos de Standard e WaveNet até Chirp 3 e as vozes Gemini que seguem uma instrução de estilo escrita.",
+      "about": "O Google Cloud opera um dos maiores catálogos de texto para fala entre os provedores de nuvem. Ele abrange {families} famílias de modelos, das vozes WaveNet que popularizaram a fala neural às vozes Gemini, que mudam a entrega quando você descreve o tom desejado. O Gemini é na verdade {models} modelos em um: cada voz Gemini pode ser renderizada por qualquer um de seus submodelos, e cada renderização tem aqui sua própria amostra. Todas as outras vozes do catálogo também têm amostra.",
+      "unknownFamily": "Uma adição recente ao catálogo do Google."
+    },
+    "polly": {
+      "eyebrow": "TEXTO PARA FALA DO AMAZON POLLY",
+      "heroTitle": "Cada voz do Amazon Polly, em uma só página.",
+      "heroSub": "Ouça uma amostra de cada voz do catálogo do Amazon Polly. Filtre por motor, idioma e gênero. Sem conta, sem configuração, só as vozes.",
+      "familyWord": "{count, plural, one {motor} other {motores}}",
+      "jump": "MOTORES",
+      "familiesIntro": "O Polly agrupa suas vozes por motor. O catálogo vai das vozes standard ao motor generativo, com um nível long-form pensado para escutas longas.",
+      "card": "O serviço de texto para fala da AWS: motores standard, neural, generativo e long-form.",
+      "about": "O Amazon Polly é o serviço de texto para fala da AWS, que converte texto em fala natural. Suas {voices} vozes aqui abrangem {families} motores: standard e neural, um motor generativo construído com técnicas de IA generativa, e vozes long-form projetadas para conteúdos longos como artigos e materiais de treinamento. Cada voz tem uma amostra para ouvir.",
+      "unknownFamily": "Uma adição recente ao catálogo do Amazon Polly."
+    },
+    "kokoro": {
+      "eyebrow": "TEXTO PARA FALA DO KOKORO",
+      "heroTitle": "Cada voz do Kokoro, em uma só página.",
+      "heroSub": "Ouça uma amostra de cada voz do modelo aberto Kokoro. Filtre por idioma e gênero. Sem conta, sem configuração, só as vozes.",
+      "familyWord": "{count, plural, one {família de modelos} other {famílias de modelos}}",
+      "jump": "MODELO",
+      "familiesIntro": "O Kokoro é um modelo único, não uma coleção de motores, então todo o seu catálogo cabe em uma só família.",
+      "card": "Um modelo de pesos abertos, 82 milhões de parâmetros sob a licença Apache 2.0.",
+      "about": "O Kokoro é um modelo de texto para fala de pesos abertos: 82 milhões de parâmetros, publicado sob a licença Apache 2.0. O AI TTS Microservice o serve ao lado dos catálogos de nuvem, de modo que suas {voices} vozes em {languages} idiomas tocam aqui como qualquer outra estante. Cada voz tem uma amostra para ouvir.",
+      "unknownFamily": "Uma adição recente ao catálogo do Kokoro."
+    }
+  },
+  "providerPage": {
+    "jumpVoices": "VOZES",
+    "jumpLanguages": "IDIOMAS",
+    "jumpAbout": "SOBRE",
+    "familiesTitle": "{count} {familyWord}",
+    "languagesTitle": "{count, plural, one {# idioma} other {# idiomas}}",
+    "languagesSub": "Cada idioma tem sua própria página com a lista completa de vozes, para você mandar alguém direto a uma estante do catálogo.",
+    "famMeta": "{voices, plural, one {# voz} other {# vozes}}",
+    "famLangs": "{count, plural, one {# idioma} other {# idiomas}}",
+    "famModels": "{count} submodelos",
+    "aboutTitle": "Sobre este catálogo",
+    "allVoices": "Todas as vozes"
+  },
+  "families": {
+    "google": {
+      "Gemini": {
+        "blurb": "Fala nativa do Gemini. Cada voz pode ser renderizada por todos os submodelos, e a entrega segue uma instrução de estilo escrita.",
+        "note": "As amostras mostram cada voz com honestidade, esquisitices incluídas. Algumas vozes Gemini podem soar com um sotaque diferente do rótulo regional, por exemplo uma voz en-US soando en-IN. Na sua própria instrução de geração, um pedido simples como \"diga isto com sotaque americano\" costuma corrigir."
+      },
+      "Chirp3HD": { "blurb": "A geração HD atual, afinada para conversas naturais." },
+      "Standard": { "blurb": "Vozes paramétricas com a maior cobertura de idiomas ao menor preço." },
+      "Wavenet": { "blurb": "O modelo da DeepMind que popularizou a fala neural." },
+      "Neural2": { "blurb": "Vozes neurais de segunda geração, o padrão de muitos produtos." },
+      "ChirpHD": { "blurb": "A primeira geração Chirp, ainda amplamente usada." },
+      "News": { "blurb": "Vozes de estilo jornalístico afinadas para ler notícias." },
+      "Studio": { "blurb": "Vozes com qualidade de narração para leituras longas." },
+      "Polyglot": { "blurb": "Uma identidade de voz que fala vários idiomas." },
+      "Casual": { "blurb": "Uma voz conversacional criada para respostas informais." }
+    },
+    "polly": {
+      "Neural": { "blurb": "Vozes neurais, a geração de aprendizado de máquina que elevou a qualidade de fala do Polly." },
+      "Standard": { "blurb": "O motor standard, as vozes base do Polly com ampla cobertura de idiomas." },
+      "Generative": { "blurb": "O motor mais novo do Polly, construído com IA generativa para fala conversacional." },
+      "LongForm": { "blurb": "Feito para escutas longas: artigos, materiais de treinamento e narração." }
+    },
+    "kokoro": {
+      "Kokoro": { "blurb": "Todas as vozes do Kokoro: um modelo de pesos abertos, 82 milhões de parâmetros, Apache 2.0." }
+    }
+  },
+  "tags": {
+    "premium": "PREMIUM",
+    "ultra": "ULTRA"
+  },
+  "explorer": {
+    "searchPlaceholder": "Busque nome, idioma, gênero, modelo, estilo",
+    "searchAria": "Buscar vozes",
+    "language": "IDIOMA",
+    "gender": "GÊNERO",
+    "all": "Todos",
+    "any": "Qualquer",
+    "female": "Feminino",
+    "male": "Masculino",
+    "neutral": "Neutro",
+    "loading": "Carregando catálogo",
+    "results": "{voices, plural, one {# voz} other {# vozes}} · {samples, plural, one {# amostra} other {# amostras}}",
+    "clear": "Limpar filtros",
+    "empty": "Nenhuma voz corresponde. Tente uma busca mais curta ou remova um filtro.",
+    "langVoices": "{count, plural, one {# voz} other {# vozes}}",
+    "playAria": "Reproduzir amostra de {name}, {language}",
+    "dismissAria": "Fechar",
+    "noteUnavailable": "amostra indisponível",
+    "noteTapAgain": "toque em reproduzir de novo",
+    "noteBusy": "ocupado, tente em um minuto",
+    "notePreparing": "ainda preparando, tente em instantes",
+    "noteGenerating": "preparando amostra",
+    "listNote": "Os idiomas são ordenados pelo tamanho do catálogo.",
+    "listNoteModels": "Os idiomas são ordenados pelo tamanho do catálogo. As vozes {family} têm uma amostra por submodelo, então o controle {familyUpper} escolhe qual versão você ouve.",
+    "modelPickTitle": "As vozes {family} têm uma amostra por submodelo. Isto escolhe qual toca.",
+    "genderWords": {
+      "female": "feminino",
+      "male": "masculino",
+      "neutral": "neutro"
+    },
+    "traits": {
+      "child": "INFANTIL"
+    }
+  },
+  "langPage": {
+    "crumb": "← Todos os idiomas do {label}",
+    "meta": "{code} · {voices, plural, one {# voz} other {# vozes}} · {families} {familyWord} · {samples, plural, one {# amostra reproduzível} other {# amostras reproduzíveis}}"
+  },
+  "consent": {
+    "text": "O Speakshelf usa cookies e análises para entender como o catálogo é usado.",
+    "necessary": "Só o necessário",
+    "accept": "Aceitar tudo"
+  },
+  "suggest": {
+    "invite": "Ver o Speakshelf em português?",
+    "switch": "Mudar",
+    "dismissAria": "Dispensar sugestão de idioma"
+  },
+  "notFound": {
+    "title": "Nada nesta estante",
+    "body": "A página que você procura não existe. O catálogo mora na página inicial.",
+    "home": "Voltar à estante"
+  },
+  "footer": {
+    "note": "Catálogo atualizado em {date} · {voices} vozes de {providers, plural, one {# provedor} other {# provedores}} em {languages, plural, one {# idioma} other {# idiomas}}",
+    "served": "Amostras servidas pelo <link>AI TTS Microservice</link> · Independente, sem afiliação com Google, Amazon ou o projeto Kokoro",
+    "languageLabel": "Idioma"
+  },
+  "meta": {
+    "andMore": "{names} e mais",
+    "siteTitle": "Speakshelf · vozes de texto para fala de {names}",
+    "siteDescription": "Explore e ouça {voices} vozes de texto para fala de {names} em {languages} idiomas, cada uma com uma amostra para ouvir.",
+    "shareDescription": "Explore e ouça os catálogos de texto para fala de {names}. Uma amostra para cada voz.",
+    "homeJsonLd": "Um catálogo de vozes de texto para fala de {names}, com amostras para ouvir no navegador.",
+    "providerTitle": "Vozes de texto para fala do {label}",
+    "providerDescription": "Ouça amostras do catálogo completo de texto para fala do {label}: {voices} vozes em {languages} idiomas, com filtros por {familyWord}, idioma e gênero.",
+    "providerShareDescription": "O catálogo completo de texto para fala do {label} com uma amostra para cada voz.",
+    "providerJsonLd": "Um catálogo de todas as vozes de texto para fala do {label}, com amostras para ouvir no navegador.",
+    "langTitle": "Vozes do {label} em {language}",
+    "langDescription": "As {voices} vozes de texto para fala do {label} para {language} ({code}), com amostras para ouvir no navegador.",
+    "langShareDescription": "Vozes de texto para fala do {label} para {language}, com amostras para ouvir.",
+    "langJsonLd": "Vozes de texto para fala do {label} para {language} ({code})."
+  }
+}

@@ -1,14 +1,15 @@
 "use client";
 
-import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { useTranslations } from "next-intl";
+import { Link, usePathname } from "@/i18n/navigation";
 import { PROVIDERS } from "@/lib/providers";
 import { EVENTS, track } from "@/lib/analytics";
 
 // The masthead is global chrome: it always shows the provider shelves,
 // with the current one underlined. Section-level wayfinding lives in each
-// page's hero jump links instead, so the masthead never has to know what
-// sections a page has.
+// page's hero jump links instead. usePathname comes from the i18n router,
+// so the path is locale-stripped and active detection works on /es/google
+// exactly as on /google.
 
 // Scale cap: names fit only while the shelf list is short. Past this many
 // providers the masthead shows the largest ones (config order is display
@@ -18,6 +19,7 @@ const MAX_NAMED = 4;
 
 export default function MastNav() {
   const pathname = usePathname();
+  const t = useTranslations("masthead");
   let named = PROVIDERS.length > MAX_NAMED ? PROVIDERS.slice(0, MAX_NAMED - 1) : PROVIDERS;
   // The active shelf must always be visible and underlined, even when the
   // roster is collapsed: swap it in for the last named slot if hidden.
@@ -46,8 +48,8 @@ export default function MastNav() {
       })}
       {named.length < PROVIDERS.length && (
         <Link className="mast-link" href="/#providers">
-          <span className="mast-long">All providers</span>
-          <span className="mast-short">All</span>
+          <span className="mast-long">{t("allProviders")}</span>
+          <span className="mast-short">{t("allProvidersShort")}</span>
         </Link>
       )}
     </nav>

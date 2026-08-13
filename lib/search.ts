@@ -32,8 +32,18 @@ function normalize(text: string): string {
   return stripDiacritics(text).toLowerCase();
 }
 
-/** Everything searchable about one voice. */
-export function buildSearchDoc(voice: Voice, provider: string): SearchDoc {
+/** Everything searchable about one voice. The language name goes in
+ *  twice when a locale is active: localized (what the reader sees) and
+ *  English (what they may still type). extraTerms lets the caller add
+ *  localized words the lib cannot know (translated gender, tier and
+ *  trait labels from the message files), so a Spanish reader typing
+ *  "femenino" matches exactly like an English reader typing "female". */
+export function buildSearchDoc(
+  voice: Voice,
+  provider: string,
+  locale = "en",
+  extraTerms: string[] = [],
+): SearchDoc {
   const meta = getProvider(provider);
   const parts: string[] = [
     voice.id,
@@ -41,7 +51,8 @@ export function buildSearchDoc(voice: Voice, provider: string): SearchDoc {
     voice.family,
     familyLabel(provider, voice.family),
     voice.lang,
-    languageName(voice.lang),
+    languageName(voice.lang, locale),
+    ...(locale !== "en" ? [languageName(voice.lang, "en")] : []),
     voice.gender,
     voice.tier,
     provider,
@@ -56,6 +67,7 @@ export function buildSearchDoc(voice: Voice, provider: string): SearchDoc {
       parts.push(String(value), key);
     }
   }
+  parts.push(...extraTerms);
   const text = normalize(parts.join(" "));
   return { text, words: text.split(/\s+/).filter(Boolean) };
 }

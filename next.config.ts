@@ -1,4 +1,7 @@
 import type { NextConfig } from "next";
+import createNextIntlPlugin from "next-intl/plugin";
+
+const withNextIntl = createNextIntlPlugin("./i18n/request.ts");
 
 // Google lived at the root before the umbrella homepage existed. Every old
 // URL keeps working through permanent redirects (Next answers 308, the
@@ -67,8 +70,20 @@ const nextConfig: NextConfig = {
         destination: "/google",
         permanent: true,
       })),
+      // The default locale is always served unprefixed; a direct /en URL
+      // must not become a duplicate page.
+      {
+        source: "/en",
+        destination: "/",
+        permanent: true,
+      },
+      {
+        source: "/en/:path*",
+        destination: "/:path*",
+        permanent: true,
+      },
     ];
   },
 };
 
-export default nextConfig;
+export default withNextIntl(nextConfig);

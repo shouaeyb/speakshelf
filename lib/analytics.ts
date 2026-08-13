@@ -102,3 +102,11 @@ export function track(name: EventName, props: EventProps = {}): void {
   if (ready && MIXPANEL_TOKEN) mixpanel.track(name, props);
   window.gtag?.("event", name, props);
 }
+
+/** UI locale as a standing dimension: a Mixpanel super property and a GA
+ *  user property. Event names stay stable English identifiers. */
+export function setAnalyticsLocale(locale: string): void {
+  if (typeof window === "undefined") return;
+  if (ready && MIXPANEL_TOKEN) mixpanel.register({ locale });
+  window.gtag?.("set", "user_properties", { ui_locale: locale });
+}

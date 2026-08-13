@@ -1,0 +1,192 @@
+{
+  "masthead": {
+    "allProviders": "全部提供商",
+    "allProvidersShort": "全部"
+  },
+  "stats": {
+    "voices": "语音",
+    "providers": "提供商",
+    "languages": "语言",
+    "samples": "可播放示例"
+  },
+  "home": {
+    "eyebrow": "文字转语音目录",
+    "title": "{voices} 个语音，一个书架。",
+    "sub": "Speakshelf 收录 {names} 的文字转语音语音，每个语音都有可在浏览器中播放的示例。无需账号，无需配置，只有语音。",
+    "namesMore": "{names}及另外 {count} 家",
+    "jumpProviders": "提供商",
+    "jumpAbout": "关于",
+    "providersTitle": "{count, plural, other {# 家提供商}}",
+    "providersSub": "每家提供商都有完整的书架：带筛选和播放的全部语音列表、每个模型家族的说明，以及每种语言的独立页面。书架还在扩充：AI TTS Microservice 正在整合更多提供商，经核验后新的书架会在这里开放。",
+    "cardVoices": "个语音",
+    "cardMeta": "{languages, plural, other {# 种语言}} · {families} · {samples, plural, other {# 个示例}}",
+    "browse": "浏览 →",
+    "whyTitle": "为什么用一个书架",
+    "whySub": "目录之间的差异不只是规模。并排摆放才能看清空缺、重叠和各自的特点。",
+    "why1Title": "覆盖互补",
+    "why1GapAndVariants": "Amazon Polly 带来了 Google Cloud 完全没有的{gap}，还有 {v1} 和 {v2} 等地区变体。一个书架就能看清每家提供商拥有而其他家缺少的部分。",
+    "why1GapOnly": "Amazon Polly 带来了 Google Cloud 完全没有的{gap}。一个书架就能看清每家提供商拥有而其他家缺少的部分。",
+    "why1VariantsOnly": "Amazon Polly 增加了 {v1} 和 {v2} 等地区变体。一个书架就能看清每家提供商拥有而其他家缺少的部分。",
+    "why1Generic": "一个书架就能看清每家提供商拥有而其他家缺少的部分。",
+    "why2Title": "同一种聆听方式",
+    "why2Body": "每个书架都是同样的筛选、同样的播放器、同样的语音标识方案。跨提供商比较语音只需两次点击，而不是两个控制台。",
+    "why3Title": "自动保持最新",
+    "why3Body": "每个书架每天从 AI TTS Microservice 自动刷新。新语音、新语言和新子模型都会自行出现，无需任何人编辑网站。",
+    "aboutTitle": "关于本目录",
+    "aboutBody": "Speakshelf 是文字转语音语音的参考目录。目前收录来自 {providers, plural, other {# 家提供商}}的 {voices} 个语音，覆盖 {languages, plural, other {# 种语言}}，每个语音都有可播放的示例。语音按提供商自己的方式分组，即模型家族与引擎，让你听到的与将要部署的一一对应。"
+  },
+  "attribution": {
+    "body": "Speakshelf 是独立网站，与 Google、Amazon 或 Kokoro 项目均无关联。语音数据与音频来自 <link>AI TTS Microservice</link>，该服务将 Google、Amazon、Azure 及其他语音提供商统一到单一接入点之后。示例按需生成，因此试听免费。"
+  },
+  "providers": {
+    "google": {
+      "eyebrow": "GOOGLE CLOUD 文字转语音",
+      "heroTitle": "每个 Google 语音，都在这一页。",
+      "heroSub": "播放 Google Cloud 目录中每个语音的示例。按模型家族、语言和性别筛选。无需账号，无需配置，只有语音。",
+      "familyWord": "{count, plural, other {个模型家族}}",
+      "jump": "模型",
+      "familiesIntro": "Google 不断推出新的语音架构，而每一代都仍在服务。目录从紧凑的参数化语音一直延伸到可用一句话指挥的模型。",
+      "card": "这里最深的书架：从 Standard 和 WaveNet 到 Chirp 3，再到遵循书面风格指令的 Gemini 语音。",
+      "about": "Google Cloud 运营着云提供商中最大的文字转语音目录之一。它涵盖 {families} 个模型家族：从让神经语音走向主流的 WaveNet，到描述语气便能改变演绎方式的 Gemini 语音。Gemini 实际上是 {models} 个模型合一：每个 Gemini 语音都能由任一子模型渲染，每种渲染在这里都有自己的示例。目录中的其他语音同样都有示例。",
+      "unknownFamily": "Google 目录的新成员。"
+    },
+    "polly": {
+      "eyebrow": "AMAZON POLLY 文字转语音",
+      "heroTitle": "每个 Amazon Polly 语音，都在这一页。",
+      "heroSub": "播放 Amazon Polly 目录中每个语音的示例。按引擎、语言和性别筛选。无需账号，无需配置，只有语音。",
+      "familyWord": "{count, plural, other {个引擎}}",
+      "jump": "引擎",
+      "familiesIntro": "Polly 按引擎给语音分组。目录从 standard 语音延伸到生成式引擎，还有为长时间聆听打造的 long-form 档位。",
+      "card": "AWS 的文字转语音服务：standard、neural、生成式与 long-form 引擎。",
+      "about": "Amazon Polly 是 AWS 的文字转语音服务，把文本转换为逼真的语音。这里的 {voices} 个语音横跨 {families} 个引擎：standard 与 neural、采用生成式 AI 技术打造的生成式引擎，以及为文章和培训材料等较长内容设计的 long-form 语音。每个语音都有可播放的示例。",
+      "unknownFamily": "Amazon Polly 目录的新成员。"
+    },
+    "kokoro": {
+      "eyebrow": "KOKORO 文字转语音",
+      "heroTitle": "每个 Kokoro 语音，都在这一页。",
+      "heroSub": "播放开放权重模型 Kokoro 每个语音的示例。按语言和性别筛选。无需账号，无需配置，只有语音。",
+      "familyWord": "{count, plural, other {个模型家族}}",
+      "jump": "模型",
+      "familiesIntro": "Kokoro 是单一模型而非引擎集合，所以整个目录都在同一个家族里。",
+      "card": "开放权重模型，8200 万参数，Apache 2.0 许可。",
+      "about": "Kokoro 是开放权重的文字转语音模型：8200 万参数，以 Apache 2.0 许可发布。AI TTS Microservice 将它与云目录并列提供，因此它覆盖 {languages} 种语言的 {voices} 个语音在这里与其他书架一样即点即播。每个语音都有可播放的示例。",
+      "unknownFamily": "Kokoro 目录的新成员。"
+    }
+  },
+  "providerPage": {
+    "jumpVoices": "语音",
+    "jumpLanguages": "语言",
+    "jumpAbout": "关于",
+    "familiesTitle": "{count} {familyWord}",
+    "languagesTitle": "{count, plural, other {# 种语言}}",
+    "languagesSub": "每种语言都有自己的页面，收录完整语音列表，方便直接把某一格书架分享给别人。",
+    "famMeta": "{voices, plural, other {# 个语音}}",
+    "famLangs": "{count, plural, other {# 种语言}}",
+    "famModels": "{count} 个子模型",
+    "aboutTitle": "关于本目录",
+    "allVoices": "全部语音"
+  },
+  "families": {
+    "google": {
+      "Gemini": {
+        "blurb": "Gemini 的原生语音。每个语音都能由全部子模型渲染，演绎方式遵循书面风格指令。",
+        "note": "示例如实呈现每个语音，包括小毛病。部分 Gemini 语音的口音可能与地区标签不符，例如 en-US 语音听起来像 en-IN。在你自己的生成指令里加一句简单说明，如\"用美式口音朗读\"，通常就能纠正。"
+      },
+      "Chirp3HD": { "blurb": "当前的 HD 世代，为自然对话调校。" },
+      "Standard": { "blurb": "参数化语音，语言覆盖最广，价格最低。" },
+      "Wavenet": { "blurb": "让神经语音走向主流的 DeepMind 模型。" },
+      "Neural2": { "blurb": "第二代神经语音，许多产品的默认选择。" },
+      "ChirpHD": { "blurb": "第一代 Chirp，仍被广泛使用。" },
+      "News": { "blurb": "为播报新闻调校的广播风格语音。" },
+      "Studio": { "blurb": "适合长篇朗读的演播级语音。" },
+      "Polyglot": { "blurb": "一个语音身份，多种语言。" },
+      "Casual": { "blurb": "为非正式回复打造的对话语音。" }
+    },
+    "polly": {
+      "Neural": { "blurb": "神经语音：让 Polly 语音质量跃升的机器学习世代。" },
+      "Standard": { "blurb": "standard 引擎，Polly 的基础语音，语言覆盖广。" },
+      "Generative": { "blurb": "Polly 最新的引擎，基于生成式 AI 打造对话语音。" },
+      "LongForm": { "blurb": "为长时间聆听而生：文章、培训材料和旁白。" }
+    },
+    "kokoro": {
+      "Kokoro": { "blurb": "Kokoro 的全部语音：一个开放权重模型，8200 万参数，Apache 2.0。" }
+    }
+  },
+  "tags": {
+    "premium": "PREMIUM",
+    "ultra": "ULTRA"
+  },
+  "explorer": {
+    "searchPlaceholder": "搜索名称、语言、性别、模型、风格",
+    "searchAria": "搜索语音",
+    "language": "语言",
+    "gender": "性别",
+    "all": "全部",
+    "any": "不限",
+    "female": "女声",
+    "male": "男声",
+    "neutral": "中性",
+    "loading": "目录加载中",
+    "results": "{voices, plural, other {# 个语音}} · {samples, plural, other {# 个示例}}",
+    "clear": "清除筛选",
+    "empty": "没有匹配的语音。试试更短的关键词，或去掉一个筛选。",
+    "langVoices": "{count, plural, other {# 个语音}}",
+    "playAria": "播放 {name}（{language}）的示例",
+    "dismissAria": "关闭",
+    "noteUnavailable": "示例不可用",
+    "noteTapAgain": "请再点一次播放",
+    "noteBusy": "繁忙，请一分钟后再试",
+    "notePreparing": "仍在准备，请稍后再试",
+    "noteGenerating": "示例准备中",
+    "listNote": "语言按目录规模排序。",
+    "listNoteModels": "语言按目录规模排序。{family} 语音每个子模型各有一个示例，{familyUpper} 控件选择你听到的版本。",
+    "modelPickTitle": "{family} 语音每个子模型各有一个示例。这里选择播放哪个。",
+    "genderWords": {
+      "female": "女声",
+      "male": "男声",
+      "neutral": "中性"
+    },
+    "traits": {
+      "child": "儿童"
+    }
+  },
+  "langPage": {
+    "crumb": "← {label} 的全部语言",
+    "meta": "{code} · {voices, plural, other {# 个语音}} · {families} {familyWord} · {samples, plural, other {# 个可播放示例}}"
+  },
+  "consent": {
+    "text": "Speakshelf 使用 Cookie 和分析工具来了解目录的使用情况。",
+    "necessary": "仅必要项",
+    "accept": "全部接受"
+  },
+  "suggest": {
+    "invite": "用中文浏览 Speakshelf？",
+    "switch": "切换",
+    "dismissAria": "关闭语言建议"
+  },
+  "notFound": {
+    "title": "这格书架是空的",
+    "body": "你要找的页面不存在。目录在首页。",
+    "home": "回到书架"
+  },
+  "footer": {
+    "note": "目录更新于 {date} · 来自 {providers, plural, other {# 家提供商}}的 {voices} 个语音，覆盖 {languages, plural, other {# 种语言}}",
+    "served": "示例由 <link>AI TTS Microservice</link> 提供 · 独立网站，与 Google、Amazon 或 Kokoro 项目均无关联",
+    "languageLabel": "语言"
+  },
+  "meta": {
+    "andMore": "{names}等",
+    "siteTitle": "Speakshelf · 来自{names}的文字转语音语音",
+    "siteDescription": "浏览并试听来自{names}、覆盖 {languages} 种语言的 {voices} 个文字转语音语音，每个都有可播放示例。",
+    "shareDescription": "浏览并试听{names}的文字转语音目录。每个语音都有可播放示例。",
+    "homeJsonLd": "来自{names}的文字转语音语音目录，示例可在浏览器中播放。",
+    "providerTitle": "{label} 文字转语音语音",
+    "providerDescription": "试听 {label} 完整文字转语音目录的示例：{voices} 个语音覆盖 {languages} 种语言，可按{familyWord}、语言和性别筛选。",
+    "providerShareDescription": "{label} 的完整文字转语音目录，每个语音都有可播放示例。",
+    "providerJsonLd": "{label} 全部文字转语音语音的目录，示例可在浏览器中播放。",
+    "langTitle": "{label} {language}语音",
+    "langDescription": "{label} 面向{language}（{code}）的全部 {voices} 个文字转语音语音，示例可在浏览器中播放。",
+    "langShareDescription": "{label} 面向{language}的文字转语音语音，附可播放示例。",
+    "langJsonLd": "{label} 面向{language}（{code}）的文字转语音语音。"
+  }
+}

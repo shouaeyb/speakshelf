@@ -919,6 +919,92 @@ a.lang-name:hover {
   }
 }
 
+/* Uppercase through CSS so translated labels never get locale-broken
+   JavaScript uppercasing. */
+.upper {
+  text-transform: uppercase;
+}
+
+/* Language suggestion strip: one quiet offer above the masthead, in the
+   visitor's own language, remembered forever once answered. */
+.lang-suggest {
+  background: var(--inv-bg);
+  color: var(--inv-text);
+  border-bottom: 1px solid var(--inv-border);
+}
+
+.lang-suggest-in {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  font-size: 12.5px;
+}
+
+.lang-suggest-text {
+  color: #c6c6c6;
+}
+
+.lang-suggest-cta {
+  background: none;
+  border: 1px solid var(--inv-border);
+  color: var(--inv-text);
+  font-family: var(--sans);
+  font-size: 12px;
+  padding: 4px 12px;
+  cursor: pointer;
+}
+
+.lang-suggest-cta:hover {
+  background: var(--inv-layer);
+}
+
+.lang-suggest-close {
+  margin-left: auto;
+  background: none;
+  border: none;
+  color: var(--inv-text-2);
+  font-size: 12px;
+  cursor: pointer;
+  padding: 4px;
+}
+
+.lang-suggest-close:hover {
+  color: var(--inv-text);
+}
+
+/* Footer brand column: wordmark above the language select. */
+.footer-brand {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  align-items: flex-start;
+}
+
+.locale-switch {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.locale-switch-label {
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 1px;
+  color: var(--inv-text-2);
+  text-transform: uppercase;
+}
+
+.locale-switch-select {
+  background: var(--inv-layer);
+  color: var(--inv-text);
+  border: 1px solid var(--inv-border);
+  font-family: var(--sans);
+  font-size: 12.5px;
+  padding: 6px 10px;
+}
+
 /* Family quirk toast: first noted-family play per session. Carbon toast
    shape: dark, blue leading rule, bottom left, above the consent bar. */
 

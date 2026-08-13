@@ -168,7 +168,10 @@ export interface LanguageSummary {
 export interface FamilySummary {
   key: string;
   label: string;
-  blurb: string;
+  /** True when the family is in the metadata registry; blurbs live in
+   *  messages (families.<provider>.<key>.blurb), unknown families use the
+   *  provider's unknownFamily message. */
+  known: boolean;
   tier: "premium" | "ultra";
   voices: number;
   languages: number;
@@ -265,24 +268,24 @@ function buildProviderCatalog(provider: string, updated: string, packed: PackedP
     e.voices++;
     e.langs.add(v.lang);
   }
-  const summarize = (key: string, label: string, blurb: string): FamilySummary => {
+  const summarize = (key: string, label: string, known: boolean): FamilySummary => {
     const e = byFamily.get(key)!;
     return {
       key,
       label,
-      blurb,
+      known,
       tier: e.tier,
       voices: e.voices,
       languages: e.langs.size,
       ...(models[key] && models[key].length > 1 ? { models: models[key].length } : {}),
     };
   };
-  const known = PROVIDER_FAMILIES[provider] ?? [];
-  const families = known.filter((f) => byFamily.has(f.key)).map((f) => summarize(f.key, f.label, f.blurb));
+  const registry = PROVIDER_FAMILIES[provider] ?? [];
+  const families = registry.filter((f) => byFamily.has(f.key)).map((f) => summarize(f.key, f.label, true));
   // A family this code has never heard of still gets a tile.
   for (const key of byFamily.keys()) {
-    if (!known.some((f) => f.key === key)) {
-      families.push(summarize(key, key, getProvider(provider)?.unknownFamilyBlurb ?? ""));
+    if (!registry.some((f) => f.key === key)) {
+      families.push(summarize(key, key, false));
     }
   }
 

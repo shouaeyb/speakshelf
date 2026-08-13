@@ -47,4 +47,5 @@ Fetches the current voice list for every provider in one API call and rewrites `
 - `/google`, `/polly`, `/kokoro` one full shelf per provider, with the explorer
 - `/google/voices/[lang]` (and the same under each provider) one page per language, statically generated, e.g. `/google/voices/ko-KR`
 - `/voices/[lang]` and old filter links on `/` answer permanent redirects into `/google`
+- `/es`, `/zh`, `/hi`, `/fr`, `/bn`, `/pt`, `/ru` mirror every page in seven more languages; English stays unprefixed and /en redirects to the clean paths
 - `/sitemap.xml`, `/robots.txt` and `/llms.txt` are generated from the catalog

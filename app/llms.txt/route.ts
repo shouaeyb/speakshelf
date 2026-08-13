@@ -1,3 +1,5 @@
+import { createTranslator } from "next-intl";
+import en from "@/messages/en.json";
 import { getSite } from "@/lib/catalog";
 import { PROVIDERS } from "@/lib/providers";
 
@@ -9,6 +11,13 @@ export const revalidate = 86400;
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000";
 
 export async function GET() {
+  // llms.txt stays English at its stable URL by decision; the English
+  // messages provide the provider vocabulary. Loosened typing because the
+  // provider key is dynamic.
+  const t = createTranslator({ locale: "en", messages: en }) as unknown as (
+    key: string,
+    values?: Record<string, string | number>,
+  ) => string;
   const site = await getSite();
   const { stats } = site;
   const fmt = (n: number) => n.toLocaleString("en-US");
@@ -21,7 +30,7 @@ export async function GET() {
   const providerLines = active
     .map((p) => {
       const c = site.providers.get(p.key)!;
-      const famWord = c.stats.families === 1 ? p.familyWord.one : p.familyWord.many;
+      const famWord = t(`providers.${p.key}.familyWord`, { count: c.stats.families });
       return `- [${p.label} voices](${SITE_URL}/${p.key}): ${fmt(c.stats.voices)} voices in ${c.stats.languages} languages across ${c.stats.families} ${famWord}, with ${fmt(c.stats.samples)} samples. Per language pages at ${SITE_URL}/${p.key}/voices/{code}.`;
     })
     .join("\n");

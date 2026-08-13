@@ -2,6 +2,10 @@
 
 Settled decisions, newest first. Append a dated entry when something gets decided; correct an old entry by appending, not rewriting. Do not relitigate these silently: if you believe one is wrong, say so to the owner with evidence.
 
+## 2026-08-13: internationalization shipped for eight locales
+
+The direction entry below became real the same day: umbrella, provider and language pages in en, es, zh, hi, fr, bn, pt and ru (1,180+ prerendered pages), full hreflang/sitemap reciprocity, suggestion banner, footer switcher, localized search terms. Hard-won build lesson recorded for the next agent: the proxy may import only i18n/routing.ts; navigation helpers and the request config (which reads the locale from next/root-params) live in separate modules because bundling them into the middleware both breaks the build and silently turns every page dynamic. Translations are AI-written and pending the owner's review, as decided.
+
 ## 2026-08-13: search stays UI-only and becomes complete; fuzzy waits for evidence
 
 Search never touches an API: the catalog is already client-loaded and stays that way. The fix for "can't search gender/tier/styles/anything future": one memoized search document per voice built automatically from every field and trait, so new characteristics are searchable by construction; queries tokenize and AND together ("female child" works); diacritics are stripped on both sides; a pasted full voice id resolves to its exact row. Display stays grouped by language. Fuse.js was considered (the owner's other product uses it) and deliberately deferred: the search_used analytics will show real zero-result queries, and the fuzzy layer gets added if typos show up in evidence, not speculation. Peer-reviewed by kiro gpt-5.6-sol.
