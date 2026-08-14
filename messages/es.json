@@ -194,7 +194,7 @@
   "notFound": {
     "title": "Nada en este estante",
     "body": "La página que buscas no existe. El catálogo vive en la página principal.",
-    "home": "Volver al estante"
+    "home": "← Volver al estante"
   },
   "footer": {
     "note": "Catálogo actualizado el {date} · {voices, number} voces de {providers, plural, one {# proveedor} other {# proveedores}} en {languages, plural, one {# idioma} other {# idiomas}}",

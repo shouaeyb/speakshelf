@@ -194,7 +194,7 @@
   "notFound": {
     "title": "এই তাকে কিছু নেই",
     "body": "যে পাতা খুঁজছেন তা নেই। ক্যাটালগ থাকে মূল পাতায়।",
-    "home": "তাকে ফিরুন"
+    "home": "← তাকে ফিরে যান"
   },
   "footer": {
     "note": "ক্যাটালগ হালনাগাদ {date} · {providers, plural, one {#টি প্রোভাইডারের} other {#টি প্রোভাইডারের}} {voices, number} কণ্ঠ {languages, plural, one {#টি ভাষায়} other {#টি ভাষায়}}",

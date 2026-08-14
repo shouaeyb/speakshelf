@@ -120,7 +120,7 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
               const famWord = t(`providers.${p.key}.familyWord`, { count: c.stats.families });
               return (
                 <Link key={p.key} className="prov-card" href={`/${p.key}`}>
-                  <span className="prov-key">/{p.key.toUpperCase()}</span>
+                  <span className="prov-key" dir="ltr">/{p.key.toUpperCase()}</span>
                   <span className="prov-name">{p.label}</span>
                   <span className="prov-count">
                     {fmt(c.stats.voices)}

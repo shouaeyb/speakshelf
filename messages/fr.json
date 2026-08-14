@@ -194,7 +194,7 @@
   "notFound": {
     "title": "Rien sur cette étagère",
     "body": "La page demandée n'existe pas. Le catalogue vit sur la page d'accueil.",
-    "home": "Retour à l'étagère"
+    "home": "← Retour à l'étagère"
   },
   "footer": {
     "note": "Catalogue mis à jour le {date} · {voices, number} voix de {providers, plural, one {# fournisseur} other {# fournisseurs}} en {languages, plural, one {# langue} other {# langues}}",

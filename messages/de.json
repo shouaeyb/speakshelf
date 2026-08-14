@@ -194,7 +194,7 @@
   "notFound": {
     "title": "Nichts in diesem Regal",
     "body": "Die angefragte Seite existiert nicht. Der Katalog wohnt auf der Startseite.",
-    "home": "Zurück zum Regal"
+    "home": "← Zurück zum Regal"
   },
   "footer": {
     "note": "Katalog aktualisiert {date} · {voices, number} Stimmen von {providers, plural, one {# Anbieter} other {# Anbietern}} in {languages, plural, one {# Sprache} other {# Sprachen}}",

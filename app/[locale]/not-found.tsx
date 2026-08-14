@@ -13,7 +13,7 @@ export default async function NotFound() {
       </section>
       <section className="shell" style={{ paddingTop: 32, paddingBottom: 96 }}>
         <Link className="crumb" href="/">
-          ← {t("home")}
+          {t("home")}
         </Link>
       </section>
     </main>

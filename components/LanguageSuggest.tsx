@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { useLocale, useTranslations } from "next-intl";
 import { usePathname, useRouter } from "@/i18n/navigation";
-import { INVITES, LOCALES, type Locale } from "@/i18n/locales";
+import { INVITES, LOCALES, type Locale, RTL_LOCALES } from "@/i18n/locales";
 
 // The owner's decision (docs/decisions.md): browser language never hard
 // redirects. This quiet strip offers a one-tap switch in the visitor's
@@ -52,7 +52,13 @@ export default function LanguageSuggest() {
     typeof window !== "undefined" ? pathname + window.location.search + window.location.hash : pathname;
 
   return (
-    <div className="lang-suggest" role="region" aria-label={INVITES[target].invite}>
+    <div
+      className="lang-suggest"
+      role="region"
+      lang={target}
+      dir={RTL_LOCALES.has(target) ? "rtl" : "ltr"}
+      aria-label={INVITES[target].invite}
+    >
       <div className="shell lang-suggest-in">
         <span className="lang-suggest-text">{INVITES[target].invite}</span>
         <button

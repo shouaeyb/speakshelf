@@ -194,7 +194,7 @@
   "notFound": {
     "title": "Tidak ada di rak ini",
     "body": "Halaman yang Anda minta tidak ada. Katalognya tinggal di halaman depan.",
-    "home": "Kembali ke rak"
+    "home": "← Kembali ke rak"
   },
   "footer": {
     "note": "Katalog diperbarui {date} · {voices, number} suara dari {providers, plural, other {# penyedia}} dalam {languages, plural, other {# bahasa}}",

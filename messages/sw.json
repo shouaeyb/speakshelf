@@ -194,7 +194,7 @@
   "notFound": {
     "title": "Hakuna kitu kwenye rafu hii",
     "body": "Ukurasa ulioomba haupo. Katalogi inaishi kwenye ukurasa wa mwanzo.",
-    "home": "Rudi kwenye rafu"
+    "home": "← Rudi kwenye rafu"
   },
   "footer": {
     "note": "Katalogi imesasishwa {date} · Sauti {voices, number} kutoka kwa {providers, plural, one {mtoa huduma #} other {watoa huduma #}} katika {languages, plural, one {lugha #} other {lugha #}}",

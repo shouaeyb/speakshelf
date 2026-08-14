@@ -194,7 +194,7 @@
   "notFound": {
     "title": "この棚には何もありません",
     "body": "お探しのページは存在しません。カタログはホームページにあります。",
-    "home": "棚へ戻る"
+    "home": "← 棚へ戻る"
   },
   "footer": {
     "note": "カタログ更新 {date} · {providers, plural, other {# プロバイダー}}の {voices, number} 音声、{languages, plural, other {# 言語}}",

@@ -194,7 +194,7 @@
   "notFound": {
     "title": "Niente su questo scaffale",
     "body": "La pagina richiesta non esiste. Il catalogo vive sulla pagina iniziale.",
-    "home": "Torna allo scaffale"
+    "home": "← Torna allo scaffale"
   },
   "footer": {
     "note": "Catalogo aggiornato {date} · {voices, number} voci di {providers, plural, one {# provider} other {# provider}} in {languages, plural, one {# lingua} other {# lingue}}",

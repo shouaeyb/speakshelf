@@ -194,7 +194,7 @@
   "notFound": {
     "title": "Nothing on this shelf",
     "body": "The page you asked for does not exist. The catalog lives on the home page.",
-    "home": "Back to the shelf"
+    "home": "← Back to the shelf"
   },
   "footer": {
     "note": "Catalog updated {date} · {voices, number} voices from {providers, plural, one {# provider} other {# providers}} in {languages, plural, one {# language} other {# languages}}",

@@ -194,7 +194,7 @@
   "notFound": {
     "title": "这格书架是空的",
     "body": "你要找的页面不存在。目录在首页。",
-    "home": "回到书架"
+    "home": "← 回到书架"
   },
   "footer": {
     "note": "目录更新于 {date} · 来自 {providers, plural, other {# 家提供商}}的 {voices, number} 个语音，覆盖 {languages, plural, other {# 种语言}}",

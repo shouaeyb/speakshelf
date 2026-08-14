@@ -91,7 +91,9 @@ export default async function LanguagePage({ params }: { params: Promise<Params>
           <h1>{name}</h1>
           <p className="subhead-meta">
             {t("langPage.meta", {
-              code: lang,
+              // First-strong isolate keeps the Latin code intact inside
+              // RTL prose (the JSX spans cannot reach into a message).
+              code: `\u2066${lang}\u2069`,
               voices: count,
               families,
               familyWord: famWord,

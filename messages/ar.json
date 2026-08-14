@@ -194,7 +194,7 @@
   "notFound": {
     "title": "لا شيء على هذا الرفّ",
     "body": "الصفحة التي طلبتها غير موجودة. الفهرس يسكن الصفحة الرئيسية.",
-    "home": "العودة إلى الرفّ"
+    "home": "→ العودة إلى الرفّ"
   },
   "footer": {
     "note": "حُدِّث الفهرس {date} · {voices, plural, one {صوت واحد} two {صوتان} few {# أصوات} many {# صوتًا} other {# صوت}} من {providers, plural, one {مزوّد واحد} two {مزوّدين} few {# مزوّدين} many {# مزوّدًا} other {# مزوّد}} في {languages, plural, one {لغة واحدة} two {لغتين} few {# لغات} many {# لغةً} other {# لغة}}",
