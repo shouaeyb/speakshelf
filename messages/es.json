@@ -166,8 +166,7 @@
     "noteBusy": "ocupado, prueba en un minuto",
     "notePreparing": "aún preparándose, prueba en un momento",
     "noteGenerating": "preparando muestra",
-    "listNote": "Los idiomas se ordenan por tamaño de catálogo.",
-    "listNoteModels": "Los idiomas se ordenan por tamaño de catálogo. Las voces {family} llevan una muestra por submodelo, así que el control {familyUpper} elige qué versión escuchas.",
+    "listNoteModels": "Las voces {family} llevan una muestra por submodelo, así que el control {familyUpper} elige qué versión escuchas.",
     "modelPickTitle": "Las voces {family} tienen una muestra por submodelo. Esto elige cuál se reproduce.",
     "genderWords": {
       "female": "femenino",

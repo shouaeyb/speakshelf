@@ -166,8 +166,7 @@
     "noteBusy": "繁忙，请一分钟后再试",
     "notePreparing": "仍在准备，请稍后再试",
     "noteGenerating": "示例准备中",
-    "listNote": "语言按目录规模排序。",
-    "listNoteModels": "语言按目录规模排序。{family} 语音每个子模型各有一个示例，{familyUpper} 控件选择你听到的版本。",
+    "listNoteModels": "{family} 语音每个子模型各有一个示例，{familyUpper} 控件选择你听到的版本。",
     "modelPickTitle": "{family} 语音每个子模型各有一个示例。这里选择播放哪个。",
     "genderWords": {
       "female": "女声",

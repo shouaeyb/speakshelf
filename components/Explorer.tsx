@@ -242,19 +242,18 @@ function ExplorerCore({ provider, voices, lockLanguage, models, paramsKey }: Cor
     toastTimer.current = setTimeout(() => setToast(null), 15000);
   }
 
-  const langOrder = useMemo(() => {
-    if (!all) return new Map<string, number>();
-    const counts = new Map<string, number>();
-    for (const v of all) counts.set(v.lang, (counts.get(v.lang) ?? 0) + 1);
-    return counts;
-  }, [all]);
-
+  // Alphabetical by the reader's locale, tie-broken by code for
+  // determinism; the search field is the fast path, the order is the
+  // predictable one.
   const languageOptions = useMemo(() => {
     if (!all || lockLanguage) return [];
-    return [...langOrder.entries()]
-      .sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0]))
-      .map(([code]) => ({ code, name: languageName(code, locale) }));
-  }, [all, langOrder, lockLanguage, locale]);
+    const collator = new Intl.Collator(locale);
+    const codes = new Set<string>();
+    for (const v of all) codes.add(v.lang);
+    return [...codes]
+      .map((code) => ({ code, name: languageName(code, locale) }))
+      .sort((a, b) => collator.compare(a.name, b.name) || a.code.localeCompare(b.code));
+  }, [all, lockLanguage, locale]);
 
   // Family choices come from the data, so a family this code has never
   // heard of is still filterable; the metadata only provides the order.
@@ -309,10 +308,15 @@ function ExplorerCore({ provider, voices, lockLanguage, models, paramsKey }: Cor
       if (list) list.push(v);
       else map.set(v.lang, [v]);
     }
+    const collator = new Intl.Collator(locale);
     return [...map.entries()]
-      .sort((a, b) => (langOrder.get(b[0]) ?? 0) - (langOrder.get(a[0]) ?? 0) || a[0].localeCompare(b[0]))
+      .sort(
+        (a, b) =>
+          collator.compare(languageName(a[0], locale), languageName(b[0], locale)) ||
+          a[0].localeCompare(b[0]),
+      )
       .map(([code, items]) => ({ code, items: items.sort(byFamily) }));
-  }, [filtered, lockLanguage, langOrder, rank]);
+  }, [filtered, lockLanguage, locale, rank]);
 
   // A voice carries one sample per sub-model of its family, or just one.
   const sampleCount = useMemo(
@@ -815,14 +819,12 @@ function ExplorerCore({ provider, voices, lockLanguage, models, paramsKey }: Cor
         </div>
       )}
 
-      {!lockLanguage && all && filtered.length > 0 && (
+      {!lockLanguage && all && filtered.length > 0 && showModelPick && (
         <p className="list-note">
-          {showModelPick
-            ? t("explorer.listNoteModels", {
-                family: familyLabel(provider, multiFamily),
-                familyUpper: familyLabel(provider, multiFamily).toUpperCase(),
-              })
-            : t("explorer.listNote")}
+          {t("explorer.listNoteModels", {
+            family: familyLabel(provider, multiFamily),
+            familyUpper: familyLabel(provider, multiFamily).toUpperCase(),
+          })}
         </p>
       )}
     </div>

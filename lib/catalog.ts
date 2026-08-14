@@ -256,7 +256,10 @@ function buildProviderCatalog(provider: string, updated: string, packed: PackedP
       samples: sampleCount(list, models),
       families: new Set(list.map((v) => v.family)).size,
     }))
-    .sort((a, b) => b.voices - a.voices || a.code.localeCompare(b.code));
+    // Stable, locale-neutral code order; presentation layers re-sort by
+    // the reader's localized names (the data cannot know the display
+    // locale, and cached arrays must never be mutated per request).
+    .sort((a, b) => a.code.localeCompare(b.code));
 
   const byFamily = new Map<string, { voices: number; langs: Set<string>; tier: "premium" | "ultra" }>();
   for (const v of voices) {

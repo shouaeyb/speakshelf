@@ -166,8 +166,7 @@
     "noteBusy": "occupé, réessayez dans une minute",
     "notePreparing": "encore en préparation, réessayez sous peu",
     "noteGenerating": "préparation de l'extrait",
-    "listNote": "Les langues sont classées par taille de catalogue.",
-    "listNoteModels": "Les langues sont classées par taille de catalogue. Les voix {family} ont un extrait par sous-modèle : le contrôle {familyUpper} choisit la version que vous entendez.",
+    "listNoteModels": "Les voix {family} ont un extrait par sous-modèle : le contrôle {familyUpper} choisit la version que vous entendez.",
     "modelPickTitle": "Les voix {family} ont un extrait par sous-modèle. Ceci choisit lequel est lu.",
     "genderWords": {
       "female": "féminin",

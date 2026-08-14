@@ -166,8 +166,7 @@
     "noteBusy": "busy, try again in a minute",
     "notePreparing": "still preparing, try again shortly",
     "noteGenerating": "preparing sample",
-    "listNote": "Languages are ordered by catalog size.",
-    "listNoteModels": "Languages are ordered by catalog size. {family} voices carry one sample per sub-model, so the {familyUpper} control picks which take you hear.",
+    "listNoteModels": "{family} voices carry one sample per sub-model, so the {familyUpper} control picks which take you hear.",
     "modelPickTitle": "{family} voices have a sample per sub-model. This picks which one plays.",
     "genderWords": {
       "female": "female",

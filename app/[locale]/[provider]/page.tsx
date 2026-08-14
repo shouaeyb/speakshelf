@@ -55,6 +55,14 @@ export default async function ProviderPage({ params }: { params: Promise<Params>
   const catalog = await getProviderCatalog(provider);
   if (!meta || !catalog) notFound();
   const { stats, families, languages: langs, models } = catalog;
+  // Presentation order: the reader's alphabet over localized names; the
+  // catalog array stays in its neutral code order and is never mutated.
+  const langCollator = new Intl.Collator(locale);
+  const sortedLangs = [...langs].sort(
+    (a, b) =>
+      langCollator.compare(languageName(a.code, locale), languageName(b.code, locale)) ||
+      a.code.localeCompare(b.code),
+  );
   const t = await getTranslations({ locale });
   const fmt = (n: number) => n.toLocaleString(locale);
   const famWord = t(`providers.${provider}.familyWord`, { count: stats.families });
@@ -142,7 +150,7 @@ export default async function ProviderPage({ params }: { params: Promise<Params>
           <h2 className="sec-title">{t("providerPage.languagesTitle", { count: stats.languages })}</h2>
           <p className="sec-sub">{t("providerPage.languagesSub")}</p>
           <div className="lang-grid">
-            {langs.map((l) => (
+            {sortedLangs.map((l) => (
               <Link key={l.code} className="lang-cell" href={`/${provider}/voices/${l.code}`}>
                 <span>{languageName(l.code, locale)}</span>
                 <span className="n">{fmt(l.voices)}</span>
