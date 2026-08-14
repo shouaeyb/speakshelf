@@ -105,6 +105,7 @@ function ExplorerCore({ provider, voices, lockLanguage, models, paramsKey }: Cor
   const subModels = useMemo(() => (multiFamily ? models[multiFamily] : []), [models, multiFamily]);
   const [all, setAll] = useState<Voice[] | null>(voices ?? null);
   const [q, setQ] = useState("");
+  const searchRef = useRef<HTMLInputElement | null>(null);
   const [family, setFamily] = useState("");
   const [lang, setLang] = useState("");
   const [gender, setGender] = useState("");
@@ -581,7 +582,19 @@ function ExplorerCore({ provider, voices, lockLanguage, models, paramsKey }: Cor
     <div>
       <div className={toolbarClass}>
         <div className="field">
+          <svg
+            className="search-magnifier"
+            aria-hidden="true"
+            width="16"
+            height="16"
+            viewBox="0 0 16 16"
+            fill="none"
+          >
+            <circle cx="7" cy="7" r="4.5" stroke="currentColor" strokeWidth="1.4" />
+            <path d="M10.5 10.5 L14 14" stroke="currentColor" strokeWidth="1.4" />
+          </svg>
           <input
+            ref={searchRef}
             className="search-input"
             type="search"
             placeholder={t("explorer.searchPlaceholder")}
@@ -589,6 +602,19 @@ function ExplorerCore({ provider, voices, lockLanguage, models, paramsKey }: Cor
             value={q}
             onChange={(e) => setQ(e.target.value)}
           />
+          {q !== "" && (
+            <button
+              type="button"
+              className="search-clear"
+              aria-label={t("explorer.clearSearch")}
+              onClick={() => {
+                setQ("");
+                searchRef.current?.focus();
+              }}
+            >
+              ✕
+            </button>
+          )}
         </div>
         <div className="field">
           <label className="field-label" htmlFor="f-family">

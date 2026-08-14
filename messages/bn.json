@@ -146,6 +146,7 @@
   "explorer": {
     "searchPlaceholder": "নাম, ভাষা, লিঙ্গ, মডেল, স্টাইল খুঁজুন",
     "searchAria": "কণ্ঠ খুঁজুন",
+    "clearSearch": "সার্চ মুছুন",
     "language": "ভাষা",
     "gender": "লিঙ্গ",
     "all": "সব",

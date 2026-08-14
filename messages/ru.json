@@ -146,6 +146,7 @@
   "explorer": {
     "searchPlaceholder": "Ищите имя, язык, пол, модель, стиль",
     "searchAria": "Поиск голосов",
+    "clearSearch": "Очистить поиск",
     "language": "ЯЗЫК",
     "gender": "ПОЛ",
     "all": "Все",

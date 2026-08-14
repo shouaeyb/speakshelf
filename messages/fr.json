@@ -146,6 +146,7 @@
   "explorer": {
     "searchPlaceholder": "Cherchez nom, langue, genre, modèle, style",
     "searchAria": "Rechercher des voix",
+    "clearSearch": "Effacer la recherche",
     "language": "LANGUE",
     "gender": "GENRE",
     "all": "Toutes",

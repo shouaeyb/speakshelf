@@ -146,6 +146,7 @@
   "explorer": {
     "searchPlaceholder": "नाम, भाषा, लिंग, मॉडल, शैली खोजें",
     "searchAria": "आवाज़ें खोजें",
+    "clearSearch": "खोज साफ़ करें",
     "language": "भाषा",
     "gender": "लिंग",
     "all": "सभी",

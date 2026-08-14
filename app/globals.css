@@ -710,6 +710,36 @@ button {
   padding: 0;
 }
 
+.search-magnifier {
+  flex: none;
+  color: var(--text-3);
+}
+
+/* The custom clear button replaces the browser's native cancel control. */
+.search-input::-webkit-search-cancel-button {
+  -webkit-appearance: none;
+  appearance: none;
+}
+
+.search-clear {
+  flex: none;
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: none;
+  border: none;
+  color: var(--text-2);
+  font-size: 13px;
+  cursor: pointer;
+  padding: 0;
+}
+
+.search-clear:hover {
+  background: var(--layer-hover);
+}
+
 .search-input::placeholder {
   color: var(--text-3);
 }

@@ -146,6 +146,7 @@
   "explorer": {
     "searchPlaceholder": "Search name, language, gender, model, style",
     "searchAria": "Search voices",
+    "clearSearch": "Clear search",
     "language": "LANGUAGE",
     "gender": "GENDER",
     "all": "All",
