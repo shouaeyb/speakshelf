@@ -87,3 +87,31 @@ Client, in `Explorer.tsx`: `play()` resolves blob cache (module LRU, 24 object U
 | Signed sample URLs | client module map | 18 h |
 | Sample audio blobs | client module LRU | session, 24 entries |
 | Rate limit buckets | server process map | idle-swept after 10 min |
+| ISR page cache | instance disk | per instance, dies with the instance |
+
+## Deployment
+
+- Cloud Run runs `next start` in us-central1 at min 0, max 1 instances. One
+  instance is deliberate: the signed-URL cache and both rate buckets are
+  process-local, so horizontal scale would multiply the upstream miss budget.
+  Scale-to-zero means a cold start of a second or two for the first visitor
+  after an idle spell; a Cloud Scheduler probe hits `/api/health` on the
+  run.app URL every five minutes (bypassing the CDN on purpose) to keep one
+  instance warm most of the time. The probe route calls `getSite()` so the
+  catalog memo warms with the process. Best effort, not a guarantee.
+- Classic Firebase Hosting fronts the service: custom domain, managed TLS and
+  Google's CDN, with a single catch-all rewrite to the Cloud Run service.
+  Firebase App Hosting is a different product and is not used. Cloudflare, if
+  the domain lives there, holds DNS records only.
+- The locale cookie is off (`localeCookie: false` in `i18n/routing.ts`):
+  nothing reads it with detection off, and a Set-Cookie on prefixed-locale
+  pages would have made 13 of the 14 locales uncacheable at the CDN.
+- ISR state is per instance and dies with it, so a fresh instance serves
+  build-time HTML until pages revalidate. Accepted for a daily-refresh
+  catalog; no shared cache handler.
+- `TTS_API_KEY` reaches the process only through Secret Manager. Public
+  `NEXT_PUBLIC_*` values bake at build time via `--set-build-env-vars`, so
+  the canonical origin is the web.app site until speakshelf.com attaches,
+  then one redeploy rebakes it.
+- `.gcloudignore` includes the whole `.gitignore`, so env files and the key
+  never upload with a source deploy.

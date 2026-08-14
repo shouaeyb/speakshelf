@@ -14,4 +14,8 @@ export const routing = defineRouting({
   // The suggestion banner owns language switching; the proxy must never
   // redirect by Accept-Language or cookie (crawler safety, decisions).
   localeDetection: false,
+  // No NEXT_LOCALE cookie either: with detection off nothing ever reads it,
+  // and its Set-Cookie on every prefixed-locale page would block CDN caching
+  // of 13 of the 14 locales (decisions, deployment entry).
+  localeCookie: false,
 });

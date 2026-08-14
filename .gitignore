@@ -48,3 +48,6 @@ shot_*.png
 
 # kiro CLI lane settings, not project code
 .kiro/
+
+# working task lists for agent runs, not project code
+tasks/

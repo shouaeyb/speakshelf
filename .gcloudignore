@@ -1,0 +1,10 @@
+# What never uploads with gcloud run deploy --source. The include pulls the
+# whole .gitignore (env files, the key rtf, .next, node_modules); the rest is
+# repo material a build does not need. Verify after edits with:
+#   gcloud meta list-files-for-upload
+#!include:.gitignore
+.git/
+.gcloudignore
+tasks/
+docs/
+README.md
