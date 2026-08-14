@@ -51,6 +51,9 @@ const plexJP = IBM_Plex_Sans_JP({
 });
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000";
+// Locked with the owner and the peer lane 2026-08-14; swap only with a
+// decisions entry.
+const CONTACT_EMAIL = "hi@speakshelf.com";
 
 export function generateStaticParams(): { locale: string }[] {
   return LOCALES.map((locale) => ({ locale }));
@@ -184,6 +187,14 @@ export default async function LocaleLayout({
                   {t.rich("served", {
                     link: (chunks) => <a href="https://aitts.theproductivepixel.com">{chunks}</a>,
                   })}
+                </p>
+                <p className="footer-contact">
+                  <span className="footer-contact-label">{t("contact")}</span>
+                  {/* Visible and copyable by design (decisions 2026-08-14);
+                      LTR so the address never reorders in RTL locales. */}
+                  <a href={`mailto:${CONTACT_EMAIL}`} dir="ltr">
+                    {CONTACT_EMAIL}
+                  </a>
                 </p>
                 <LocaleSwitcher />
               </div>

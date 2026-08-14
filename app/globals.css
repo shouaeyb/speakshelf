@@ -1051,6 +1051,23 @@ a.lang-name:hover {
   gap: 8px;
 }
 
+/* Contact line: same utility anatomy as the language row below it. */
+.footer-contact {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0;
+  font-size: 12.5px;
+}
+
+.footer-contact-label {
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 1px;
+  color: var(--inv-text-2);
+  text-transform: uppercase;
+}
+
 .locale-switch-label {
   font-family: var(--mono);
   font-size: 11px;

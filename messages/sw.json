@@ -199,6 +199,7 @@
   "footer": {
     "note": "Katalogi imesasishwa {date} · Sauti {voices, number} kutoka kwa {providers, plural, one {mtoa huduma #} other {watoa huduma #}} katika {languages, plural, one {lugha #} other {lugha #}}",
     "served": "Sampuli zinahudumiwa na <link>AI TTS Microservice</link> · Huru, haihusiani na Google, Amazon wala mradi wa Kokoro",
+    "contact": "Mawasiliano",
     "languageLabel": "Lugha"
   },
   "meta": {

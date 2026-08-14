@@ -199,6 +199,7 @@
   "footer": {
     "note": "目录更新于 {date} · 来自 {providers, plural, other {# 家提供商}}的 {voices, number} 个语音，覆盖 {languages, plural, other {# 种语言}}",
     "served": "示例由 <link>AI TTS Microservice</link> 提供 · 独立网站，与 Google、Amazon 或 Kokoro 项目均无关联",
+    "contact": "联系",
     "languageLabel": "语言"
   },
   "meta": {

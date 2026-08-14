@@ -199,6 +199,7 @@
   "footer": {
     "note": "कैटलॉग {date} को अद्यतन · {providers, plural, one {# प्रोवाइडर} other {# प्रोवाइडर}} की {voices, number} आवाज़ें {languages, plural, one {# भाषा} other {# भाषाओं}} में",
     "served": "नमूने <link>AI TTS Microservice</link> से · स्वतंत्र, Google, Amazon या Kokoro परियोजना से असंबद्ध",
+    "contact": "संपर्क",
     "languageLabel": "भाषा"
   },
   "meta": {

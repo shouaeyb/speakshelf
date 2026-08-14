@@ -199,6 +199,7 @@
   "footer": {
     "note": "カタログ更新 {date} · {providers, plural, other {# プロバイダー}}の {voices, number} 音声、{languages, plural, other {# 言語}}",
     "served": "サンプル配信は <link>AI TTS Microservice</link> · 独立サイト、Google・Amazon・Kokoro プロジェクトとは無関係",
+    "contact": "連絡先",
     "languageLabel": "言語"
   },
   "meta": {

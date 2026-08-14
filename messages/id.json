@@ -199,6 +199,7 @@
   "footer": {
     "note": "Katalog diperbarui {date} · {voices, number} suara dari {providers, plural, other {# penyedia}} dalam {languages, plural, other {# bahasa}}",
     "served": "Sampel disajikan oleh <link>AI TTS Microservice</link> · Independen, tidak berafiliasi dengan Google, Amazon, atau proyek Kokoro",
+    "contact": "Kontak",
     "languageLabel": "Bahasa"
   },
   "meta": {

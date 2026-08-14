@@ -199,6 +199,7 @@
   "footer": {
     "note": "Catalogo aggiornato {date} · {voices, number} voci di {providers, plural, one {# provider} other {# provider}} in {languages, plural, one {# lingua} other {# lingue}}",
     "served": "Campioni serviti dall'<link>AI TTS Microservice</link> · Indipendente, non affiliato a Google, Amazon o al progetto Kokoro",
+    "contact": "Contatti",
     "languageLabel": "Lingua"
   },
   "meta": {

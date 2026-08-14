@@ -199,6 +199,7 @@
   "footer": {
     "note": "Catálogo atualizado em {date} · {voices, number} vozes de {providers, plural, one {# provedor} other {# provedores}} em {languages, plural, one {# idioma} other {# idiomas}}",
     "served": "Amostras servidas pelo <link>AI TTS Microservice</link> · Independente, sem afiliação com Google, Amazon ou o projeto Kokoro",
+    "contact": "Contato",
     "languageLabel": "Idioma"
   },
   "meta": {

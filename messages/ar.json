@@ -199,6 +199,7 @@
   "footer": {
     "note": "حُدِّث الفهرس {date} · {voices, plural, one {صوت واحد} two {صوتان} few {# أصوات} many {# صوتًا} other {# صوت}} من {providers, plural, one {مزوّد واحد} two {مزوّدين} few {# مزوّدين} many {# مزوّدًا} other {# مزوّد}} في {languages, plural, one {لغة واحدة} two {لغتين} few {# لغات} many {# لغةً} other {# لغة}}",
     "served": "العيّنات تقدَّم من <link>AI TTS Microservice</link> · مستقل، غير تابع لـ Google أو Amazon أو مشروع Kokoro",
+    "contact": "التواصل",
     "languageLabel": "اللغة"
   },
   "meta": {

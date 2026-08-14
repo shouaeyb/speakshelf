@@ -199,6 +199,7 @@
   "footer": {
     "note": "Каталог обновлён {date} · {voices, plural, one {# голос} few {# голоса} many {# голосов} other {# голоса}} от {providers, plural, one {# провайдера} few {# провайдеров} many {# провайдеров} other {# провайдеров}} на {languages, plural, one {# языке} few {# языках} many {# языках} other {# языках}}",
     "served": "Образцы предоставляет <link>AI TTS Microservice</link> · Независимый сайт, не аффилирован с Google, Amazon или проектом Kokoro",
+    "contact": "Контакты",
     "languageLabel": "Язык"
   },
   "meta": {
