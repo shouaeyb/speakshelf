@@ -51,3 +51,7 @@ shot_*.png
 
 # working task lists for agent runs, not project code
 tasks/
+
+# firebase CLI local deploy state
+.firebase/
+firebase-debug.log*
