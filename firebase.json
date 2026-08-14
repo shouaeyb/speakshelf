@@ -1,0 +1,10 @@
+{
+  "hosting": {
+    "site": "speakshelf-prod",
+    "public": "firebase-stub",
+    "ignore": ["**/.*"],
+    "rewrites": [
+      { "source": "**", "run": { "serviceId": "speakshelf", "region": "us-central1" } }
+    ]
+  }
+}
