@@ -45,3 +45,6 @@ next-env.d.ts
 TTS_API_KEY.rtf
 shot_*.png
 .claude/
+
+# kiro CLI lane settings, not project code
+.kiro/

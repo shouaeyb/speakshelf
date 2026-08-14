@@ -1,0 +1,224 @@
+{
+  "masthead": {
+    "allProviders": "Semua penyedia",
+    "allProvidersShort": "Semua"
+  },
+  "stats": {
+    "voices": "SUARA",
+    "providers": "PENYEDIA",
+    "languages": "BAHASA",
+    "samples": "SAMPEL SIAP PUTAR"
+  },
+  "home": {
+    "eyebrow": "KATALOG TEXT TO SPEECH",
+    "title": "{voices, number} suara. Satu rak.",
+    "sub": "Speakshelf mengatalogkan suara text to speech dari {names} dan lainnya. Masing-masing dengan sampel yang bisa Anda putar di browser. Tanpa akun, tanpa penyiapan, hanya suaranya.",
+    "jumpProviders": "PENYEDIA",
+    "jumpAbout": "TENTANG",
+    "providersTitle": "{count, plural, other {# penyedia}}",
+    "providersSub": "Setiap penyedia punya rak lengkap: daftar suara utuh dengan filter dan pemutaran, catatan tiap keluarga model, dan satu halaman per bahasa. Rak ini terus tumbuh: AI TTS Microservice menyatukan lebih banyak penyedia, dan rak baru dibuka di sini setelah diverifikasi.",
+    "cardVoices": "{count, plural, other {suara}}",
+    "cardMeta": "{languages, plural, other {# bahasa}} · {familiesCount} {familyWord} · {samples, plural, other {# sampel}}",
+    "browse": "JELAJAHI →",
+    "whyTitle": "Kenapa satu rak",
+    "whySub": "Katalog berbeda lebih dari sekadar ukuran. Berdampingan, terlihat celah, tumpang tindih, dan karakter masing-masing.",
+    "why1Title": "Cakupan saling melengkapi",
+    "why1GapAndVariants": "Amazon Polly membawa {gap} yang sama sekali tidak ada di Google Cloud, plus varian regional seperti {v1} dan {v2}. Satu rak memperlihatkan apa yang dimiliki tiap penyedia dan tidak dimiliki yang lain.",
+    "why1GapOnly": "Amazon Polly membawa {gap} yang sama sekali tidak ada di Google Cloud. Satu rak memperlihatkan apa yang dimiliki tiap penyedia dan tidak dimiliki yang lain.",
+    "why1VariantsOnly": "Amazon Polly menambah varian regional seperti {v1} dan {v2}. Satu rak memperlihatkan apa yang dimiliki tiap penyedia dan tidak dimiliki yang lain.",
+    "why1Generic": "Satu rak memperlihatkan apa yang dimiliki tiap penyedia dan tidak dimiliki yang lain.",
+    "why2Title": "Satu cara mendengarkan",
+    "why2Body": "Filter yang sama, pemutar yang sama, skema id suara yang sama di setiap rak. Membandingkan suara antar penyedia cukup dua klik, bukan dua konsol.",
+    "why3Title": "Segar dengan sendirinya",
+    "why3Body": "Setiap rak diperbarui harian dari AI TTS Microservice. Suara, bahasa, dan sub-model baru muncul di sini tanpa ada yang menyunting situs.",
+    "aboutTitle": "Tentang katalog ini",
+    "aboutBody": "Speakshelf adalah katalog rujukan untuk suara text to speech. Hari ini memuat {voices, number} suara dari {providers, plural, other {# penyedia}} dalam {languages, plural, other {# bahasa}}, masing-masing dengan sampel yang bisa diputar. Suara dikelompokkan sebagaimana penyedianya mengelompokkan, dalam keluarga model dan engine, supaya yang Anda dengar sesuai dengan yang akan Anda pakai."
+  },
+  "attribution": {
+    "body": "Speakshelf independen dan tidak berafiliasi dengan Google, Amazon, atau proyek Kokoro. Data suara dan audio berasal dari <link>AI TTS Microservice</link>, layanan yang menyatukan Google, Amazon, Azure, dan penyedia suara lain di balik satu endpoint. Sampel dialirkan sesuai permintaan, mendengarkan gratis."
+  },
+  "providers": {
+    "google": {
+      "eyebrow": "GOOGLE CLOUD TEXT TO SPEECH",
+      "heroTitle": "Setiap suara Google, di satu halaman.",
+      "heroSub": "Putar sampel setiap suara di katalog Google Cloud. Saring berdasar keluarga model, bahasa, dan gender. Tanpa akun, tanpa penyiapan, hanya suaranya.",
+      "familyWord": "{count, plural, other {keluarga model}}",
+      "jump": "MODEL",
+      "familiesIntro": "Google terus merilis arsitektur suara baru dan setiap generasi masih beroperasi. Katalognya membentang dari suara parametrik ringkas sampai model yang bisa diarahkan dengan satu kalimat.",
+      "card": "Rak terdalam di sini: keluarga model dari Standard dan WaveNet sampai Chirp 3 dan suara Gemini yang mengikuti prompt gaya tertulis.",
+      "about": "Google Cloud menjalankan salah satu katalog text to speech terbesar di antara penyedia cloud. Mencakup {families, number} keluarga model, dari suara WaveNet yang membuat suara neural jadi arus utama sampai suara Gemini yang mengubah pembawaannya saat Anda menjelaskan nada yang diinginkan. Gemini sebenarnya {models, number} model dalam satu: setiap suara Gemini bisa dirender oleh sub-model mana pun, dan tiap render punya sampelnya sendiri di sini. Setiap suara lain di katalog juga punya sampel.",
+      "unknownFamily": "Tambahan baru di katalog Google."
+    },
+    "polly": {
+      "eyebrow": "AMAZON POLLY TEXT TO SPEECH",
+      "heroTitle": "Setiap suara Amazon Polly, di satu halaman.",
+      "heroSub": "Putar sampel setiap suara di katalog Amazon Polly. Saring berdasar engine, bahasa, dan gender. Tanpa akun, tanpa penyiapan, hanya suaranya.",
+      "familyWord": "{count, plural, other {engine}}",
+      "jump": "ENGINE",
+      "familiesIntro": "Polly mengelompokkan suaranya per engine. Katalognya membentang dari suara standard sampai engine generative, dengan tingkat long-form untuk pendengaran panjang.",
+      "card": "Layanan text to speech dari AWS: engine standard, neural, generative, dan long-form.",
+      "about": "Amazon Polly adalah layanan text to speech di AWS yang mengubah teks menjadi suara alami. {voices, number} suaranya di sini mencakup {families, number} engine: standard dan neural, engine generative yang dibangun dengan teknik AI generatif, dan suara long-form untuk konten panjang seperti artikel dan materi pelatihan. Setiap suara punya sampel yang bisa diputar.",
+      "unknownFamily": "Tambahan baru di katalog Amazon Polly."
+    },
+    "kokoro": {
+      "eyebrow": "KOKORO TEXT TO SPEECH",
+      "heroTitle": "Setiap suara Kokoro, di satu halaman.",
+      "heroSub": "Putar sampel setiap suara model open-weight Kokoro. Saring berdasar bahasa dan gender. Tanpa akun, tanpa penyiapan, hanya suaranya.",
+      "familyWord": "{count, plural, other {keluarga model}}",
+      "jump": "MODEL",
+      "familiesIntro": "Kokoro adalah satu model, bukan deretan engine, jadi seluruh katalognya berada dalam satu keluarga.",
+      "card": "Model open-weight, 82 juta parameter di bawah lisensi Apache 2.0.",
+      "about": "Kokoro adalah model text to speech open-weight: 82 juta parameter, dirilis di bawah lisensi Apache 2.0. AI TTS Microservice menyajikannya berdampingan dengan katalog cloud, jadi {voices, number} suaranya dalam {languages, number} bahasa diputar di sini seperti rak lainnya. Setiap suara punya sampel yang bisa diputar.",
+      "unknownFamily": "Tambahan baru di katalog Kokoro."
+    }
+  },
+  "providerPage": {
+    "jumpVoices": "SUARA",
+    "jumpLanguages": "BAHASA",
+    "jumpAbout": "TENTANG",
+    "familiesTitle": "{count, number} {familyWord}",
+    "languagesTitle": "{count, plural, other {# bahasa}}",
+    "languagesSub": "Setiap bahasa punya halamannya sendiri dengan daftar suara lengkap, jadi Anda bisa mengarahkan seseorang langsung ke satu rak katalog.",
+    "famMeta": "{voices, plural, other {# suara}}",
+    "famLangs": "{count, plural, other {# bahasa}}",
+    "famModels": "{count, number} sub-model",
+    "aboutTitle": "Tentang katalog ini",
+    "allVoices": "Semua suara"
+  },
+  "families": {
+    "google": {
+      "Gemini": {
+        "blurb": "Suara asli dari Gemini. Setiap suara bisa dirender oleh setiap sub-model, dan pembawaannya mengikuti prompt gaya tertulis.",
+        "note": "Sampel menampilkan setiap suara apa adanya, termasuk keunikannya. Beberapa suara Gemini bisa merender aksen yang berbeda dari label lokalnya, suara en-US terdengar en-IN misalnya. Di prompt generasi Anda sendiri, instruksi sederhana seperti \"say this in an American accent\" biasanya memperbaikinya."
+      },
+      "Chirp3HD": {
+        "blurb": "Generasi HD terkini, disetel untuk percakapan alami."
+      },
+      "Standard": {
+        "blurb": "Suara parametrik dengan cakupan bahasa terluas pada harga terendah."
+      },
+      "Wavenet": {
+        "blurb": "Model DeepMind yang membuat suara neural jadi arus utama."
+      },
+      "Neural2": {
+        "blurb": "Suara neural generasi kedua, bawaan banyak produk."
+      },
+      "ChirpHD": {
+        "blurb": "Generasi Chirp pertama, masih dipakai luas."
+      },
+      "News": {
+        "blurb": "Suara gaya siaran, disetel untuk membaca berita."
+      },
+      "Studio": {
+        "blurb": "Suara kelas narasi untuk bacaan panjang."
+      },
+      "Polyglot": {
+        "blurb": "Satu identitas suara yang berbicara beberapa bahasa."
+      },
+      "Casual": {
+        "blurb": "Suara percakapan untuk balasan santai."
+      }
+    },
+    "polly": {
+      "Neural": {
+        "blurb": "Suara neural, generasi machine learning yang mengangkat kualitas suara Polly."
+      },
+      "Standard": {
+        "blurb": "Engine standard, suara dasar Polly dengan cakupan bahasa luas."
+      },
+      "Generative": {
+        "blurb": "Engine Polly terbaru, dibangun di atas AI generatif untuk suara percakapan."
+      },
+      "LongForm": {
+        "blurb": "Dibuat untuk pendengaran panjang: artikel, materi pelatihan, dan narasi."
+      }
+    },
+    "kokoro": {
+      "Kokoro": {
+        "blurb": "Setiap suara Kokoro: satu model open-weight, 82 juta parameter, Apache 2.0."
+      }
+    }
+  },
+  "tags": {
+    "premium": "PREMIUM",
+    "ultra": "ULTRA"
+  },
+  "explorer": {
+    "searchPlaceholder": "Cari nama, bahasa, gender, model, gaya",
+    "searchAria": "Cari suara",
+    "clearSearch": "Hapus pencarian",
+    "language": "BAHASA",
+    "gender": "GENDER",
+    "all": "Semua",
+    "any": "Apa saja",
+    "female": "Perempuan",
+    "male": "Laki-laki",
+    "neutral": "Netral",
+    "loading": "Memuat katalog",
+    "results": "{voices, plural, other {# suara}} · {samples, plural, other {# sampel}}",
+    "clear": "Hapus filter",
+    "empty": "Tidak ada suara yang cocok. Coba pencarian lebih pendek atau lepas satu filter.",
+    "langVoices": "{count, plural, other {# suara}}",
+    "playAria": "Putar sampel {name}, {language}",
+    "dismissAria": "Tutup",
+    "noteUnavailable": "sampel tidak tersedia",
+    "noteTapAgain": "ketuk putar lagi",
+    "noteBusy": "sibuk, coba lagi semenit lagi",
+    "notePreparing": "masih disiapkan, coba lagi sebentar lagi",
+    "noteGenerating": "menyiapkan sampel",
+    "listNoteModels": "Suara {family} punya satu sampel per sub-model, jadi kontrol {familyUpper} memilih versi yang Anda dengar.",
+    "modelPickTitle": "Suara {family} punya sampel per sub-model. Ini memilih yang diputar.",
+    "genderWords": {
+      "female": "perempuan",
+      "male": "laki-laki",
+      "neutral": "netral"
+    },
+    "traits": {
+      "child": "ANAK"
+    }
+  },
+  "langPage": {
+    "crumb": "← Semua bahasa {label}",
+    "meta": "{code} · {voices, plural, other {# suara}} · {families, number} {familyWord} · {samples, plural, other {# sampel siap putar}}"
+  },
+  "consent": {
+    "text": "Speakshelf memakai cookie dan analitik untuk memahami bagaimana katalog digunakan.",
+    "necessary": "Hanya yang perlu",
+    "accept": "Terima semua"
+  },
+  "suggest": {
+    "invite": "Baca Speakshelf dalam bahasa Indonesia?",
+    "switch": "Ganti",
+    "dismissAria": "Tutup saran bahasa"
+  },
+  "notFound": {
+    "title": "Tidak ada di rak ini",
+    "body": "Halaman yang Anda minta tidak ada. Katalognya tinggal di halaman depan.",
+    "home": "Kembali ke rak"
+  },
+  "footer": {
+    "note": "Katalog diperbarui {date} · {voices, number} suara dari {providers, plural, other {# penyedia}} dalam {languages, plural, other {# bahasa}}",
+    "served": "Sampel disajikan oleh <link>AI TTS Microservice</link> · Independen, tidak berafiliasi dengan Google, Amazon, atau proyek Kokoro",
+    "languageLabel": "Bahasa"
+  },
+  "meta": {
+    "andMore": "{names} dan lainnya",
+    "siteTitle": "Speakshelf · suara text to speech dari {names}",
+    "siteDescription": "Jelajahi dan putar {voices, number} suara text to speech dari {names} dalam {languages, number} bahasa, masing-masing dengan sampel siap putar.",
+    "shareDescription": "Jelajahi dan putar katalog text to speech dari {names}. Sampel siap putar untuk setiap suara.",
+    "homeJsonLd": "Katalog suara text to speech dari {names} dan lainnya, dengan sampel yang bisa diputar di browser.",
+    "providerTitle": "Suara text to speech {label}",
+    "providerDescription": "Putar sampel seluruh katalog text to speech {label}: {voices, number} suara dalam {languages, number} bahasa, dengan filter {familyWord}, bahasa, dan gender.",
+    "providerShareDescription": "Seluruh katalog text to speech {label} dengan sampel siap putar untuk setiap suara.",
+    "providerJsonLd": "Katalog setiap suara text to speech {label}, dengan sampel yang bisa diputar di browser.",
+    "langTitle": "Suara {label} {language}",
+    "langDescription": "Semua {voices, number} suara text to speech {label} untuk {language} ({code}), dengan sampel yang bisa diputar di browser.",
+    "langShareDescription": "Suara text to speech {label} untuk {language}, dengan sampel siap putar.",
+    "langJsonLd": "Suara text to speech {label} untuk {language} ({code})."
+  },
+  "a11y": {
+    "sections": "Bagian",
+    "providers": "Penyedia",
+    "cookies": "Cookie"
+  }
+}

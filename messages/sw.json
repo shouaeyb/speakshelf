@@ -1,0 +1,224 @@
+{
+  "masthead": {
+    "allProviders": "Watoa huduma wote",
+    "allProvidersShort": "Wote"
+  },
+  "stats": {
+    "voices": "SAUTI",
+    "providers": "WATOA HUDUMA",
+    "languages": "LUGHA",
+    "samples": "SAMPULI ZA KUCHEZA"
+  },
+  "home": {
+    "eyebrow": "KATALOGI YA TEXT TO SPEECH",
+    "title": "Sauti {voices, number}. Rafu moja.",
+    "sub": "Speakshelf huorodhesha sauti za text to speech za {names} na zaidi. Kila moja ikiwa na sampuli unayoweza kucheza kwenye kivinjari. Bila akaunti, bila usanidi, sauti tu.",
+    "jumpProviders": "WATOA HUDUMA",
+    "jumpAbout": "KUHUSU",
+    "providersTitle": "{count, plural, one {Mtoa huduma #} other {Watoa huduma #}}",
+    "providersSub": "Kila mtoa huduma ana rafu kamili: orodha nzima ya sauti yenye vichujio na uchezaji, maelezo ya kila familia ya modeli, na ukurasa kwa kila lugha. Rafu inakua: AI TTS Microservice inaunganisha watoa huduma zaidi, na rafu mpya hufunguliwa hapa baada ya kuthibitishwa.",
+    "cardVoices": "{count, plural, other {sauti}}",
+    "cardMeta": "{languages, plural, one {Lugha #} other {Lugha #}} · {familyWord} {familiesCount} · {samples, plural, one {sampuli #} other {sampuli #}}",
+    "browse": "VINJARI →",
+    "whyTitle": "Kwa nini rafu moja",
+    "whySub": "Katalogi hutofautiana kwa zaidi ya ukubwa. Kuziweka bega kwa bega huonyesha mapengo, miingiliano na tabia ya kila moja.",
+    "why1Title": "Ufikiaji unajumlika",
+    "why1GapAndVariants": "Amazon Polly inaleta {gap}, ambayo Google Cloud haina kabisa, pamoja na lahaja za kieneo kama {v1} na {v2}. Rafu moja huonyesha kile kila mtoa huduma alicho nacho na wengine wanakosa.",
+    "why1GapOnly": "Amazon Polly inaleta {gap}, ambayo Google Cloud haina kabisa. Rafu moja huonyesha kile kila mtoa huduma alicho nacho na wengine wanakosa.",
+    "why1VariantsOnly": "Amazon Polly inaongeza lahaja za kieneo kama {v1} na {v2}. Rafu moja huonyesha kile kila mtoa huduma alicho nacho na wengine wanakosa.",
+    "why1Generic": "Rafu moja huonyesha kile kila mtoa huduma alicho nacho na wengine wanakosa.",
+    "why2Title": "Njia moja ya kusikiliza",
+    "why2Body": "Vichujio vile vile, kichezaji kile kile, mfumo ule ule wa id za sauti kwenye kila rafu. Kulinganisha sauti kati ya watoa huduma ni mibofyo miwili, si konsoli mbili.",
+    "why3Title": "Hujisasisha yenyewe",
+    "why3Body": "Kila rafu hujisasisha kila siku kutoka AI TTS Microservice. Sauti, lugha na modeli ndogo mpya huonekana hapa bila mtu kuhariri tovuti.",
+    "aboutTitle": "Kuhusu katalogi hii",
+    "aboutBody": "Speakshelf ni katalogi ya marejeleo ya sauti za text to speech. Leo ina sauti {voices, number} kutoka kwa {providers, plural, one {mtoa huduma #} other {watoa huduma #}} katika {languages, plural, one {lugha #} other {lugha #}}, kila moja ikiwa na sampuli ya kucheza. Sauti zimepangwa jinsi watoa huduma wao wanavyozipanga, katika familia za modeli na injini, ili unachosikia kilingane na utakachotumia."
+  },
+  "attribution": {
+    "body": "Speakshelf iko huru na haihusiani na Google, Amazon wala mradi wa Kokoro. Data ya sauti na sauti zenyewe hutoka kwa <link>AI TTS Microservice</link>, huduma inayounganisha Google, Amazon, Azure na watoa huduma wengine wa sauti nyuma ya kituo kimoja. Sampuli hutiririshwa zinapohitajika, kusikiliza ni bure."
+  },
+  "providers": {
+    "google": {
+      "eyebrow": "GOOGLE CLOUD TEXT TO SPEECH",
+      "heroTitle": "Kila sauti ya Google, ukurasa mmoja.",
+      "heroSub": "Cheza sampuli ya kila sauti katika katalogi ya Google Cloud. Chuja kwa familia ya modeli, lugha na jinsia. Bila akaunti, bila usanidi, sauti tu.",
+      "familyWord": "{count, plural, one {familia ya modeli} other {familia za modeli}}",
+      "jump": "MODELI",
+      "familiesIntro": "Google inaendelea kutoa usanifu mpya wa sauti na kila kizazi bado kinatumika. Katalogi inaanzia sauti fupi za kiparametriki hadi modeli unazoweza kuelekeza kwa sentensi moja.",
+      "card": "Rafu yenye kina zaidi hapa: familia za modeli kuanzia Standard na WaveNet hadi Chirp 3 na sauti za Gemini zinazofuata maelekezo ya mtindo yaliyoandikwa.",
+      "about": "Google Cloud inaendesha mojawapo ya katalogi kubwa zaidi za text to speech kati ya watoa huduma wa cloud. Inajumuisha familia za modeli {families, number}, kuanzia sauti za WaveNet zilizoifanya sauti ya neva kuwa ya kawaida hadi sauti za Gemini zinazobadilisha uwasilishaji unapoeleza sauti unayotaka. Gemini kwa kweli ni modeli {models, number} ndani ya moja: kila sauti ya Gemini inaweza kutolewa na modeli ndogo yoyote yake, na kila toleo lina sampuli yake hapa. Kila sauti nyingine katika katalogi pia ina sampuli.",
+      "unknownFamily": "Nyongeza mpya katika katalogi ya Google."
+    },
+    "polly": {
+      "eyebrow": "AMAZON POLLY TEXT TO SPEECH",
+      "heroTitle": "Kila sauti ya Amazon Polly, ukurasa mmoja.",
+      "heroSub": "Cheza sampuli ya kila sauti katika katalogi ya Amazon Polly. Chuja kwa injini, lugha na jinsia. Bila akaunti, bila usanidi, sauti tu.",
+      "familyWord": "{count, plural, one {injini} other {injini}}",
+      "jump": "INJINI",
+      "familiesIntro": "Polly hupanga sauti zake kwa injini. Katalogi inaanzia sauti za standard hadi injini ya generative, ikiwa na ngazi ya long-form iliyoundwa kwa usikilizaji mrefu.",
+      "card": "Huduma ya text to speech ya AWS: injini za standard, neural, generative na long-form.",
+      "about": "Amazon Polly ni huduma ya text to speech kwenye AWS, inayogeuza maandishi kuwa sauti halisi. Sauti zake {voices, number} hapa zinajumuisha injini {families, number}: standard na neural, injini ya generative iliyojengwa kwa mbinu za AI ya kizazi, na sauti za long-form zilizoundwa kwa maudhui marefu kama makala na nyenzo za mafunzo. Kila sauti ina sampuli ya kucheza.",
+      "unknownFamily": "Nyongeza mpya katika katalogi ya Amazon Polly."
+    },
+    "kokoro": {
+      "eyebrow": "KOKORO TEXT TO SPEECH",
+      "heroTitle": "Kila sauti ya Kokoro, ukurasa mmoja.",
+      "heroSub": "Cheza sampuli ya kila sauti ya modeli huria ya Kokoro. Chuja kwa lugha na jinsia. Bila akaunti, bila usanidi, sauti tu.",
+      "familyWord": "{count, plural, one {familia ya modeli} other {familia za modeli}}",
+      "jump": "MODELI",
+      "familiesIntro": "Kokoro ni modeli moja badala ya kundi la injini, hivyo katalogi yake yote iko katika familia moja.",
+      "card": "Modeli ya uzito huria, parameta milioni 82 chini ya leseni ya Apache 2.0.",
+      "about": "Kokoro ni modeli ya text to speech ya uzito huria: parameta milioni 82, iliyotolewa chini ya leseni ya Apache 2.0. AI TTS Microservice inaihudumia kando ya katalogi za cloud, hivyo sauti zake {voices, number} katika lugha {languages, number} hucheza hapa kama rafu nyingine yoyote. Kila sauti ina sampuli ya kucheza.",
+      "unknownFamily": "Nyongeza mpya katika katalogi ya Kokoro."
+    }
+  },
+  "providerPage": {
+    "jumpVoices": "SAUTI",
+    "jumpLanguages": "LUGHA",
+    "jumpAbout": "KUHUSU",
+    "familiesTitle": "{familyWord} {count, number}",
+    "languagesTitle": "{count, plural, one {Lugha #} other {Lugha #}}",
+    "languagesSub": "Kila lugha ina ukurasa wake wenye orodha kamili ya sauti, hivyo unaweza kumpeleka mtu moja kwa moja kwenye rafu moja ya katalogi.",
+    "famMeta": "{voices, plural, one {sauti #} other {sauti #}}",
+    "famLangs": "{count, plural, one {lugha #} other {lugha #}}",
+    "famModels": "Modeli ndogo {count, number}",
+    "aboutTitle": "Kuhusu katalogi hii",
+    "allVoices": "Sauti zote"
+  },
+  "families": {
+    "google": {
+      "Gemini": {
+        "blurb": "Sauti asilia kutoka Gemini. Kila sauti inaweza kutolewa na kila modeli ndogo, na uwasilishaji hufuata maelekezo ya mtindo yaliyoandikwa.",
+        "note": "Sampuli huonyesha kila sauti kwa uaminifu, pamoja na tabia zake. Baadhi ya sauti za Gemini zinaweza kutoa lafudhi tofauti na lebo ya eneo lake, sauti ya en-US ikisikika en-IN kwa mfano. Katika maelekezo yako ya kuzalisha, agizo rahisi kama \"say this in an American accent\" kwa kawaida hulirekebisha."
+      },
+      "Chirp3HD": {
+        "blurb": "Kizazi cha sasa cha HD, kilichorekebishwa kwa mazungumzo ya kawaida."
+      },
+      "Standard": {
+        "blurb": "Sauti za kiparametriki zenye ufikiaji mpana zaidi wa lugha kwa bei ya chini zaidi."
+      },
+      "Wavenet": {
+        "blurb": "Modeli ya DeepMind iliyoifanya sauti ya neva kuwa ya kawaida."
+      },
+      "Neural2": {
+        "blurb": "Sauti za neva za kizazi cha pili, chaguo-msingi la bidhaa nyingi."
+      },
+      "ChirpHD": {
+        "blurb": "Kizazi cha kwanza cha Chirp, bado kinatumika sana."
+      },
+      "News": {
+        "blurb": "Sauti za mtindo wa matangazo, zilizorekebishwa kwa kusoma habari."
+      },
+      "Studio": {
+        "blurb": "Sauti za kiwango cha usimulizi kwa usomaji mrefu."
+      },
+      "Polyglot": {
+        "blurb": "Utambulisho mmoja wa sauti unaozungumza lugha kadhaa."
+      },
+      "Casual": {
+        "blurb": "Sauti ya mazungumzo iliyoundwa kwa majibu yasiyo rasmi."
+      }
+    },
+    "polly": {
+      "Neural": {
+        "blurb": "Sauti za neva, kizazi cha machine learning kilichoinua ubora wa sauti ya Polly."
+      },
+      "Standard": {
+        "blurb": "Injini ya standard, sauti za msingi za Polly zenye ufikiaji mpana wa lugha."
+      },
+      "Generative": {
+        "blurb": "Injini mpya zaidi ya Polly, iliyojengwa juu ya AI ya kizazi kwa sauti ya mazungumzo."
+      },
+      "LongForm": {
+        "blurb": "Imetengenezwa kwa usikilizaji mrefu: makala, nyenzo za mafunzo na usimulizi."
+      }
+    },
+    "kokoro": {
+      "Kokoro": {
+        "blurb": "Kila sauti ya Kokoro: modeli moja ya uzito huria, parameta milioni 82, Apache 2.0."
+      }
+    }
+  },
+  "tags": {
+    "premium": "PREMIUM",
+    "ultra": "ULTRA"
+  },
+  "explorer": {
+    "searchPlaceholder": "Tafuta jina, lugha, jinsia, modeli, mtindo",
+    "searchAria": "Tafuta sauti",
+    "clearSearch": "Futa utafutaji",
+    "language": "LUGHA",
+    "gender": "JINSIA",
+    "all": "Zote",
+    "any": "Yoyote",
+    "female": "Kike",
+    "male": "Kiume",
+    "neutral": "Isiyoegemea",
+    "loading": "Katalogi inapakia",
+    "results": "{voices, plural, one {sauti #} other {sauti #}} · {samples, plural, one {sampuli #} other {sampuli #}}",
+    "clear": "Futa vichujio",
+    "empty": "Hakuna sauti inayolingana. Jaribu utafutaji mfupi zaidi au ondoa kichujio.",
+    "langVoices": "{count, plural, one {sauti #} other {sauti #}}",
+    "playAria": "Cheza sampuli ya {name}, {language}",
+    "dismissAria": "Funga",
+    "noteUnavailable": "sampuli haipatikani",
+    "noteTapAgain": "gusa cheza tena",
+    "noteBusy": "imebanwa, jaribu tena baada ya dakika",
+    "notePreparing": "bado inaandaliwa, jaribu tena hivi punde",
+    "noteGenerating": "inaandaa sampuli",
+    "listNoteModels": "Sauti za {family} zina sampuli moja kwa kila modeli ndogo, hivyo kidhibiti cha {familyUpper} huchagua toleo unalosikia.",
+    "modelPickTitle": "Sauti za {family} zina sampuli kwa kila modeli ndogo. Hiki huchagua inayochezwa.",
+    "genderWords": {
+      "female": "kike",
+      "male": "kiume",
+      "neutral": "isiyoegemea"
+    },
+    "traits": {
+      "child": "MTOTO"
+    }
+  },
+  "langPage": {
+    "crumb": "← Lugha zote za {label}",
+    "meta": "{code} · {voices, plural, one {sauti #} other {sauti #}} · {familyWord} {families, number} · {samples, plural, one {sampuli # ya kucheza} other {sampuli # za kucheza}}"
+  },
+  "consent": {
+    "text": "Speakshelf hutumia vidakuzi na uchanganuzi kuelewa jinsi katalogi inavyotumika.",
+    "necessary": "Muhimu pekee",
+    "accept": "Kubali zote"
+  },
+  "suggest": {
+    "invite": "Soma Speakshelf kwa Kiswahili?",
+    "switch": "Badilisha",
+    "dismissAria": "Funga pendekezo la lugha"
+  },
+  "notFound": {
+    "title": "Hakuna kitu kwenye rafu hii",
+    "body": "Ukurasa ulioomba haupo. Katalogi inaishi kwenye ukurasa wa mwanzo.",
+    "home": "Rudi kwenye rafu"
+  },
+  "footer": {
+    "note": "Katalogi imesasishwa {date} · Sauti {voices, number} kutoka kwa {providers, plural, one {mtoa huduma #} other {watoa huduma #}} katika {languages, plural, one {lugha #} other {lugha #}}",
+    "served": "Sampuli zinahudumiwa na <link>AI TTS Microservice</link> · Huru, haihusiani na Google, Amazon wala mradi wa Kokoro",
+    "languageLabel": "Lugha"
+  },
+  "meta": {
+    "andMore": "{names} na zaidi",
+    "siteTitle": "Speakshelf · sauti za text to speech za {names}",
+    "siteDescription": "Vinjari na ucheze sauti {voices, number} za text to speech za {names} katika lugha {languages, number}, kila moja ikiwa na sampuli ya kucheza.",
+    "shareDescription": "Vinjari na ucheze katalogi za text to speech za {names}. Sampuli ya kucheza kwa kila sauti.",
+    "homeJsonLd": "Katalogi ya sauti za text to speech za {names} na zaidi, zikiwa na sampuli za kucheza kwenye kivinjari.",
+    "providerTitle": "Sauti za text to speech za {label}",
+    "providerDescription": "Cheza sampuli za katalogi nzima ya text to speech ya {label}: sauti {voices, number} katika lugha {languages, number}, zikiwa na vichujio vya {familyWord}, lugha na jinsia.",
+    "providerShareDescription": "Katalogi nzima ya text to speech ya {label} yenye sampuli ya kucheza kwa kila sauti.",
+    "providerJsonLd": "Katalogi ya kila sauti ya text to speech ya {label}, yenye sampuli za kucheza kwenye kivinjari.",
+    "langTitle": "Sauti za {label} {language}",
+    "langDescription": "Sauti zote {voices, number} za text to speech za {label} kwa {language} ({code}), zikiwa na sampuli za kucheza kwenye kivinjari.",
+    "langShareDescription": "Sauti za text to speech za {label} kwa {language}, zikiwa na sampuli za kucheza.",
+    "langJsonLd": "Sauti za text to speech za {label} kwa {language} ({code})."
+  },
+  "a11y": {
+    "sections": "Sehemu",
+    "providers": "Watoa huduma",
+    "cookies": "Vidakuzi"
+  }
+}

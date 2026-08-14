@@ -1,9 +1,15 @@
-// The locale registry. Launch set per the owner: the world's most spoken
-// languages minus right-to-left scripts, which wait for a dedicated RTL
-// pass (docs/decisions.md). English is the default and lives unprefixed
-// at the original URLs; every other locale is path-prefixed.
+// The locale registry, per the owner's picks. English is the default and
+// lives unprefixed at the original URLs; every other locale is
+// path-prefixed. Arabic is right-to-left: RTL_LOCALES drives the html dir
+// attribute, and the stylesheet speaks logical properties where direction
+// matters (docs/decisions.md).
 
-export const LOCALES = ["en", "es", "zh", "hi", "fr", "bn", "pt", "ru"] as const;
+export const LOCALES = [
+  "en", "es", "zh", "hi", "fr", "bn", "pt", "ru",
+  "id", "ar", "sw", "ja", "de", "it",
+] as const;
+
+export const RTL_LOCALES: ReadonlySet<string> = new Set(["ar"]);
 export type Locale = (typeof LOCALES)[number];
 export const DEFAULT_LOCALE: Locale = "en";
 
@@ -17,6 +23,12 @@ export const LOCALE_NAMES: Record<Locale, string> = {
   bn: "বাংলা",
   pt: "Português",
   ru: "Русский",
+  id: "Bahasa Indonesia",
+  ar: "العربية",
+  sw: "Kiswahili",
+  ja: "日本語",
+  de: "Deutsch",
+  it: "Italiano",
 };
 
 export function isLocale(value: string): value is Locale {
@@ -53,4 +65,10 @@ export const INVITES: Record<Locale, { invite: string; cta: string }> = {
   bn: { invite: "Speakshelf বাংলায় দেখবেন?", cta: "পরিবর্তন করুন" },
   pt: { invite: "Ver o Speakshelf em português?", cta: "Mudar" },
   ru: { invite: "Смотреть Speakshelf на русском?", cta: "Переключить" },
+  id: { invite: "Baca Speakshelf dalam bahasa Indonesia?", cta: "Ganti" },
+  ar: { invite: "قراءة Speakshelf بالعربية؟", cta: "التبديل" },
+  sw: { invite: "Soma Speakshelf kwa Kiswahili?", cta: "Badilisha" },
+  ja: { invite: "Speakshelf を日本語で読みますか？", cta: "切り替える" },
+  de: { invite: "Speakshelf auf Deutsch lesen?", cta: "Wechseln" },
+  it: { invite: "Leggere Speakshelf in italiano?", cta: "Cambia" },
 };

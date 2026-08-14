@@ -43,6 +43,19 @@ html {
   }
 }
 
+/* Script locales swap the token stacks: their own IBM Plex face leads for
+   the translated text, the Latin faces stay in the stack for voice names,
+   ids and codes. Mono keeps Plex Mono first so codes render as codes. */
+html[lang="ar"] {
+  --sans: var(--font-arabic), var(--font-sans), "Helvetica Neue", Helvetica, sans-serif;
+  --mono: var(--font-mono), var(--font-arabic), Menlo, monospace;
+}
+
+html[lang="ja"] {
+  --sans: var(--font-jp), var(--font-sans), "Helvetica Neue", Helvetica, sans-serif;
+  --mono: var(--font-mono), var(--font-jp), Menlo, monospace;
+}
+
 html,
 body {
   margin: 0;
@@ -141,7 +154,9 @@ button {
 
 /* Favicon geometry, scale-free: each square is 45% of the box and the
    diagonal gap is 10%, matching icon.svg (9px squares, 2px gap, 20px
-   cluster). Keep these ratios when resizing the mark. */
+   cluster). Keep these ratios when resizing the mark. Deliberately
+   physical left/right: the mark never mirrors in RTL, it must match the
+   favicon in the tab above it. */
 .wordmark-sq::before,
 .wordmark-sq::after {
   content: "";
@@ -278,16 +293,17 @@ button {
 }
 
 .stat {
-  padding: 24px 24px 32px 0;
-  border-right: 1px solid var(--inv-border);
+  padding-block: 24px 32px;
+  padding-inline: 0 24px;
+  border-inline-end: 1px solid var(--inv-border);
 }
 
 .stat:last-child {
-  border-right: none;
+  border-inline-end: none;
 }
 
 .stat + .stat {
-  padding-left: 24px;
+  padding-inline-start: 24px;
 }
 
 .stat-num {
@@ -309,19 +325,19 @@ button {
     grid-template-columns: 1fr 1fr;
   }
   .stat {
-    border-right: none;
+    border-inline-end: none;
     border-bottom: 1px solid var(--inv-border);
-    padding-left: 0;
+    padding-inline-start: 0;
   }
   .stat + .stat {
-    padding-left: 0;
+    padding-inline-start: 0;
   }
   .stat:nth-child(odd) {
-    border-right: 1px solid var(--inv-border);
-    padding-right: 24px;
+    border-inline-end: 1px solid var(--inv-border);
+    padding-inline-end: 24px;
   }
   .stat:nth-child(even) {
-    padding-left: 24px;
+    padding-inline-start: 24px;
   }
   .stat:nth-last-child(-n + 2) {
     border-bottom: none;
@@ -553,7 +569,7 @@ button {
   font-size: 14px;
   font-weight: 400;
   color: var(--text-2);
-  margin-left: 6px;
+  margin-inline-start: 6px;
 }
 
 .prov-meta {
@@ -762,7 +778,7 @@ button {
   color: var(--text);
   width: 100%;
   height: 100%;
-  padding: 0 20px 0 0;
+  padding-inline-end: 20px;
   cursor: pointer;
 }
 
@@ -781,7 +797,7 @@ button {
 
 .field-caret {
   position: absolute;
-  right: 16px;
+  inset-inline-end: 16px;
   color: var(--text-2);
   font-size: 9px;
   pointer-events: none;
@@ -859,7 +875,7 @@ a.lang-name:hover {
   font-family: var(--mono);
   font-size: 11px;
   color: var(--text-3);
-  margin-left: auto;
+  margin-inline-start: auto;
   white-space: nowrap;
 }
 
@@ -926,7 +942,7 @@ a.lang-name:hover {
 }
 
 .vmeta {
-  margin-left: auto;
+  margin-inline-start: auto;
   display: flex;
   align-items: center;
   gap: 16px;
@@ -1001,7 +1017,7 @@ a.lang-name:hover {
 }
 
 .lang-suggest-close {
-  margin-left: auto;
+  margin-inline-start: auto;
   background: none;
   border: none;
   color: var(--inv-text-2);
@@ -1063,16 +1079,17 @@ a.lang-name:hover {
 .toast {
   position: fixed;
   top: 64px;
-  right: 24px;
-  left: auto;
+  inset-inline-end: 24px;
+  inset-inline-start: auto;
   bottom: auto;
   z-index: 40;
   max-width: 420px;
   background: var(--layer);
   color: var(--text-2);
   border: 1px solid var(--border);
-  border-left: 3px solid var(--blue);
-  padding: 14px 40px 14px 16px;
+  border-inline-start: 3px solid var(--blue);
+  padding-block: 14px;
+  padding-inline: 16px 40px;
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.18);
   animation: toast-in 240ms cubic-bezier(0.2, 0, 0.38, 0.9);
 }
@@ -1081,6 +1098,22 @@ a.lang-name:hover {
   from {
     opacity: 0;
     transform: translateX(12px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* The slide comes from the inline end on both directions. */
+[dir="rtl"] .toast {
+  animation-name: toast-in-rtl;
+}
+
+@keyframes toast-in-rtl {
+  from {
+    opacity: 0;
+    transform: translateX(-12px);
   }
   to {
     opacity: 1;
@@ -1104,7 +1137,7 @@ a.lang-name:hover {
 .toast-close {
   position: absolute;
   top: 8px;
-  right: 8px;
+  inset-inline-end: 8px;
   background: none;
   border: none;
   color: var(--text-3);
@@ -1119,8 +1152,7 @@ a.lang-name:hover {
 
 @media (max-width: 520px) {
   .toast {
-    left: 16px;
-    right: 16px;
+    inset-inline: 16px;
     top: auto;
     bottom: 16px;
     max-width: none;

@@ -1,0 +1,224 @@
+{
+  "masthead": {
+    "allProviders": "すべてのプロバイダー",
+    "allProvidersShort": "すべて"
+  },
+  "stats": {
+    "voices": "音声",
+    "providers": "プロバイダー",
+    "languages": "言語",
+    "samples": "再生できるサンプル"
+  },
+  "home": {
+    "eyebrow": "テキスト読み上げカタログ",
+    "title": "{voices, number} の音声。棚はひとつ。",
+    "sub": "Speakshelf は {names} などのテキスト読み上げ音声をカタログにしています。どの音声もブラウザーで再生できるサンプル付き。アカウント不要、設定不要、あるのは音声だけ。",
+    "jumpProviders": "プロバイダー",
+    "jumpAbout": "概要",
+    "providersTitle": "{count, plural, other {# プロバイダー}}",
+    "providersSub": "各プロバイダーには完全な棚があります。フィルターと再生付きの全音声リスト、モデルファミリーごとの説明、言語ごとのページ。棚は育ちます。AI TTS Microservice がプロバイダーを束ね、検証が済めば新しい棚がここに開きます。",
+    "cardVoices": "{count, plural, other {音声}}",
+    "cardMeta": "{languages, plural, other {# 言語}} · {familiesCount} {familyWord} · {samples, plural, other {# サンプル}}",
+    "browse": "見る →",
+    "whyTitle": "棚がひとつである理由",
+    "whySub": "カタログの違いは規模だけではありません。並べて見ると、空白も重なりもそれぞれの個性も見えてきます。",
+    "why1Title": "カバレッジは足し算になる",
+    "why1GapAndVariants": "Amazon Polly は Google Cloud にまったくない {gap} を持ち込み、さらに {v1} や {v2} のような地域バリエーションも加えます。ひとつの棚が、各プロバイダーだけが持つものを見せてくれます。",
+    "why1GapOnly": "Amazon Polly は Google Cloud にまったくない {gap} を持ち込みます。ひとつの棚が、各プロバイダーだけが持つものを見せてくれます。",
+    "why1VariantsOnly": "Amazon Polly は {v1} や {v2} のような地域バリエーションを加えます。ひとつの棚が、各プロバイダーだけが持つものを見せてくれます。",
+    "why1Generic": "ひとつの棚が、各プロバイダーだけが持つものを見せてくれます。",
+    "why2Title": "聴き方はひとつ",
+    "why2Body": "どの棚でも同じフィルター、同じプレイヤー、同じ音声 ID 体系。プロバイダーをまたいだ聴き比べは 2 クリック、コンソール 2 つではありません。",
+    "why3Title": "自動で新しく",
+    "why3Body": "どの棚も AI TTS Microservice から毎日更新されます。新しい音声、言語、サブモデルは、誰もサイトを編集しなくてもここに現れます。",
+    "aboutTitle": "このカタログについて",
+    "aboutBody": "Speakshelf はテキスト読み上げ音声のリファレンスカタログです。今日は {providers, plural, other {# プロバイダー}}の {voices, number} 音声を {languages, plural, other {# 言語}}で収め、どれも再生できるサンプル付きです。音声はプロバイダー自身の分け方どおり、モデルファミリーとエンジンでまとめてあるので、聴いたものがそのまま導入するものに対応します。"
+  },
+  "attribution": {
+    "body": "Speakshelf は独立したサイトで、Google、Amazon、Kokoro プロジェクトとは無関係です。音声データとオーディオは、Google、Amazon、Azure ほかの音声プロバイダーをひとつのエンドポイントに束ねるサービス <link>AI TTS Microservice</link> から来ています。サンプルはオンデマンドで配信され、聴くのは無料です。"
+  },
+  "providers": {
+    "google": {
+      "eyebrow": "GOOGLE CLOUD TEXT TO SPEECH",
+      "heroTitle": "Google の全音声を、1 ページで。",
+      "heroSub": "Google Cloud カタログの全音声のサンプルを再生。モデルファミリー、言語、性別で絞り込み。アカウント不要、設定不要、あるのは音声だけ。",
+      "familyWord": "{count, plural, other {モデルファミリー}}",
+      "jump": "モデル",
+      "familiesIntro": "Google は新しい音声アーキテクチャを出し続け、どの世代も現役です。カタログはコンパクトなパラメトリック音声から、一文で演出を指示できるモデルまで並びます。",
+      "card": "ここで最も深い棚。Standard や WaveNet から Chirp 3、書いたスタイル指示に従う Gemini 音声まで。",
+      "about": "Google Cloud はクラウド事業者で最大級のテキスト読み上げカタログを運営しています。{families, number} のモデルファミリーがあり、ニューラル音声を主流にした WaveNet から、望むトーンを言葉で伝えると話し方を変える Gemini 音声まで。Gemini は実質 {models, number} モデルがひとつになったもので、どの Gemini 音声もどのサブモデルでもレンダリングでき、それぞれのレンダリングにここでサンプルが付きます。カタログの他の音声にもすべてサンプルがあります。",
+      "unknownFamily": "Google カタログへの最近の追加です。"
+    },
+    "polly": {
+      "eyebrow": "AMAZON POLLY TEXT TO SPEECH",
+      "heroTitle": "Amazon Polly の全音声を、1 ページで。",
+      "heroSub": "Amazon Polly カタログの全音声のサンプルを再生。エンジン、言語、性別で絞り込み。アカウント不要、設定不要、あるのは音声だけ。",
+      "familyWord": "{count, plural, other {エンジン}}",
+      "jump": "エンジン",
+      "familiesIntro": "Polly は音声をエンジンで分けています。カタログは standard の音声から generative エンジンまで、長時間リスニング向けの long-form 段も揃います。",
+      "card": "AWS のテキスト読み上げサービス。standard、neural、generative、long-form のエンジン。",
+      "about": "Amazon Polly は AWS のテキスト読み上げサービスで、テキストを生き生きとした音声に変えます。ここにある {voices, number} 音声は {families, number} エンジンにわたります。standard と neural、生成 AI 技術で作られた generative エンジン、記事や研修資料など長い内容のための long-form 音声。どの音声にも再生できるサンプルがあります。",
+      "unknownFamily": "Amazon Polly カタログへの最近の追加です。"
+    },
+    "kokoro": {
+      "eyebrow": "KOKORO TEXT TO SPEECH",
+      "heroTitle": "Kokoro の全音声を、1 ページで。",
+      "heroSub": "オープンウェイトの Kokoro モデルの全音声のサンプルを再生。言語と性別で絞り込み。アカウント不要、設定不要、あるのは音声だけ。",
+      "familyWord": "{count, plural, other {モデルファミリー}}",
+      "jump": "モデル",
+      "familiesIntro": "Kokoro はエンジンの群れではなく単一モデルなので、カタログ全体がひとつのファミリーに収まります。",
+      "card": "オープンウェイトのモデル。8,200 万パラメーター、Apache 2.0 ライセンス。",
+      "about": "Kokoro はオープンウェイトのテキスト読み上げモデルです。8,200 万パラメーター、Apache 2.0 ライセンスで公開。AI TTS Microservice がクラウドのカタログと並べて提供しているので、{languages, number} 言語の {voices, number} 音声がほかの棚と同じようにここで再生できます。どの音声にも再生できるサンプルがあります。",
+      "unknownFamily": "Kokoro カタログへの最近の追加です。"
+    }
+  },
+  "providerPage": {
+    "jumpVoices": "音声",
+    "jumpLanguages": "言語",
+    "jumpAbout": "概要",
+    "familiesTitle": "{count, number} {familyWord}",
+    "languagesTitle": "{count, plural, other {# 言語}}",
+    "languagesSub": "どの言語にも全音声リスト付きの専用ページがあるので、カタログの一段へ直接リンクを送れます。",
+    "famMeta": "{voices, plural, other {# 音声}}",
+    "famLangs": "{count, plural, other {# 言語}}",
+    "famModels": "{count, number} サブモデル",
+    "aboutTitle": "このカタログについて",
+    "allVoices": "すべての音声"
+  },
+  "families": {
+    "google": {
+      "Gemini": {
+        "blurb": "Gemini からのネイティブ音声。どの音声もすべてのサブモデルでレンダリングでき、話し方は書いたスタイル指示に従います。",
+        "note": "サンプルは癖も含めて各音声を正直に伝えます。Gemini 音声にはロケール表示と違うアクセントで話すものがあり、たとえば en-US 音声が en-IN に聞こえることがあります。生成時のプロンプトに \"say this in an American accent\" のような簡単な指示を入れると、たいてい直ります。"
+      },
+      "Chirp3HD": {
+        "blurb": "現行の HD 世代。自然な会話向けに調整。"
+      },
+      "Standard": {
+        "blurb": "最安値で最も広い言語カバレッジのパラメトリック音声。"
+      },
+      "Wavenet": {
+        "blurb": "ニューラル音声を主流にした DeepMind のモデル。"
+      },
+      "Neural2": {
+        "blurb": "第 2 世代のニューラル音声。多くの製品の既定。"
+      },
+      "ChirpHD": {
+        "blurb": "初代 Chirp 世代。今も広く使われています。"
+      },
+      "News": {
+        "blurb": "ニュース読み向けに調整された放送スタイルの音声。"
+      },
+      "Studio": {
+        "blurb": "長い朗読のためのナレーション品質の音声。"
+      },
+      "Polyglot": {
+        "blurb": "複数言語を話すひとつの声のアイデンティティ。"
+      },
+      "Casual": {
+        "blurb": "くだけた返答のための会話向け音声。"
+      }
+    },
+    "polly": {
+      "Neural": {
+        "blurb": "ニューラル音声。Polly の音質を引き上げた機械学習世代。"
+      },
+      "Standard": {
+        "blurb": "standard エンジン。広い言語カバレッジを持つ Polly の基本音声。"
+      },
+      "Generative": {
+        "blurb": "最新の Polly エンジン。会話音声のための生成 AI 製。"
+      },
+      "LongForm": {
+        "blurb": "長いリスニングのために。記事、研修資料、ナレーション。"
+      }
+    },
+    "kokoro": {
+      "Kokoro": {
+        "blurb": "Kokoro の全音声。オープンウェイトの単一モデル、8,200 万パラメーター、Apache 2.0。"
+      }
+    }
+  },
+  "tags": {
+    "premium": "PREMIUM",
+    "ultra": "ULTRA"
+  },
+  "explorer": {
+    "searchPlaceholder": "名前、言語、性別、モデル、スタイルで検索",
+    "searchAria": "音声を検索",
+    "clearSearch": "検索をクリア",
+    "language": "言語",
+    "gender": "性別",
+    "all": "すべて",
+    "any": "指定なし",
+    "female": "女性",
+    "male": "男性",
+    "neutral": "ニュートラル",
+    "loading": "カタログを読み込み中",
+    "results": "{voices, plural, other {# 音声}} · {samples, plural, other {# サンプル}}",
+    "clear": "フィルターをクリア",
+    "empty": "一致する音声がありません。検索を短くするか、フィルターをひとつ外してみてください。",
+    "langVoices": "{count, plural, other {# 音声}}",
+    "playAria": "{name}（{language}）のサンプルを再生",
+    "dismissAria": "閉じる",
+    "noteUnavailable": "サンプルを利用できません",
+    "noteTapAgain": "もう一度再生をタップ",
+    "noteBusy": "混み合っています。1 分後にもう一度",
+    "notePreparing": "まだ準備中です。まもなくもう一度",
+    "noteGenerating": "サンプルを準備中",
+    "listNoteModels": "{family} 音声はサブモデルごとにサンプルがあり、{familyUpper} の切り替えでどのテイクを聴くか選べます。",
+    "modelPickTitle": "{family} 音声にはサブモデルごとのサンプルがあります。ここで再生するものを選びます。",
+    "genderWords": {
+      "female": "女性",
+      "male": "男性",
+      "neutral": "ニュートラル"
+    },
+    "traits": {
+      "child": "子ども"
+    }
+  },
+  "langPage": {
+    "crumb": "← {label} の全言語",
+    "meta": "{code} · {voices, plural, other {# 音声}} · {families, number} {familyWord} · {samples, plural, other {# 再生できるサンプル}}"
+  },
+  "consent": {
+    "text": "Speakshelf は、カタログの使われ方を知るために Cookie と分析を使います。",
+    "necessary": "必要なもののみ",
+    "accept": "すべて許可"
+  },
+  "suggest": {
+    "invite": "Speakshelf を日本語で読みますか？",
+    "switch": "切り替える",
+    "dismissAria": "言語の提案を閉じる"
+  },
+  "notFound": {
+    "title": "この棚には何もありません",
+    "body": "お探しのページは存在しません。カタログはホームページにあります。",
+    "home": "棚へ戻る"
+  },
+  "footer": {
+    "note": "カタログ更新 {date} · {providers, plural, other {# プロバイダー}}の {voices, number} 音声、{languages, plural, other {# 言語}}",
+    "served": "サンプル配信は <link>AI TTS Microservice</link> · 独立サイト、Google・Amazon・Kokoro プロジェクトとは無関係",
+    "languageLabel": "言語"
+  },
+  "meta": {
+    "andMore": "{names} など",
+    "siteTitle": "Speakshelf · {names} のテキスト読み上げ音声",
+    "siteDescription": "{names} の {voices, number} テキスト読み上げ音声を {languages, number} 言語で。どれも再生できるサンプル付きで探して聴けます。",
+    "shareDescription": "{names} のテキスト読み上げカタログを探して聴く。全音声に再生できるサンプル。",
+    "homeJsonLd": "{names} などのテキスト読み上げ音声のカタログ。ブラウザーで再生できるサンプル付き。",
+    "providerTitle": "{label} テキスト読み上げ音声",
+    "providerDescription": "{label} のテキスト読み上げカタログ全体のサンプルを再生。{languages, number} 言語の {voices, number} 音声、{familyWord}・言語・性別のフィルター付き。",
+    "providerShareDescription": "全音声に再生できるサンプルが付いた {label} のテキスト読み上げカタログ全体。",
+    "providerJsonLd": "{label} の全テキスト読み上げ音声のカタログ。ブラウザーで再生できるサンプル付き。",
+    "langTitle": "{label} {language} 音声",
+    "langDescription": "{language}（{code}）の {label} テキスト読み上げ音声 {voices, number} 件すべて。ブラウザーで再生できるサンプル付き。",
+    "langShareDescription": "{language} の {label} テキスト読み上げ音声。再生できるサンプル付き。",
+    "langJsonLd": "{language}（{code}）の {label} テキスト読み上げ音声。"
+  },
+  "a11y": {
+    "sections": "セクション",
+    "providers": "プロバイダー",
+    "cookies": "Cookie"
+  }
+}

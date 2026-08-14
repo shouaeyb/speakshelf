@@ -1,6 +1,6 @@
 import { Suspense } from "react";
 import type { Metadata, Viewport } from "next";
-import { IBM_Plex_Sans, IBM_Plex_Mono } from "next/font/google";
+import { IBM_Plex_Sans, IBM_Plex_Mono, IBM_Plex_Sans_Arabic, IBM_Plex_Sans_JP } from "next/font/google";
 import { notFound } from "next/navigation";
 import { hasLocale, NextIntlClientProvider } from "next-intl";
 import { getTranslations } from "next-intl/server";
@@ -12,7 +12,7 @@ import MastNav from "@/components/MastNav";
 import ScrollGlide from "@/components/ScrollGlide";
 import { Link } from "@/i18n/navigation";
 import { routing } from "@/i18n/routing";
-import { LOCALES, listNames } from "@/i18n/locales";
+import { LOCALES, RTL_LOCALES, listNames } from "@/i18n/locales";
 import { getSite } from "@/lib/catalog";
 import { PROVIDERS } from "@/lib/providers";
 import "../globals.css";
@@ -29,6 +29,25 @@ const plexMono = IBM_Plex_Mono({
   subsets: ["latin", "latin-ext", "cyrillic"],
   display: "swap",
   variable: "--font-mono",
+});
+
+// Script fonts activate per locale through the token overrides in
+// globals.css (html[lang="ar"], html[lang="ja"]); preload stays off so
+// only their own pages fetch them.
+const plexArabic = IBM_Plex_Sans_Arabic({
+  weight: ["300", "400", "500", "600"],
+  subsets: ["arabic"],
+  display: "swap",
+  variable: "--font-arabic",
+  preload: false,
+});
+
+const plexJP = IBM_Plex_Sans_JP({
+  weight: ["300", "400", "500", "600"],
+  subsets: ["latin"],
+  display: "swap",
+  variable: "--font-jp",
+  preload: false,
 });
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000";
@@ -121,8 +140,9 @@ export default async function LocaleLayout({
     // Next 16 leaves the animation running and navigations land short.
     <html
       lang={locale}
+      dir={RTL_LOCALES.has(locale) ? "rtl" : "ltr"}
       data-scroll-behavior="smooth"
-      className={`${plexSans.variable} ${plexMono.variable}`}
+      className={`${plexSans.variable} ${plexMono.variable} ${plexArabic.variable} ${plexJP.variable}`}
     >
       <body>
         <NextIntlClientProvider>

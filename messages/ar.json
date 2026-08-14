@@ -1,0 +1,224 @@
+{
+  "masthead": {
+    "allProviders": "كل المزوّدين",
+    "allProvidersShort": "الكل"
+  },
+  "stats": {
+    "voices": "الأصوات",
+    "providers": "المزوّدون",
+    "languages": "اللغات",
+    "samples": "عيّنات قابلة للتشغيل"
+  },
+  "home": {
+    "eyebrow": "فهرس تحويل النص إلى كلام",
+    "title": "{voices, plural, zero {لا أصوات. رفّ واحد.} one {صوت واحد. رفّ واحد.} two {صوتان. رفّ واحد.} few {# أصوات. رفّ واحد.} many {# صوتًا. رفّ واحد.} other {# صوت. رفّ واحد.}}",
+    "sub": "يفهرس Speakshelf أصوات تحويل النص إلى كلام من {names} وغيرها. لكل صوت عيّنة يمكنك تشغيلها في المتصفح. لا حساب، لا إعداد، الأصوات فقط.",
+    "jumpProviders": "المزوّدون",
+    "jumpAbout": "حول",
+    "providersTitle": "{count, plural, zero {لا مزوّدين} one {مزوّد واحد} two {مزوّدان} few {# مزوّدين} many {# مزوّدًا} other {# مزوّد}}",
+    "providersSub": "لكل مزوّد رفّ كامل: قائمة الأصوات كلها مع الترشيح والتشغيل، وملاحظات عن كل عائلة نماذج، وصفحة لكل لغة. الرفّ ينمو: يوحّد AI TTS Microservice مزيدًا من المزوّدين، وتُفتح هنا رفوف جديدة بعد التحقق.",
+    "cardVoices": "{count, plural, zero {أصوات} one {صوت} two {صوتان} few {أصوات} many {صوتًا} other {صوت}}",
+    "cardMeta": "{languages, plural, zero {لا لغات} one {لغة واحدة} two {لغتان} few {# لغات} many {# لغةً} other {# لغة}} · {familiesCount} {familyWord} · {samples, plural, zero {لا عيّنات} one {عيّنة واحدة} two {عيّنتان} few {# عيّنات} many {# عيّنةً} other {# عيّنة}}",
+    "browse": "تصفّح ←",
+    "whyTitle": "لماذا رفّ واحد",
+    "whySub": "تختلف الفهارس بأكثر من الحجم. وضعها جنبًا إلى جنب يُظهر الفجوات والتداخلات وطابع كل منها.",
+    "why1Title": "التغطية تتكامل",
+    "why1GapAndVariants": "يجلب Amazon Polly لغة {gap} التي لا يحملها Google Cloud إطلاقًا، إضافة إلى لهجات إقليمية مثل {v1} و{v2}. رفّ واحد يُظهر ما لدى كل مزوّد ويفتقده الآخرون.",
+    "why1GapOnly": "يجلب Amazon Polly لغة {gap} التي لا يحملها Google Cloud إطلاقًا. رفّ واحد يُظهر ما لدى كل مزوّد ويفتقده الآخرون.",
+    "why1VariantsOnly": "يضيف Amazon Polly لهجات إقليمية مثل {v1} و{v2}. رفّ واحد يُظهر ما لدى كل مزوّد ويفتقده الآخرون.",
+    "why1Generic": "رفّ واحد يُظهر ما لدى كل مزوّد ويفتقده الآخرون.",
+    "why2Title": "طريقة واحدة للاستماع",
+    "why2Body": "المرشّحات نفسها، والمشغّل نفسه، ونظام معرّفات الأصوات نفسه على كل رفّ. مقارنة الأصوات بين المزوّدين نقرتان، لا وحدتا تحكّم.",
+    "why3Title": "يتجدّد من تلقاء نفسه",
+    "why3Body": "يتحدّث كل رفّ يوميًا من AI TTS Microservice. الأصوات واللغات والنماذج الفرعية الجديدة تظهر هنا دون أن يحرّر أحد الموقع.",
+    "aboutTitle": "حول هذا الفهرس",
+    "aboutBody": "Speakshelf فهرس مرجعي لأصوات تحويل النص إلى كلام. يضم اليوم {voices, plural, one {صوتًا واحدًا} two {صوتين} few {# أصوات} many {# صوتًا} other {# صوت}} من {providers, plural, one {مزوّد واحد} two {مزوّدين} few {# مزوّدين} many {# مزوّدًا} other {# مزوّد}} في {languages, plural, one {لغة واحدة} two {لغتين} few {# لغات} many {# لغةً} other {# لغة}}، ولكل صوت عيّنة قابلة للتشغيل. الأصوات مجموعة كما يجمعها مزوّدوها، في عائلات نماذج ومحرّكات، ليقابل ما تسمعه ما ستنشره فعلًا."
+  },
+  "attribution": {
+    "body": "Speakshelf مستقل وغير تابع لـ Google أو Amazon أو مشروع Kokoro. بيانات الأصوات والصوتيات تأتي من <link>AI TTS Microservice</link>، وهي خدمة توحّد Google وAmazon وAzure ومزوّدي كلام آخرين خلف نقطة وصول واحدة. تُبثّ العيّنات عند الطلب، والاستماع مجاني."
+  },
+  "providers": {
+    "google": {
+      "eyebrow": "GOOGLE CLOUD TEXT TO SPEECH",
+      "heroTitle": "كل أصوات Google، في صفحة واحدة.",
+      "heroSub": "شغّل عيّنة لكل صوت في فهرس Google Cloud. رشّح حسب عائلة النموذج واللغة والجنس. لا حساب، لا إعداد، الأصوات فقط.",
+      "familyWord": "{count, plural, zero {عائلات نماذج} one {عائلة نماذج} two {عائلتا نماذج} few {عائلات نماذج} many {عائلة نماذج} other {عائلة نماذج}}",
+      "jump": "النماذج",
+      "familiesIntro": "تواصل Google إطلاق معماريات كلام جديدة وكل جيل ما يزال في الخدمة. يمتد الفهرس من أصوات بارامترية مدمجة إلى نماذج توجّهها بجملة واحدة.",
+      "card": "أعمق رفّ هنا: عائلات نماذج من Standard وWaveNet إلى Chirp 3 وأصوات Gemini التي تتبع توجيه أسلوب مكتوبًا.",
+      "about": "يدير Google Cloud واحدًا من أكبر فهارس تحويل النص إلى كلام بين مزوّدي السحابة. يمتد عبر {families, number} من عائلات النماذج، من أصوات WaveNet التي جعلت الكلام العصبي سائدًا إلى أصوات Gemini التي تغيّر أداءها حين تصف النبرة التي تريد. Gemini في الحقيقة {models, number} نماذج في واحد: كل صوت Gemini يمكن أن يولّده أي نموذج فرعي منه، ولكل توليد عيّنته الخاصة هنا. ولكل صوت آخر في الفهرس عيّنة أيضًا.",
+      "unknownFamily": "إضافة حديثة إلى فهرس Google."
+    },
+    "polly": {
+      "eyebrow": "AMAZON POLLY TEXT TO SPEECH",
+      "heroTitle": "كل أصوات Amazon Polly، في صفحة واحدة.",
+      "heroSub": "شغّل عيّنة لكل صوت في فهرس Amazon Polly. رشّح حسب المحرّك واللغة والجنس. لا حساب، لا إعداد، الأصوات فقط.",
+      "familyWord": "{count, plural, zero {محرّكات} one {محرّك} two {محرّكان} few {محرّكات} many {محرّكًا} other {محرّك}}",
+      "jump": "المحرّكات",
+      "familiesIntro": "يجمع Polly أصواته حسب المحرّك. يمتد الفهرس من أصوات standard إلى محرّك generative، مع طبقة long-form مبنية للاستماع الطويل.",
+      "card": "خدمة تحويل النص إلى كلام من AWS: محرّكات standard وneural وgenerative وlong-form.",
+      "about": "Amazon Polly هو خدمة تحويل النص إلى كلام على AWS، يحوّل النص إلى كلام نابض بالحياة. أصواته {voices, number} هنا تمتد عبر {families, number} محرّكات: standard وneural، ومحرّك generative مبني بتقنيات الذكاء الاصطناعي التوليدي، وأصوات long-form مصمّمة للمحتوى الأطول كالمقالات ومواد التدريب. لكل صوت عيّنة قابلة للتشغيل.",
+      "unknownFamily": "إضافة حديثة إلى فهرس Amazon Polly."
+    },
+    "kokoro": {
+      "eyebrow": "KOKORO TEXT TO SPEECH",
+      "heroTitle": "كل أصوات Kokoro، في صفحة واحدة.",
+      "heroSub": "شغّل عيّنة لكل صوت من نموذج Kokoro مفتوح الأوزان. رشّح حسب اللغة والجنس. لا حساب، لا إعداد، الأصوات فقط.",
+      "familyWord": "{count, plural, zero {عائلات نماذج} one {عائلة نماذج} two {عائلتا نماذج} few {عائلات نماذج} many {عائلة نماذج} other {عائلة نماذج}}",
+      "jump": "النموذج",
+      "familiesIntro": "Kokoro نموذج واحد لا مجموعة محرّكات، لذا يجلس فهرسه كله في عائلة واحدة.",
+      "card": "نموذج مفتوح الأوزان، ٨٢ مليون معامل تحت رخصة Apache 2.0.",
+      "about": "Kokoro نموذج تحويل نص إلى كلام مفتوح الأوزان: ٨٢ مليون معامل، صدر تحت رخصة Apache 2.0. يقدّمه AI TTS Microservice جنبًا إلى جنب مع فهارس السحابة، فتعمل أصواته {voices, number} في {languages, number} لغة هنا ككل رفّ آخر. لكل صوت عيّنة قابلة للتشغيل.",
+      "unknownFamily": "إضافة حديثة إلى فهرس Kokoro."
+    }
+  },
+  "providerPage": {
+    "jumpVoices": "الأصوات",
+    "jumpLanguages": "اللغات",
+    "jumpAbout": "حول",
+    "familiesTitle": "{count, number} {familyWord}",
+    "languagesTitle": "{count, plural, zero {لا لغات} one {لغة واحدة} two {لغتان} few {# لغات} many {# لغةً} other {# لغة}}",
+    "languagesSub": "لكل لغة صفحتها الخاصة بقائمة الأصوات الكاملة، فيمكنك إرسال أحدهم مباشرة إلى رفّ واحد من الفهرس.",
+    "famMeta": "{voices, plural, zero {لا أصوات} one {صوت واحد} two {صوتان} few {# أصوات} many {# صوتًا} other {# صوت}}",
+    "famLangs": "{count, plural, zero {لا لغات} one {لغة واحدة} two {لغتان} few {# لغات} many {# لغةً} other {# لغة}}",
+    "famModels": "{count, plural, one {نموذج فرعي واحد} two {نموذجان فرعيان} few {# نماذج فرعية} many {# نموذجًا فرعيًا} other {# نموذج فرعي}}",
+    "aboutTitle": "حول هذا الفهرس",
+    "allVoices": "كل الأصوات"
+  },
+  "families": {
+    "google": {
+      "Gemini": {
+        "blurb": "كلام أصيل من Gemini. كل صوت يمكن أن يولّده كل نموذج فرعي، والأداء يتبع توجيه أسلوب مكتوبًا.",
+        "note": "تعرض العيّنات كل صوت بصدق، بغرائبه أيضًا. بعض أصوات Gemini قد تولّد لهجة غير لهجة رمزها، صوت en-US يبدو en-IN مثلًا. في توجيه التوليد الخاص بك، تعليمة بسيطة مثل \"say this in an American accent\" تصحّح ذلك غالبًا."
+      },
+      "Chirp3HD": {
+        "blurb": "جيل HD الحالي، مضبوط للحوار الطبيعي."
+      },
+      "Standard": {
+        "blurb": "أصوات بارامترية بأوسع تغطية لغوية وأقل سعر."
+      },
+      "Wavenet": {
+        "blurb": "نموذج DeepMind الذي جعل الكلام العصبي سائدًا."
+      },
+      "Neural2": {
+        "blurb": "أصوات عصبية من الجيل الثاني، الخيار الافتراضي لمنتجات كثيرة."
+      },
+      "ChirpHD": {
+        "blurb": "جيل Chirp الأول، ما يزال منتشرًا."
+      },
+      "News": {
+        "blurb": "أصوات بأسلوب البث، مضبوطة لقراءة الأخبار."
+      },
+      "Studio": {
+        "blurb": "أصوات بجودة السرد للقراءات الطويلة."
+      },
+      "Polyglot": {
+        "blurb": "هوية صوت واحدة تتحدث عدة لغات."
+      },
+      "Casual": {
+        "blurb": "صوت حواري مبني للردود غير الرسمية."
+      }
+    },
+    "polly": {
+      "Neural": {
+        "blurb": "أصوات عصبية، جيل تعلّم الآلة الذي رفع جودة كلام Polly."
+      },
+      "Standard": {
+        "blurb": "محرّك standard، أصوات Polly الأساسية بتغطية لغوية واسعة."
+      },
+      "Generative": {
+        "blurb": "أحدث محرّكات Polly، مبني على الذكاء الاصطناعي التوليدي للكلام الحواري."
+      },
+      "LongForm": {
+        "blurb": "صنع للاستماع الطويل: المقالات ومواد التدريب والسرد."
+      }
+    },
+    "kokoro": {
+      "Kokoro": {
+        "blurb": "كل أصوات Kokoro: نموذج واحد مفتوح الأوزان، ٨٢ مليون معامل، Apache 2.0."
+      }
+    }
+  },
+  "tags": {
+    "premium": "PREMIUM",
+    "ultra": "ULTRA"
+  },
+  "explorer": {
+    "searchPlaceholder": "ابحث بالاسم أو اللغة أو الجنس أو النموذج أو الأسلوب",
+    "searchAria": "البحث في الأصوات",
+    "clearSearch": "مسح البحث",
+    "language": "اللغة",
+    "gender": "الجنس",
+    "all": "الكل",
+    "any": "أيّ",
+    "female": "أنثى",
+    "male": "ذكر",
+    "neutral": "محايد",
+    "loading": "يحمَّل الفهرس",
+    "results": "{voices, plural, zero {لا أصوات} one {صوت واحد} two {صوتان} few {# أصوات} many {# صوتًا} other {# صوت}} · {samples, plural, zero {لا عيّنات} one {عيّنة واحدة} two {عيّنتان} few {# عيّنات} many {# عيّنةً} other {# عيّنة}}",
+    "clear": "مسح المرشّحات",
+    "empty": "لا صوت يطابق. جرّب بحثًا أقصر أو أزل مرشّحًا.",
+    "langVoices": "{count, plural, zero {لا أصوات} one {صوت واحد} two {صوتان} few {# أصوات} many {# صوتًا} other {# صوت}}",
+    "playAria": "تشغيل عيّنة {name}، {language}",
+    "dismissAria": "إغلاق",
+    "noteUnavailable": "العيّنة غير متاحة",
+    "noteTapAgain": "اضغط تشغيل مرة أخرى",
+    "noteBusy": "مشغول، حاول بعد دقيقة",
+    "notePreparing": "ما تزال تُحضَّر، حاول بعد قليل",
+    "noteGenerating": "تُحضَّر العيّنة",
+    "listNoteModels": "أصوات {family} لها عيّنة لكل نموذج فرعي، فمفتاح {familyUpper} يختار النسخة التي تسمعها.",
+    "modelPickTitle": "أصوات {family} لها عيّنة لكل نموذج فرعي. هذا يختار ما يُشغَّل.",
+    "genderWords": {
+      "female": "أنثى",
+      "male": "ذكر",
+      "neutral": "محايد"
+    },
+    "traits": {
+      "child": "طفل"
+    }
+  },
+  "langPage": {
+    "crumb": "→ كل لغات {label}",
+    "meta": "{code} · {voices, plural, zero {لا أصوات} one {صوت واحد} two {صوتان} few {# أصوات} many {# صوتًا} other {# صوت}} · {families, number} {familyWord} · {samples, plural, zero {لا عيّنات} one {عيّنة واحدة قابلة للتشغيل} two {عيّنتان قابلتان للتشغيل} few {# عيّنات قابلة للتشغيل} many {# عيّنةً قابلة للتشغيل} other {# عيّنة قابلة للتشغيل}}"
+  },
+  "consent": {
+    "text": "يستخدم Speakshelf ملفات تعريف الارتباط والتحليلات لفهم كيفية استخدام الفهرس.",
+    "necessary": "الضروري فقط",
+    "accept": "قبول الكل"
+  },
+  "suggest": {
+    "invite": "قراءة Speakshelf بالعربية؟",
+    "switch": "التبديل",
+    "dismissAria": "إغلاق اقتراح اللغة"
+  },
+  "notFound": {
+    "title": "لا شيء على هذا الرفّ",
+    "body": "الصفحة التي طلبتها غير موجودة. الفهرس يسكن الصفحة الرئيسية.",
+    "home": "العودة إلى الرفّ"
+  },
+  "footer": {
+    "note": "حُدِّث الفهرس {date} · {voices, plural, one {صوت واحد} two {صوتان} few {# أصوات} many {# صوتًا} other {# صوت}} من {providers, plural, one {مزوّد واحد} two {مزوّدين} few {# مزوّدين} many {# مزوّدًا} other {# مزوّد}} في {languages, plural, one {لغة واحدة} two {لغتين} few {# لغات} many {# لغةً} other {# لغة}}",
+    "served": "العيّنات تقدَّم من <link>AI TTS Microservice</link> · مستقل، غير تابع لـ Google أو Amazon أو مشروع Kokoro",
+    "languageLabel": "اللغة"
+  },
+  "meta": {
+    "andMore": "{names} وغيرها",
+    "siteTitle": "Speakshelf · أصوات تحويل النص إلى كلام من {names}",
+    "siteDescription": "تصفّح وشغّل {voices, number} من أصوات تحويل النص إلى كلام من {names} في {languages, number} لغة، لكل صوت عيّنة قابلة للتشغيل.",
+    "shareDescription": "تصفّح وشغّل فهارس تحويل النص إلى كلام من {names}. عيّنة قابلة للتشغيل لكل صوت.",
+    "homeJsonLd": "فهرس أصوات تحويل النص إلى كلام من {names} وغيرها، بعيّنات تُشغَّل في المتصفح.",
+    "providerTitle": "أصوات {label} لتحويل النص إلى كلام",
+    "providerDescription": "شغّل عيّنات فهرس {label} الكامل لتحويل النص إلى كلام: {voices, number} صوت في {languages, number} لغة، بمرشّحات {familyWord} واللغة والجنس.",
+    "providerShareDescription": "فهرس {label} الكامل لتحويل النص إلى كلام بعيّنة قابلة للتشغيل لكل صوت.",
+    "providerJsonLd": "فهرس كل أصوات {label} لتحويل النص إلى كلام، بعيّنات تُشغَّل في المتصفح.",
+    "langTitle": "أصوات {label} بلغة {language}",
+    "langDescription": "كل أصوات {label} لتحويل النص إلى كلام بلغة {language} ({code}) وعددها {voices, number}، بعيّنات تُشغَّل في المتصفح.",
+    "langShareDescription": "أصوات {label} لتحويل النص إلى كلام بلغة {language}، بعيّنات قابلة للتشغيل.",
+    "langJsonLd": "أصوات {label} لتحويل النص إلى كلام بلغة {language} ({code})."
+  },
+  "a11y": {
+    "sections": "الأقسام",
+    "providers": "المزوّدون",
+    "cookies": "ملفات تعريف الارتباط"
+  }
+}

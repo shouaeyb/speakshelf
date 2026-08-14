@@ -601,6 +601,7 @@ function ExplorerCore({ provider, voices, lockLanguage, models, paramsKey }: Cor
             ref={searchRef}
             className="search-input"
             type="search"
+            dir="auto"
             placeholder={t("explorer.searchPlaceholder")}
             aria-label={t("explorer.searchAria")}
             value={q}
@@ -752,7 +753,7 @@ function ExplorerCore({ provider, voices, lockLanguage, models, paramsKey }: Cor
               <Link className="lang-name" href={`/${provider}/voices/${g.code}`}>
                 {languageName(g.code, locale)}
               </Link>
-              <span className="lang-code">{g.code}</span>
+              <span className="lang-code" dir="ltr">{g.code}</span>
               <span className="lang-count">
                 {t("explorer.langVoices", {
                   count: identity === "row" ? g.items.length : new Set(g.items.map((v) => v.name)).size,
@@ -779,7 +780,7 @@ function ExplorerCore({ provider, voices, lockLanguage, models, paramsKey }: Cor
                     <span className="spin" aria-hidden="true"></span>
                   )}
                 </button>
-                <span className="vname">{v.name}</span>
+                <span className="vname"><bdi>{v.name}</bdi></span>
                 <span className={`tag ${v.tier === "ultra" ? "tag-purple" : "tag-blue"}`}>
                   {familyLabel(provider, v.family).toUpperCase()}
                 </span>
