@@ -6,7 +6,7 @@ import { routing } from "@/i18n/routing";
 import { listNamesPlain } from "@/i18n/locales";
 import { getSite } from "@/lib/catalog";
 import { jsonLdSafe } from "@/lib/jsonld";
-import { languageName } from "@/lib/lang";
+import { baseLanguageName, languageName } from "@/lib/lang";
 import { localeAlternates, localeUrl } from "@/lib/seo";
 import { PROVIDERS } from "@/lib/providers";
 
@@ -36,12 +36,12 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
   const providerNames = PROVIDERS.filter((p) => site.providers.has(p.key)).map((p) => p.label);
   const nameList = listNamesPlain(providerNames.slice(0, 3), locale);
 
-  // "Coverage adds up" derives from data, and stays modest by design:
-  // compare by primary language subtag so two codes for the same language
-  // (Polly's arb vs Google's ar-XA) can never fake a gap; name
-  // whole-language gaps as gaps and variants as variants; keep prose
-  // slots to names that read cleanly. Message variants cover every data
-  // shape, so no sentence is ever assembled from fragments.
+  // "Coverage adds up" derives from CODES, never from parsing display
+  // strings: compare by primary language subtag so two codes for the same
+  // language (Polly's arb vs Google's ar-XA) can never fake a gap. A
+  // whole-language gap shows the bare language name (a region would lie);
+  // a variant shows the full regional name. Message variants cover every
+  // data shape, so no sentence is ever assembled from fragments.
   const google = site.providers.get("google");
   const polly = site.providers.get("polly");
   const primary = (code: string) => (code === "arb" ? "ar" : code.split("-")[0]);
@@ -50,12 +50,12 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
   const pollyLangs = polly?.languages ?? [];
   const gapName = pollyLangs
     .filter((l) => !googlePrimaries.has(primary(l.code)))
-    .map((l) => languageName(l.code, locale).split(" (")[0])
-    .find((n) => !n.includes(","));
+    .map((l) => baseLanguageName(l.code, locale))
+    .sort()[0];
   const variantExamples = pollyLangs
     .filter((l) => !googleCodes.has(l.code) && googlePrimaries.has(primary(l.code)))
     .map((l) => languageName(l.code, locale))
-    .filter((n) => !n.includes(",") && !n.includes("("))
+    .sort()
     .slice(0, 2);
   const coverage =
     gapName && variantExamples.length === 2
