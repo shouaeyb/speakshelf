@@ -114,7 +114,7 @@ function ExplorerCore({ provider, voices, lockLanguage, models, paramsKey }: Cor
   // The family quirk toast: shown once per session, on the first play of
   // a voice from a noted family, because the top-of-list note is off
   // screen once the reader has scrolled into a long list.
-  const [toast, setToast] = useState<string | null>(null);
+  const [toast, setToast] = useState<{ text: string; pos: "top" | "bottom" } | null>(null);
   const toastTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   // Mirrors the family filter for callbacks that fire long after their
   // click render (cold generations); see maybeToast.
@@ -229,7 +229,14 @@ function ExplorerCore({ provider, voices, lockLanguage, models, paramsKey }: Cor
     } catch {
       return;
     }
-    setToast(note);
+    // Mobile places the toast opposite the playing row so it never covers
+    // what was just tapped; desktop ignores pos and stays Carbon top-right
+    // (the media query wins). While the consent bar holds the bottom edge,
+    // the toast takes the top slot: the bottom is simply occupied.
+    const consentUp = !!document.querySelector(".consent");
+    const row = document.querySelector(".play-on")?.getBoundingClientRect();
+    const pos = consentUp || (row && row.top > window.innerHeight / 2) ? "top" : "bottom";
+    setToast({ text: note, pos });
     if (toastTimer.current) clearTimeout(toastTimer.current);
     toastTimer.current = setTimeout(() => setToast(null), 15000);
   }
@@ -652,7 +659,7 @@ function ExplorerCore({ provider, voices, lockLanguage, models, paramsKey }: Cor
         {showModelPick && (
           <div className="field">
             <label className="field-label" htmlFor="f-gmodel">
-              {familyLabel(provider, multiFamily).toUpperCase()}
+              {familyLabel(provider, multiFamily)}
             </label>
             <select
               id="f-gmodel"
@@ -774,8 +781,8 @@ function ExplorerCore({ provider, voices, lockLanguage, models, paramsKey }: Cor
       ))}
 
       {toast && (
-        <div className="toast" role="status">
-          <p>{toast}</p>
+        <div className={`toast${toast.pos === "top" ? " toast-top" : ""}`} role="status">
+          <p>{toast.text}</p>
           <button type="button" className="toast-close" aria-label={t("explorer.dismissAria")} onClick={() => setToast(null)}>
             ✕
           </button>
