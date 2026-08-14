@@ -99,10 +99,14 @@ Client, in `Explorer.tsx`: `play()` resolves blob cache (module LRU, 24 object U
   run.app URL every five minutes (bypassing the CDN on purpose) to keep one
   instance warm most of the time. The probe route calls `getSite()` so the
   catalog memo warms with the process. Best effort, not a guarantee.
-- Classic Firebase Hosting fronts the service at the web.app origin with
-  managed TLS and Google's CDN (the custom domain attaches later), through a
-  single catch-all rewrite to the Cloud Run service; the stub public dir must
-  stay empty of deployable files or they shadow the rewrite.
+- Classic Firebase Hosting fronts the service at https://speakshelf.com
+  (www 301-redirects to the apex, path and query preserved) with managed TLS
+  and Google's CDN, through a single catch-all rewrite to the Cloud Run
+  service; the stub public dir must stay empty of deployable files or they
+  shadow the rewrite. DNS lives at Cloudflare, records DNS-only, never
+  proxied. A new Hosting release purges the CDN cache; after a canonical
+  rebake redeploy, ship a Hosting release too or day-long s-maxage keeps
+  serving the old HTML.
   Firebase App Hosting is a different product and is not used. Cloudflare, if
   the domain lives there, holds DNS records only.
 - The locale cookie is off (`localeCookie: false` in `i18n/routing.ts`):
