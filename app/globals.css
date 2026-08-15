@@ -1100,6 +1100,9 @@ a.lang-name:hover {
   inset-inline-start: auto;
   bottom: auto;
   z-index: 40;
+  /* The note floats over the top rows; clicks pass through to the play
+     buttons beneath it, only the dismiss stays clickable. */
+  pointer-events: none;
   max-width: 420px;
   background: var(--layer);
   color: var(--text-2);
@@ -1155,6 +1158,7 @@ a.lang-name:hover {
   position: absolute;
   top: 8px;
   inset-inline-end: 8px;
+  pointer-events: auto;
   background: none;
   border: none;
   color: var(--text-3);

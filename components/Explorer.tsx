@@ -10,6 +10,7 @@ import { languageName } from "@/lib/lang";
 import { PROVIDER_FAMILIES, familyLabel, familyMeta, familyRank, modelLabel } from "@/lib/families";
 import { getProvider } from "@/lib/providers";
 import { EVENTS, track } from "@/lib/analytics";
+import { decodeIntoCache, evictBuffer, getBuffer, playBuffer, type ReplayControls } from "@/lib/audio-replay";
 import { buildSearchDoc, matchesTokens, tokenize, type SearchDoc } from "@/lib/search";
 
 interface ExplorerProps {
@@ -47,10 +48,16 @@ type Active = {
 const URL_TTL_MS = 18 * 60 * 60 * 1000;
 const BLOB_MAX = 24;
 const urlCache = new Map<string, { url: string; t: number }>();
-const blobCache = new Map<string, string>();
+// Entries keep the raw Blob beside the object URL: the decoded replay tier
+// reads Blob.arrayBuffer() directly, because fetch(blob:) sits outside
+// connect-src. Warm requests are deduplicated so a rapid double play of a
+// cold voice costs one transfer.
+const blobCache = new Map<string, { url: string; blob: Blob }>();
+const blobInFlight = new Set<string>();
 
 function warmBlob(key: string, url: string) {
-  if (blobCache.has(key)) return;
+  if (blobCache.has(key) || blobInFlight.has(key)) return;
+  blobInFlight.add(key);
   fetch(url)
     .then((res) => (res.ok ? res.blob() : null))
     .then((blob) => {
@@ -58,12 +65,18 @@ function warmBlob(key: string, url: string) {
       while (blobCache.size >= BLOB_MAX) {
         const oldest = blobCache.entries().next().value;
         if (!oldest) break;
-        URL.revokeObjectURL(oldest[1]);
+        URL.revokeObjectURL(oldest[1].url);
         blobCache.delete(oldest[0]);
       }
-      blobCache.set(key, URL.createObjectURL(blob));
+      blobCache.set(key, { url: URL.createObjectURL(blob), blob });
+      // Same bytes feed the decoded tier; a decode failure only means
+      // replays use the blob URL through the media element instead.
+      return decodeIntoCache(key, blob).catch(() => {});
     })
-    .catch(() => {});
+    .catch(() => {})
+    .finally(() => {
+      blobInFlight.delete(key);
+    });
 }
 
 const PlayGlyph = () => (
@@ -124,6 +137,10 @@ function ExplorerCore({ provider, voices, lockLanguage, models, paramsKey }: Cor
     familyRef.current = family;
   }, [family]);
   const audioRef = useRef<HTMLAudioElement | null>(null);
+  // Active Web Audio replay source; stopped before any new play, on stop
+  // and on unmount, so a switched voice never keeps sounding underneath
+  // the next one (the reference repo's discontinuity lesson).
+  const replayRef = useRef<ReplayControls | null>(null);
   const errTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const retryTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   // Guards against stale media events after switching voices or stopping.
@@ -208,6 +225,8 @@ function ExplorerCore({ provider, voices, lockLanguage, models, paramsKey }: Cor
       // retry chain can fire after unmount.
       playGen.current++;
       audioRef.current?.pause();
+      replayRef.current?.stop();
+      replayRef.current = null;
       if (errTimer.current) clearTimeout(errTimer.current);
       if (retryTimer.current) clearTimeout(retryTimer.current);
       if (toastTimer.current) clearTimeout(toastTimer.current);
@@ -374,6 +393,8 @@ function ExplorerCore({ provider, voices, lockLanguage, models, paramsKey }: Cor
     playGen.current++;
     if (retryTimer.current) clearTimeout(retryTimer.current);
     audioRef.current?.pause();
+    replayRef.current?.stop();
+    replayRef.current = null;
     setActive(null);
   }
 
@@ -387,6 +408,8 @@ function ExplorerCore({ provider, voices, lockLanguage, models, paramsKey }: Cor
     if (!audioRef.current) audioRef.current = new Audio();
     const a = audioRef.current;
     a.pause();
+    replayRef.current?.stop();
+    replayRef.current = null;
     if (errTimer.current) clearTimeout(errTimer.current);
     if (retryTimer.current) clearTimeout(retryTimer.current);
     const gen = ++playGen.current;
@@ -397,6 +420,9 @@ function ExplorerCore({ provider, voices, lockLanguage, models, paramsKey }: Cor
     // progress so replays and cold plays can be told apart in analytics.
     let source: "memory" | "cached" | "network" = "network";
     let reported = false;
+    // The streamed URL of this playback, kept for cache warming at the
+    // confirmed-playing moment.
+    let streamUrl: string | null = null;
     // One failure per playback attempt: a dead media load can surface as
     // both an element error event and a play() rejection.
     let failedOnce = false;
@@ -431,12 +457,19 @@ function ExplorerCore({ provider, voices, lockLanguage, models, paramsKey }: Cor
           source,
         });
         maybeToast(v.family);
+        // Warming belongs to confirmed playback (reference lesson): a
+        // voice that never produced audio is never cached. The same bytes
+        // feed the decoded replay tier.
+        const known = blobCache.get(cacheKey);
+        if (known) void decodeIntoCache(cacheKey, known.blob).catch(() => {});
+        else if (streamUrl) warmBlob(cacheKey, streamUrl);
       }
       setActive({ id: v.id, model, status: "playing" });
     };
 
     function start(url: string, fromBlob: boolean) {
       if (!current()) return;
+      if (!fromBlob) streamUrl = url;
       a.onplaying = markPlaying;
       // Safari does not reliably fire onplaying for cached replays; any
       // playback progress at all means audio is running.
@@ -454,7 +487,7 @@ function ExplorerCore({ provider, voices, lockLanguage, models, paramsKey }: Cor
         if (fromBlob) {
           // A dead object URL falls back to the network path once.
           const stale = blobCache.get(cacheKey);
-          if (stale) URL.revokeObjectURL(stale);
+          if (stale) URL.revokeObjectURL(stale.url);
           blobCache.delete(cacheKey);
           resolve();
           return;
@@ -465,11 +498,6 @@ function ExplorerCore({ provider, voices, lockLanguage, models, paramsKey }: Cor
       };
       a.src = url;
       a.play()
-        .then(() => {
-          // First streamed play warms the blob cache in the background,
-          // so every replay is served from memory.
-          if (!fromBlob) warmBlob(cacheKey, url);
-        })
         .catch(() => {
           // A rejection for the live generation is real, usually an
           // autoplay block because the lookup left the click gesture. The
@@ -566,13 +594,29 @@ function ExplorerCore({ provider, voices, lockLanguage, models, paramsKey }: Cor
         });
     }
 
+    // Replay tiers, fastest first. Decoded PCM plays synchronously through
+    // Web Audio: no media element, no demux, no network, on every engine.
+    const decoded = getBuffer(cacheKey);
+    if (decoded) {
+      source = "memory";
+      try {
+        replayRef.current = playBuffer(decoded, () => {
+          if (current()) setActive((cur) => (cur?.id === v.id ? null : cur));
+        });
+        markPlaying();
+        return;
+      } catch {
+        // A broken buffer falls through to the blob tier.
+        evictBuffer(cacheKey);
+      }
+    }
     const blobbed = blobCache.get(cacheKey);
     if (blobbed) {
       // Re-insert so eviction hits the least recently played entry.
       blobCache.delete(cacheKey);
       blobCache.set(cacheKey, blobbed);
       source = "memory";
-      start(blobbed, true);
+      start(blobbed.url, true);
       return;
     }
     resolve();
