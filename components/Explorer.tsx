@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { useLocale, useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
@@ -8,6 +8,9 @@ import type { Voice, PackedCatalog, PackedProvider } from "@/lib/data";
 import { unpack } from "@/lib/data";
 import { languageName } from "@/lib/lang";
 import { PROVIDER_FAMILIES, familyLabel, familyMeta, familyRank, modelLabel } from "@/lib/families";
+import FilterFields, { type FilterKind } from "@/components/FilterFields";
+import FilterPanel from "@/components/FilterPanel";
+import VoiceRow, { type PlayStatus } from "@/components/VoiceRow";
 import { getProvider } from "@/lib/providers";
 import { EVENTS, track } from "@/lib/analytics";
 import { decodeIntoCache, evictBuffer, getBuffer, playBuffer, type ReplayControls } from "@/lib/audio-replay";
@@ -35,7 +38,7 @@ type Active = {
   id: string;
   /** Sub-model the playback was started with, "" for the default. */
   model: string;
-  status: "loading" | "generating" | "playing" | "error";
+  status: PlayStatus;
   note?: string;
 } | null;
 
@@ -79,20 +82,6 @@ function warmBlob(key: string, url: string) {
     });
 }
 
-const PlayGlyph = () => (
-  <svg width="10" height="12" viewBox="0 0 10 12" aria-hidden="true">
-    <polygon className="glyph" points="0,0 10,6 0,12" />
-  </svg>
-);
-
-const StopGlyph = () => (
-  <span className="eq" aria-hidden="true">
-    <span></span>
-    <span></span>
-    <span></span>
-  </span>
-);
-
 // Provider home pages: reactive to router navigations (family tiles set
 // query params). useSearchParams client-renders up to the nearest Suspense
 // boundary on prerendered routes, so only this wrapper pays that cost.
@@ -124,6 +113,9 @@ function ExplorerCore({ provider, voices, lockLanguage, models, paramsKey }: Cor
   const [gender, setGender] = useState("");
   // "" means the API default, which is the first listed sub-model.
   const [gmodel, setGmodel] = useState("");
+  // Mobile only: the select fields live behind a FILTERS button under 721px.
+  const [panelOpen, setPanelOpen] = useState(false);
+  const filtersBtn = useRef<HTMLButtonElement | null>(null);
   const [active, setActive] = useState<Active>(null);
   // The family quirk toast: shown once per session, on the first play of
   // a voice from a noted family, because the top-of-list note is off
@@ -360,6 +352,55 @@ function ExplorerCore({ provider, voices, lockLanguage, models, paramsKey }: Cor
     subModels.length > 1 && (voices ? voices.some((v) => v.family === multiFamily) : true);
 
   const hasFilters = q !== "" || family !== "" || lang !== "" || gender !== "" || gmodel !== "";
+
+  // The badge on the mobile FILTERS button counts the select fields only.
+  // hasFilters is not reused: it includes the search query, which stays
+  // visible in its own field, and a route-locked language is not a choice.
+  const fieldFilters =
+    (family !== "" ? 1 : 0) +
+    (!lockLanguage && lang !== "" ? 1 : 0) +
+    (gender !== "" ? 1 : 0) +
+    (gmodel !== "" ? 1 : 0);
+
+  // The sub-model a Gemini row would play right now: the reader's pick, or
+  // the API default when they have not picked. Explorer state, not voice
+  // data, which is why it is computed here and passed down.
+  const effectiveModel = useMemo(
+    () => (subModels.length > 1 ? modelLabel(gmodel || subModels[0]) : ""),
+    [gmodel, subModels],
+  );
+
+  // One place for the select fields' state and their analytics, so the two
+  // mounts (toolbar and mobile panel) cannot drift apart.
+  const applyFilter = (kind: FilterKind, value: string) => {
+    if (kind === "family") {
+      setFamily(value);
+      track(EVENTS.FILTER_CHANGED, { provider, locale, kind: "family", value: value || "all" });
+    } else if (kind === "language") {
+      setLang(value);
+      track(EVENTS.FILTER_CHANGED, { provider, locale, kind: "language", value: value || "all" });
+    } else if (kind === "gender") {
+      setGender(value);
+      track(EVENTS.FILTER_CHANGED, { provider, locale, kind: "gender", value: value || "any" });
+    } else {
+      // "" is the API default, so the first sub-model is stored as no choice.
+      setGmodel(value === subModels[0] ? "" : value);
+      track(EVENTS.FILTER_CHANGED, { provider, locale, kind: "model", value });
+    }
+  };
+
+  const clearFilters = () => {
+    setQ("");
+    setFamily("");
+    setLang("");
+    setGender("");
+    setGmodel("");
+    track(EVENTS.FILTER_CHANGED, { provider, locale, kind: "clear", value: "all" });
+  };
+
+  // Stable identity: FilterPanel's one effect owns the body scroll lock,
+  // and a new function each render would re-run it.
+  const closePanel = useCallback(() => setPanelOpen(false), []);
 
   // Search analytics: one event per settled query, not per keystroke.
   // result_count rides along (read via ref so results do not refire the
@@ -665,120 +706,60 @@ function ExplorerCore({ provider, voices, lockLanguage, models, paramsKey }: Cor
             </button>
           )}
         </div>
-        <div className="field">
-          <label className="field-label" htmlFor="f-family">
-            {t(`providers.${provider}.familyWord`, { count: 1 })}
-          </label>
-          <select
-            id="f-family"
-            className="select"
-            value={family}
-            onChange={(e) => {
-              setFamily(e.target.value);
-              track(EVENTS.FILTER_CHANGED, { provider, locale, kind: "family", value: e.target.value || "all" });
-            }}
-          >
-            <option value="">{t("explorer.all")}</option>
-            {familyOptions.map((key) => (
-              <option key={key} value={key}>
-                {familyLabel(provider, key)}
-              </option>
-            ))}
-          </select>
-          <span className="field-caret" aria-hidden="true">▼</span>
-        </div>
-        {!lockLanguage && (
-          <div className="field">
-            <label className="field-label" htmlFor="f-lang">
-              {t("explorer.language")}
-            </label>
-            <select
-              id="f-lang"
-              className="select"
-              value={lang}
-              onChange={(e) => {
-                setLang(e.target.value);
-                track(EVENTS.FILTER_CHANGED, { provider, locale, kind: "language", value: e.target.value || "all" });
-              }}
-            >
-              <option value="">{t("explorer.all")}</option>
-              {languageOptions.map((l) => (
-                <option key={l.code} value={l.code}>
-                  {l.name}
-                </option>
-              ))}
-            </select>
-            <span className="field-caret" aria-hidden="true">▼</span>
-          </div>
-        )}
-        <div className="field">
-          <label className="field-label" htmlFor="f-gender">
-            {t("explorer.gender")}
-          </label>
-          <select
-            id="f-gender"
-            className="select"
-            value={gender}
-            onChange={(e) => {
-              setGender(e.target.value);
-              track(EVENTS.FILTER_CHANGED, { provider, locale, kind: "gender", value: e.target.value || "any" });
-            }}
-          >
-            <option value="">{t("explorer.any")}</option>
-            <option value="female">{t("explorer.female")}</option>
-            <option value="male">{t("explorer.male")}</option>
-            <option value="neutral">{t("explorer.neutral")}</option>
-          </select>
-          <span className="field-caret" aria-hidden="true">▼</span>
-        </div>
-        {showModelPick && (
-          <div className="field">
-            <label className="field-label" htmlFor="f-gmodel">
-              {familyLabel(provider, multiFamily)}
-            </label>
-            <select
-              id="f-gmodel"
-              className="select"
-              value={gmodel || subModels[0]}
-              disabled={family !== "" && family !== multiFamily}
-              title={t("explorer.modelPickTitle", { family: familyLabel(provider, multiFamily) })}
-              onChange={(e) => {
-                setGmodel(e.target.value === subModels[0] ? "" : e.target.value);
-                track(EVENTS.FILTER_CHANGED, { provider, locale, kind: "model", value: e.target.value });
-              }}
-            >
-              {subModels.map((m) => (
-                <option key={m} value={m}>
-                  {modelLabel(m)}
-                </option>
-              ))}
-            </select>
-            <span className="field-caret" aria-hidden="true">▼</span>
-          </div>
-        )}
+        <FilterFields
+          idPrefix="f"
+          provider={provider}
+          values={{ family, lang, gender, gmodel }}
+          familyOptions={familyOptions}
+          languageOptions={languageOptions}
+          lockLanguage={lockLanguage}
+          model={{ show: showModelPick, family: multiFamily, ids: subModels }}
+          onChange={applyFilter}
+        />
       </div>
 
       <div className="results-line">
+        {/* Mobile only (CSS): under 721px the select fields sit in the
+            panel this opens, so the toolbar keeps the search box alone. */}
+        <button
+          type="button"
+          className="filters-btn"
+          ref={filtersBtn}
+          aria-expanded={panelOpen}
+          onClick={() => setPanelOpen(true)}
+        >
+          {t("explorer.filters", { count: fieldFilters })}
+        </button>
         <span className="results-count" role="status">
           {all ? t("explorer.results", { voices: shownVoices, samples: sampleCount }) : t("explorer.loading")}
         </span>
         {hasFilters && (
-          <button
-            type="button"
-            className="clear-btn"
-            onClick={() => {
-              setQ("");
-              setFamily("");
-              setLang("");
-              setGender("");
-              setGmodel("");
-              track(EVENTS.FILTER_CHANGED, { provider, locale, kind: "clear", value: "all" });
-            }}
-          >
+          <button type="button" className="clear-btn" onClick={clearFilters}>
             {t("explorer.clear")}
           </button>
         )}
       </div>
+
+      {panelOpen && (
+        <FilterPanel
+          onClose={closePanel}
+          triggerRef={filtersBtn}
+          count={shownVoices}
+          showClear={hasFilters}
+          onClear={clearFilters}
+        >
+          <FilterFields
+            idPrefix="m"
+            provider={provider}
+            values={{ family, lang, gender, gmodel }}
+            familyOptions={familyOptions}
+            languageOptions={languageOptions}
+            lockLanguage={lockLanguage}
+            model={{ show: showModelPick, family: multiFamily, ids: subModels }}
+            onChange={applyFilter}
+          />
+        </FilterPanel>
+      )}
 
       {familyNote && (
         <p className="family-note" role="note">
@@ -805,53 +786,17 @@ function ExplorerCore({ provider, voices, lockLanguage, models, paramsKey }: Cor
               </span>
             </div>
           )}
-          {g.items.map((v) => {
-            const isActive = active?.id === v.id;
-            return (
-              <div className="vrow" key={v.id}>
-                <button
-                  type="button"
-                  className={`play${isActive && active.status !== "error" ? " play-on" : ""}`}
-                  aria-label={t("explorer.playAria", { name: v.name, language: languageName(v.lang, locale) })}
-                  aria-pressed={isActive && active.status === "playing"}
-                  onClick={() => play(v)}
-                >
-                  {!isActive || active.status === "error" ? (
-                    <PlayGlyph />
-                  ) : active.status === "playing" ? (
-                    <StopGlyph />
-                  ) : (
-                    <span className="spin" aria-hidden="true"></span>
-                  )}
-                </button>
-                <span className="vname"><bdi>{v.name}</bdi></span>
-                <span className={`tag ${v.tier === "ultra" ? "tag-purple" : "tag-blue"}`}>
-                  {familyLabel(provider, v.family).toUpperCase()}
-                </span>
-                {v.traits.age && (
-                  <span className="tag tag-gray tag-age">
-                    {v.traits.age === "child" ? t("explorer.traits.child") : v.traits.age.toUpperCase()}
-                  </span>
-                )}
-                {v.styles.length > 0 && <span className="vstyles">{v.styles.join(" · ")}</span>}
-                <span className="vmeta">
-                  {isActive && active.status === "error" && (
-                    <span className="vnote" role="status">
-                      {t(`explorer.${active.note ?? "noteUnavailable"}`)}
-                    </span>
-                  )}
-                  {isActive && active.status === "generating" && (
-                    <span className="vnote" role="status">
-                      {t("explorer.noteGenerating")}
-                    </span>
-                  )}
-                  <span className="vgender">
-                    {v.gender === "unknown" ? "" : t(`explorer.genderWords.${v.gender}`)}
-                  </span>
-                </span>
-              </div>
-            );
-          })}
+          {g.items.map((v) => (
+            <VoiceRow
+              key={v.id}
+              voice={v}
+              provider={provider}
+              languageLabel={languageName(v.lang, locale)}
+              modelText={v.family === multiFamily ? effectiveModel : ""}
+              state={active?.id === v.id ? { status: active.status, note: active.note } : null}
+              onPlay={() => play(v)}
+            />
+          ))}
         </section>
       ))}
 

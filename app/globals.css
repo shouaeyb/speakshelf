@@ -696,6 +696,20 @@ button {
   }
 }
 
+/* Under 721px the toolbar is the search field alone. Stacking five boxes
+   walled off the list; the rest of the fields move into the filter panel,
+   reached from the FILTERS button on the results line below. */
+@media (max-width: 720px) {
+  .toolbar,
+  .toolbar-4,
+  .toolbar-3 {
+    grid-template-columns: 1fr;
+  }
+  .toolbar > .field:not(:first-child) {
+    display: none;
+  }
+}
+
 .field {
   background: var(--layer);
   height: 48px;
@@ -791,6 +805,18 @@ button {
   cursor: default;
 }
 
+/* iOS Safari zooms the page into any control it focuses whose text is
+   under 16px, and the zoom does not come back. Only the two controls that
+   take focus grow, and only where a touch keyboard can appear: mouse
+   desktops keep the 14px scale. No viewport maximum-scale hack, that one
+   breaks pinch zoom for everybody. */
+@media (max-width: 720px), (pointer: coarse) {
+  .search-input,
+  .select {
+    font-size: 16px;
+  }
+}
+
 .nowrap {
   white-space: nowrap;
 }
@@ -830,6 +856,139 @@ button {
 .clear-btn:hover {
   color: var(--blue-hover);
   text-decoration: underline;
+}
+
+/* The mobile entry to the filter panel, beside the result count. Desktop
+   never shows it: there the fields are already on screen. */
+.filters-btn {
+  display: none;
+  align-items: center;
+  min-height: 40px;
+  padding: 0 12px;
+  background: var(--layer);
+  border: 1px solid var(--border-strong);
+  font-family: var(--mono);
+  font-size: 12px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: var(--text);
+  cursor: pointer;
+}
+
+.filters-btn:hover {
+  background: var(--layer-hover);
+}
+
+@media (max-width: 720px) {
+  .filters-btn {
+    display: inline-flex;
+  }
+  .results-line {
+    flex-wrap: wrap;
+    row-gap: 8px;
+    justify-content: flex-start;
+  }
+  /* The count sits beside the button; clear-all keeps the far end. */
+  .results-count {
+    margin-inline-end: auto;
+  }
+}
+
+/* Mobile filter panel: a full-screen boxed dialog carrying the toolbar's
+   select fields under 721px. Positioned with logical properties so it
+   mirrors in Arabic, and sized in dynamic viewport units so a mobile
+   browser's collapsing chrome can never hide the closing button. */
+
+.fpanel {
+  position: fixed;
+  inset-block: 0;
+  inset-inline: 0;
+  z-index: 60;
+  display: flex;
+  flex-direction: column;
+  block-size: 100dvh;
+  background: var(--bg);
+}
+
+/* The dialog takes focus on open so a screen reader announces it; that
+   programmatic focus should not draw a ring around the whole panel. */
+.fpanel:focus {
+  outline: none;
+}
+
+.fpanel-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  background: var(--layer);
+  border-block-end: 1px solid var(--border-strong);
+  padding-inline: 16px;
+  padding-block: 14px;
+  padding-block-start: max(14px, env(safe-area-inset-top));
+}
+
+.fpanel-title {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.fpanel-close {
+  background: none;
+  border: none;
+  color: var(--text-2);
+  font-size: 14px;
+  cursor: pointer;
+  padding: 8px;
+  margin-inline-end: -8px;
+}
+
+.fpanel-close:hover {
+  color: var(--text);
+}
+
+.fpanel-body {
+  flex: 1;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+
+/* The same 1px-gap grid as the toolbar, stacked one field per row. */
+.fpanel-fields {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1px;
+  background: var(--border-strong);
+  border-block-end: 1px solid var(--border-strong);
+}
+
+.fpanel-foot {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  background: var(--layer);
+  border-block-start: 1px solid var(--border-strong);
+  padding-inline: 16px;
+  padding-block: 12px;
+  padding-block-end: max(12px, env(safe-area-inset-bottom));
+}
+
+.fpanel-apply {
+  flex: 1;
+  min-height: 48px;
+  padding-inline: 16px;
+  background: var(--blue);
+  border: 1px solid var(--blue);
+  color: #ffffff;
+  font-family: var(--sans);
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.fpanel-apply:hover {
+  background: var(--blue-hover);
+  border-color: var(--blue-hover);
 }
 
 /* Voice list */
@@ -962,16 +1121,70 @@ a.lang-name:hover {
   color: var(--text-3);
 }
 
+/* The sub-model a row would play. Mobile only: the desktop reader has the
+   toolbar's picker in view beside the list, the mobile reader does not. */
+.vmodel {
+  display: none;
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--text-2);
+}
+
+/* Two-line rows under 721px. Nothing is dropped: the family tag, the
+   sub-model, the styles, the trait tag and the gender all move to the
+   second line, because a reader cannot tell Kore-Gemini from
+   Kore-Chirp3HD without them. */
 @media (max-width: 720px) {
+  .vrow {
+    position: relative;
+    flex-wrap: wrap;
+    column-gap: 10px;
+    row-gap: 4px;
+    padding-block: 10px;
+  }
+  /* The name fills what is left of line one, so everything after it wraps
+     onto line two. */
   .vname {
     min-width: 0;
+    flex: 1 1 calc(100% - 42px);
   }
-  .vstyles,
-  .vrow .tag {
-    display: none;
+  .vmodel {
+    display: inline;
+  }
+  /* Line two reads family, sub-model, styles, trait, gender, and starts
+     under the name: the play button's tap area owns the edge beside it. */
+  .vrow .tag-blue,
+  .vrow .tag-purple {
+    margin-inline-start: 42px;
   }
   .vrow .tag-age {
-    display: inline-flex;
+    order: 1;
+  }
+  .vmeta {
+    order: 2;
+    gap: 10px;
+  }
+  /* The button keeps its 32px look; the tap area covers the row's whole
+     start edge, both lines of it. */
+  .play::after {
+    content: "";
+    position: absolute;
+    inset-block: 0;
+    inset-inline-start: 0;
+    inline-size: 56px;
+  }
+  /* A transient note takes the metadata line while it shows; the metadata
+     comes back when it clears. */
+  .vrow-note .tag,
+  .vrow-note .vmodel,
+  .vrow-note .vstyles,
+  .vrow-note .vgender {
+    display: none;
+  }
+  /* With the tag hidden the note is line two's first item, so it takes
+     the same indent instead of the push to the far end. */
+  .vrow-note .vmeta {
+    margin-inline-start: 42px;
   }
 }
 

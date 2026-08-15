@@ -33,6 +33,10 @@ Masthead (sticky, 48px) with global provider tabs (active provider underlined in
 
 Provider identity is words, never palette: the eyebrow, the vocabulary ("engines" on /polly, "model families" on /google), the copy. One token sheet serves every page.
 
+## The explorer on a narrow screen
+
+Under 721px the explorer takes a different shape, and nothing is lost to the width. The toolbar keeps the search field alone, so the list starts near the top of the screen instead of under a stack of boxes. A boxed FILTERS button sits beside the result count above the list and carries the number of select filters in play; it opens a full-screen panel with a white header (title, close control), the same fields stacked one per row on the toolbar's 1px grid, and a footer where clear-all sits beside a blue button naming the count it will reveal. Voice rows become two lines: the name on the first, and on the second the family tag, the sub-model that row would play, the styles, the trait tag and the gender, indented to the name's edge because the play button's tap target owns the start of both lines. The button itself keeps its 32px square; only the touch area grows. The two form controls reach 16px on touch, which is what stops iOS Safari zooming the page when a field takes focus. The desktop layout is preserved: the layout rules live in media queries and the panel opens only from the mobile FILTERS button. The one deliberate spillover is the 16px control size, which the coarse-pointer condition extends to wide touch screens, where the same focus zoom applies.
+
 ## Copy voice
 
 Shipped writing sounds like a person who knows the subject. Concretely:
