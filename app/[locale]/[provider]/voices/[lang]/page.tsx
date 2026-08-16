@@ -33,6 +33,16 @@ export async function generateStaticParams(): Promise<{ provider: string; lang: 
 export const revalidate = 86400;
 export const dynamicParams = true;
 
+/** " · ar-XA" when another code in the same provider's catalog localizes
+ *  to this very name, "" otherwise. Google runs ar-XA and ar-001 as one
+ *  register, so their two pages carry one title; the code tells a search
+ *  result, a share card and a knowledge graph entry which of the two it
+ *  is. Title surfaces only: the page itself already shows the code in its
+ *  hero line, so the heading and the prose stay clean. */
+function twinSuffix(codes: string[], lang: string, name: string, locale: string): string {
+  return codes.some((c) => c !== lang && languageName(c, locale) === name) ? ` · ${lang}` : "";
+}
+
 export async function generateMetadata({ params }: { params: Promise<Params> }): Promise<Metadata> {
   const { locale, provider, lang } = await params;
   const meta = getProvider(provider);
@@ -43,12 +53,15 @@ export async function generateMetadata({ params }: { params: Promise<Params> }):
   const t = await getTranslations({ locale, namespace: "meta" });
   const name = languageName(lang, locale);
   const count = voiceCount(inLang, meta.voiceIdentity);
+  const title =
+    t("langTitle", { label: meta.label, language: name }) +
+    twinSuffix(catalog.languages.map((l) => l.code), lang, name, locale);
   return {
-    title: t("langTitle", { label: meta.label, language: name }),
+    title,
     description: t("langDescription", { label: meta.label, language: name, code: lang, voices: count }),
     alternates: localeAlternates(`/${provider}/voices/${lang}`, locale),
     openGraph: {
-      title: `${t("langTitle", { label: meta.label, language: name })} · Speakshelf`,
+      title: `${title} · Speakshelf`,
       // No counts on share surfaces: platforms cache previews for weeks.
       description: t("langShareDescription", { label: meta.label, language: name }),
       images: ["/og.png"],
@@ -73,7 +86,9 @@ export default async function LanguagePage({ params }: { params: Promise<Params>
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "CollectionPage",
-    name: t("meta.langTitle", { label: meta.label, language: name }),
+    name:
+      t("meta.langTitle", { label: meta.label, language: name }) +
+      twinSuffix(catalog.languages.map((l) => l.code), lang, name, locale),
     url: localeUrl(`/${provider}/voices/${lang}`, locale),
     inLanguage: locale,
     description: t("meta.langJsonLd", { label: meta.label, language: name, code: lang }),

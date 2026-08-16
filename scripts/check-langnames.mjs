@@ -1,8 +1,8 @@
 // Fixture for lib/lang.ts against the real catalog: every language code in
-// the packed data must render a unique display name in every UI locale,
-// with the three-Arabics distinction intact and no CLDR pseudo-region or
-// raw-subtag labels leaking. Run manually after touching lib/lang.ts or
-// refreshing data: node scripts/check-langnames.mjs
+// the packed data must render a bracketed display name in every UI locale,
+// unique except for the one sanctioned twin pair, with no CLDR
+// pseudo-region or raw-subtag labels leaking. Run manually after touching
+// lib/lang.ts or refreshing data: node scripts/check-langnames.mjs
 import { readFileSync, readdirSync } from "node:fs";
 
 const packed = JSON.parse(readFileSync(new URL("../data/voices.packed.json", import.meta.url)));
@@ -15,55 +15,103 @@ const locales = readdirSync(new URL("../messages", import.meta.url))
 
 // Mirror of lib/lang.ts (kept tiny; the library is TypeScript and this
 // fixture stays runnable with bare node). Keep both sides in step.
-const OVERRIDES = { "ar-XA": "Arabic", "en-GB-WLS": "English (Wales)" };
+const WLS_NAMES = {
+  en: "English (Wales)", es: "inglés (Gales)", fr: "anglais (pays de Galles)",
+  pt: "inglês (País de Gales)", ru: "английский (Уэльс)", zh: "英语（威尔士）",
+  hi: "अंग्रेज़ी (वेल्स)", bn: "ইংরেজি (ওয়েলস)", ar: "الإنجليزية (ويلز)",
+  ja: "英語 (ウェールズ)", de: "Englisch (Wales)", it: "inglese (Galles)",
+  id: "Inggris (Wales)", sw: "Kiingereza (Wales)",
+};
 const ARB_NAMES = {
   en: "Arabic (Standard)", es: "árabe (estándar)", fr: "arabe (standard)",
   pt: "árabe (padrão)", ru: "арабский (стандартный)", zh: "阿拉伯语（标准）",
-  hi: "अरबी (मानक)", bn: "আরবি (প্রমিত)", ar: "العربية الفصحى",
+  hi: "अरबी (मानक)", bn: "আরবি (প্রমিত)", ar: "العربية (الفصحى)",
   ja: "アラビア語 (標準)", de: "Arabisch (Standard)", it: "arabo (standard)",
   id: "Arab (Standar)", sw: "Kiarabu (Sanifu)",
 };
 const MSA_NAMES = {
   en: "Arabic (Modern Standard)", es: "árabe (estándar moderno)", fr: "arabe (standard moderne)",
   pt: "árabe (padrão moderno)", ru: "арабский (современный стандартный)", zh: "阿拉伯语（现代标准）",
-  hi: "अरबी (आधुनिक मानक)", bn: "আরবি (আধুনিক প্রমিত)", ar: "العربية الفصحى الحديثة",
+  hi: "अरबी (आधुनिक मानक)", bn: "আরবি (আধুনিক প্রমিত)", ar: "العربية (الفصحى الحديثة)",
   ja: "アラビア語 (現代標準)", de: "Arabisch (Modernes Hocharabisch)", it: "arabo (standard moderno)",
   id: "Arab (Standar Modern)", sw: "Kiarabu (Sanifu cha Kisasa)",
+};
+const JAVA_NAMES = {
+  en: "Javanese (Java)", es: "javanés (Java)", fr: "javanais (Java)",
+  pt: "javanês (Java)", ru: "яванский (Ява)", zh: "爪哇语（爪哇）",
+  hi: "जावानीज़ (जावा)", bn: "জাভানিজ (জাভা)", ar: "الجاوية (جاوة)",
+  ja: "ジャワ語 (ジャワ)", de: "Javanisch (Java)", it: "giavanese (Giava)",
+  id: "Jawa (Jawa)", sw: "Kijava (Java)",
 };
 const EN_SHORT = [
   ["(United States)", "(US)"], ["(United Kingdom)", "(GB)"],
   ["(Hong Kong SAR China)", "(Hong Kong)"], ["(Myanmar [Burma])", "(Myanmar)"],
+  ["(United Arab Emirates)", "(UAE)"],
 ];
 function name(code, locale) {
   let n;
   if (code === "arb") return ARB_NAMES[locale] ?? ARB_NAMES.en;
-  if (code === "ar-001") return MSA_NAMES[locale] ?? MSA_NAMES.en;
+  if (code === "ar-001" || code === "ar-XA") return MSA_NAMES[locale] ?? MSA_NAMES.en;
+  if (code === "jv-JV") return JAVA_NAMES[locale] ?? JAVA_NAMES.en;
+  if (code === "en-GB-WLS") return WLS_NAMES[locale] ?? WLS_NAMES.en;
   try {
-    const std = new Intl.DisplayNames([locale], { type: "language", languageDisplay: "standard" });
-    if (code === "ar-XA") n = std.of("ar");
-    else if (code === "jv-JV") n = std.of("jv");
-    else n = std.of(code);
+    n = new Intl.DisplayNames([locale], { type: "language", languageDisplay: "standard" }).of(code);
   } catch {}
-  if (!n || n === code) n = OVERRIDES[code] ?? n ?? code;
+  if (!n) n = code;
   if (locale === "en") for (const [l, s] of EN_SHORT) if (n.endsWith(l)) n = n.slice(0, -l.length) + s;
   return n;
 }
 
 // Labels a reader must never see: CLDR's pseudo-region for ar-XA, the
 // "(world)" bracket CLDR gives ar-001, and the raw "(JV)" subtag CLDR
-// gives Google's jv-JV. Checked in every locale, not just English.
-const JUNK = [/pseudo/i, /\(world\)/i, /\(JV\)/i];
-// The English labels the three fixed codes and the two hand-mapped
-// Arabics must produce. Exact, so a silent CLDR shift is a failure.
+// gives Google's jv-JV. Checked in every locale, in both bracket forms;
+// a locale that translates "world" is caught by the exact-label and twin
+// asserts below instead.
+const JUNK = [/pseudo/i, /[(（]world[)）]/i, /[(（]JV[)）]/i];
+// The English labels the fixed and hand-mapped codes must produce. Exact,
+// so a silent CLDR shift is a failure.
 const EN_LABELS = {
-  "ar-XA": "Arabic",
+  "ar-XA": "Arabic (Modern Standard)",
   "ar-001": "Arabic (Modern Standard)",
   arb: "Arabic (Standard)",
-  "jv-JV": "Javanese",
+  "ar-AE": "Arabic (UAE)",
+  "jv-JV": "Javanese (Java)",
   "en-GB-WLS": "English (Wales)",
   "yue-HK": "Cantonese (Hong Kong)",
   "my-MM": "Burmese (Myanmar)",
 };
+// The owner's bracket rule (2026-08-16): every label carries a bracket,
+// and English bracket contents stay short. 16 characters passes the
+// longest sanctioned English contents today ("Modern Standard" and
+// "North Macedonia", both 15) and trips on a CLDR long form returning
+// ("Hong Kong SAR China" was 19).
+const EN_BRACKET_MAX = 16;
+// The one sanctioned same-name group: Google runs ar-XA and ar-001 as one
+// register, so they share a name and their codes disambiguate. Group
+// exact, so a third code joining the name is still a failure.
+const TWINS = ["ar-001", "ar-XA"];
+
+const OPENERS = { "(": ")", "（": "）" };
+const CLOSERS = new Set([")", "）"]);
+
+// Every bracket pair in a label, innermost first, plus whether they are
+// balanced. Nested pairs are legal outside English: CLDR itself nests
+// there (ru and es render Myanmar as "Мьянма (Бирма)" and "Myanmar
+// (Birmania)" inside the label's own bracket).
+function brackets(label) {
+  const open = [];
+  const pairs = [];
+  for (let i = 0; i < label.length; i++) {
+    const ch = label[i];
+    if (OPENERS[ch]) open.push([ch, i]);
+    else if (CLOSERS.has(ch)) {
+      const last = open.pop();
+      if (!last || OPENERS[last[0]] !== ch) return { balanced: false, pairs };
+      pairs.push(label.slice(last[1] + 1, i));
+    }
+  }
+  return { balanced: open.length === 0, pairs };
+}
 
 let failures = 0;
 const fail = (msg) => {
@@ -77,30 +125,44 @@ for (const [code, want] of Object.entries(EN_LABELS)) {
 }
 
 for (const locale of locales) {
-  const seen = new Map();
+  const groups = new Map();
   for (const code of [...codes].sort()) {
     const n = name(code, locale);
     for (const junk of JUNK) {
       if (junk.test(n)) fail(`${locale}: ${code} leaks a raw CLDR label: ${n}`);
     }
-    if (seen.has(n)) fail(`${locale}: collision "${n}" from ${seen.get(n)} and ${code}`);
-    seen.set(n, code);
-  }
-  // The three Arabics ship side by side (ar-XA plain, ar-001 Modern
-  // Standard, arb Standard) and must stay pairwise distinct everywhere.
-  const arabics = [["arb", name("arb", locale)], ["ar-XA", name("ar-XA", locale)], ["ar-001", name("ar-001", locale)]];
-  for (let i = 0; i < arabics.length; i++) {
-    for (let j = i + 1; j < arabics.length; j++) {
-      if (arabics[i][1] === arabics[j][1]) {
-        fail(`${locale}: ${arabics[i][0]} and ${arabics[j][0]} collapse to "${arabics[i][1]}"`);
+    const { balanced, pairs } = brackets(n);
+    if (!balanced) fail(`${locale}: ${code} has unbalanced brackets: ${n}`);
+    else if (pairs.length === 0) fail(`${locale}: ${code} carries no bracket: ${n}`);
+    else if (pairs.some((p) => p.trim() === "")) fail(`${locale}: ${code} has an empty bracket: ${n}`);
+    if (locale === "en" && balanced && pairs.length > 0) {
+      if (pairs.length !== 1) fail(`en: ${code} carries ${pairs.length} brackets, expected one: ${n}`);
+      if (pairs[0].length > EN_BRACKET_MAX) {
+        fail(`en: ${code} bracket is ${pairs[0].length} characters, over ${EN_BRACKET_MAX}: ${n}`);
       }
     }
+    groups.set(n, [...(groups.get(n) ?? []), code]);
+  }
+  // A shared name passes only as the complete sanctioned group.
+  for (const [n, shared] of groups) {
+    if (shared.length < 2) continue;
+    const sorted = [...shared].sort();
+    if (sorted.join(",") !== TWINS.join(",")) {
+      fail(`${locale}: collision "${n}" shared by ${sorted.join(", ")}`);
+    }
+  }
+  // The twins read the same everywhere, and stay apart from Polly's arb
+  // (quoted by name on the home page) and from the nearest real region.
+  const [a, b] = TWINS.map((c) => name(c, locale));
+  if (a !== b) fail(`${locale}: twins disagree, ${TWINS[0]} "${a}" vs ${TWINS[1]} "${b}"`);
+  for (const other of ["arb", "ar-EG"]) {
+    if (name(other, locale) === a) fail(`${locale}: twins collapse onto ${other}: "${a}"`);
   }
 }
 
 console.log(
   failures === 0
-    ? `OK: ${codes.size} codes unique in ${locales.length} locales, three Arabics distinct, en labels exact`
+    ? `OK: ${codes.size} codes bracketed and unique in ${locales.length} locales, twins paired and apart from arb and ar-EG, en labels exact`
     : `${failures} FAILURES`,
 );
 process.exit(failures === 0 ? 0 : 1);

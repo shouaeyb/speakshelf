@@ -502,8 +502,8 @@ button {
   color: var(--tag-purple-text);
 }
 
-/* Trait tags (CHILD today): quiet gray, and exempt from the mobile tag
-   hide below, because a rare trait matters more than a repeated family. */
+/* Trait tags (CHILD today): quiet gray. Mobile keeps them on the row's
+   second line beside the family tag; only a transient note hides them. */
 .tag-gray {
   background: var(--border);
   color: var(--text-2);
@@ -880,15 +880,20 @@ button {
 }
 
 @media (max-width: 720px) {
+  /* The button takes its own full row (owner's call, 2026-08-16): it is
+     the only way into the filters on a narrow screen, so it reads as a
+     control rather than as one item in a line of text. */
   .filters-btn {
     display: inline-flex;
+    flex-basis: 100%;
   }
   .results-line {
     flex-wrap: wrap;
     row-gap: 8px;
     justify-content: flex-start;
   }
-  /* The count sits beside the button; clear-all keeps the far end. */
+  /* Count and clear-all wrap together onto the line below, the count at
+     the start and clear-all keeping the far end. */
   .results-count {
     margin-inline-end: auto;
   }
@@ -1130,39 +1135,62 @@ a.lang-name:hover {
   color: var(--text-2);
 }
 
-/* Two-line rows under 721px. Nothing is dropped: the family tag, the
-   sub-model, the styles, the trait tag and the gender all move to the
-   second line, because a reader cannot tell Kore-Gemini from
-   Kore-Chirp3HD without them. */
+/* Two-line rows under 721px, and nothing is dropped. Line one reads like
+   the desktop row does: name, styles, gender at the end. Line two carries
+   the model story, family tag, sub-model and trait tag, because a reader
+   cannot tell Kore-Gemini from Kore-Chirp3HD without it. Owner's line
+   order, 2026-08-16. */
 @media (max-width: 720px) {
   .vrow {
     position: relative;
     flex-wrap: wrap;
     column-gap: 10px;
-    row-gap: 4px;
+    /* The break below carries the 4px itself; see the note there. */
+    row-gap: 0;
     padding-block: 10px;
   }
-  /* The name fills what is left of line one, so everything after it wraps
-     onto line two. */
+  /* Line one, in reading order. The name shrinks before anything wraps,
+     and .vmeta keeps its auto margin, so the gender sits at the line end
+     exactly as on desktop. */
   .vname {
     min-width: 0;
-    flex: 1 1 calc(100% - 42px);
+    flex: 0 1 auto;
   }
-  .vmodel {
-    display: inline;
-  }
-  /* Line two reads family, sub-model, styles, trait, gender, and starts
-     under the name: the play button's tap area owns the edge beside it. */
-  .vrow .tag-blue,
-  .vrow .tag-purple {
-    margin-inline-start: 42px;
-  }
-  .vrow .tag-age {
+  .vstyles {
     order: 1;
+    min-width: 0;
   }
   .vmeta {
     order: 2;
     gap: 10px;
+  }
+  /* The line break itself: an item that claims a whole line, so everything
+     ordered after it starts on line two whatever the widths above. It is
+     also the gap between the two lines, which is why .vrow above sets
+     row-gap to zero: a break line of its own sits between two row gaps and
+     would double the 4px, and a negative margin cannot cancel one of them
+     (a flex line's cross size never goes below zero, measured in Chromium:
+     the row stayed 79px at every negative margin). Four pixels of break
+     between two zero gaps measures the same 4px the row shipped with. */
+  .vrow::after {
+    content: "";
+    order: 3;
+    flex: 0 0 100%;
+    block-size: 4px;
+  }
+  /* Line two starts under the name: the play button's tap area owns the
+     edge beside it. */
+  .vrow .tag-blue,
+  .vrow .tag-purple {
+    order: 4;
+    margin-inline-start: 42px;
+  }
+  .vmodel {
+    display: inline;
+    order: 5;
+  }
+  .vrow .tag-age {
+    order: 6;
   }
   /* The button keeps its 32px look; the tap area covers the row's whole
      start edge, both lines of it. */
@@ -1173,17 +1201,17 @@ a.lang-name:hover {
     inset-inline-start: 0;
     inline-size: 56px;
   }
-  /* A transient note takes the metadata line while it shows; the metadata
-     comes back when it clears. */
+  /* A transient note owns line two while it shows, and the metadata comes
+     back when it clears: everything else on that line hides, and .vmeta
+     crosses the break to carry the note. */
   .vrow-note .tag,
   .vrow-note .vmodel,
   .vrow-note .vstyles,
   .vrow-note .vgender {
     display: none;
   }
-  /* With the tag hidden the note is line two's first item, so it takes
-     the same indent instead of the push to the far end. */
   .vrow-note .vmeta {
+    order: 4;
     margin-inline-start: 42px;
   }
 }
@@ -1609,6 +1637,15 @@ a.lang-name:hover {
   font-family: var(--mono);
   font-size: 11px;
   color: var(--text-3);
+}
+
+/* The code beside a twin's name (two codes, one localized name), so two
+   same-named cells never read as a duplicate. */
+.lang-cell-code {
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--text-3);
+  margin-inline-start: 8px;
 }
 
 /* Sub page header */

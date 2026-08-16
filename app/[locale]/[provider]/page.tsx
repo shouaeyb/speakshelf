@@ -63,6 +63,15 @@ export default async function ProviderPage({ params }: { params: Promise<Params>
       langCollator.compare(languageName(a.code, locale), languageName(b.code, locale)) ||
       a.code.localeCompare(b.code),
   );
+  // Twins, two codes that localize to one name (Google's ar-XA and
+  // ar-001), carry their code in the grid cell so the two cells never
+  // read as an inexplicable duplicate. Same generic rule as the
+  // Explorer's dropdown.
+  const langNameTimes = new Map<string, number>();
+  for (const l of sortedLangs) {
+    const n = languageName(l.code, locale);
+    langNameTimes.set(n, (langNameTimes.get(n) ?? 0) + 1);
+  }
   const t = await getTranslations({ locale });
   const fmt = (n: number) => n.toLocaleString(locale);
   const famWord = t(`providers.${provider}.familyWord`, { count: stats.families });
@@ -152,7 +161,14 @@ export default async function ProviderPage({ params }: { params: Promise<Params>
           <div className="lang-grid">
             {sortedLangs.map((l) => (
               <Link key={l.code} className="lang-cell" href={`/${provider}/voices/${l.code}`}>
-                <span>{languageName(l.code, locale)}</span>
+                <span>
+                  {languageName(l.code, locale)}
+                  {(langNameTimes.get(languageName(l.code, locale)) ?? 0) > 1 && (
+                    <span className="lang-cell-code" dir="ltr">
+                      {l.code}
+                    </span>
+                  )}
+                </span>
                 <span className="n">{fmt(l.voices)}</span>
               </Link>
             ))}

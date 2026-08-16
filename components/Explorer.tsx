@@ -255,15 +255,26 @@ function ExplorerCore({ provider, voices, lockLanguage, models, paramsKey }: Cor
 
   // Alphabetical by the reader's locale, tie-broken by code for
   // determinism; the search field is the fast path, the order is the
-  // predictable one.
+  // predictable one. Twins, two codes of this provider that localize to
+  // one name (Google runs ar-XA and ar-001 as one register), carry their
+  // code in the option so the reader can tell the two apart. The rule is
+  // generic: it counts the names this provider actually renders in this
+  // locale, so any future pair is covered with no list to maintain. The
+  // code rides inside first-strong isolation, so an Arabic option line
+  // cannot reorder it.
   const languageOptions = useMemo(() => {
     if (!all || lockLanguage) return [];
     const collator = new Intl.Collator(locale);
     const codes = new Set<string>();
     for (const v of all) codes.add(v.lang);
-    return [...codes]
+    const named = [...codes]
       .map((code) => ({ code, name: languageName(code, locale) }))
       .sort((a, b) => collator.compare(a.name, b.name) || a.code.localeCompare(b.code));
+    const times = new Map<string, number>();
+    for (const o of named) times.set(o.name, (times.get(o.name) ?? 0) + 1);
+    return named.map((o) =>
+      (times.get(o.name) ?? 0) > 1 ? { code: o.code, name: `${o.name} · \u2066${o.code}\u2069` } : o,
+    );
   }, [all, lockLanguage, locale]);
 
   // Family choices come from the data, so a family this code has never
