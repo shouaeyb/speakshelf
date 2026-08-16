@@ -13,8 +13,16 @@ export default function ConsentBanner() {
   const t = useTranslations("consent");
   const ta = useTranslations("a11y");
 
+  // Hidden on the server and through hydration, then shown only when the
+  // stored mode is still "unknown". readConsentMode touches localStorage,
+  // which the server does not have, so the read is deferred by one
+  // macrotask rather than pulled into render; the cleanup cancels it if the
+  // banner unmounts first.
   useEffect(() => {
-    setVisible(readConsentMode() === "unknown");
+    const timer = setTimeout(() => {
+      setVisible(readConsentMode() === "unknown");
+    }, 0);
+    return () => clearTimeout(timer);
   }, []);
 
   if (!visible) return null;

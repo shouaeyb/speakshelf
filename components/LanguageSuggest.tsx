@@ -5,6 +5,30 @@ import { useLocale, useTranslations } from "next-intl";
 import { usePathname, useRouter } from "@/i18n/navigation";
 import { INVITES, LOCALES, type Locale, RTL_LOCALES } from "@/i18n/locales";
 
+/** The locale worth offering on this page, or null for silence. Reads
+ *  localStorage and navigator, so it may only run on the client, after
+ *  hydration: see the effect below. The order is the settled one and does
+ *  not change. A stored choice decides, and is offered again when it
+ *  differs from the page. Otherwise the first SUPPORTED browser preference
+ *  ends the scan, whether or not it matches the page. */
+function pickTarget(locale: string): Locale | null {
+  try {
+    const chosen = localStorage.getItem("ss-lang-choice");
+    if (chosen && (LOCALES as readonly string[]).includes(chosen)) {
+      return chosen !== locale ? (chosen as Locale) : null;
+    }
+    const preferred = navigator.languages ?? [navigator.language];
+    for (const pref of preferred) {
+      const primary = pref.toLowerCase().split("-")[0];
+      const match = LOCALES.find((l) => l === primary);
+      if (match) {
+        return match !== locale ? match : null; // first supported preference decides
+      }
+    }
+  } catch {}
+  return null;
+}
+
 // The owner's decision (docs/decisions.md): browser language never hard
 // redirects. This quiet strip offers a one-tap switch in the visitor's
 // own language. The stored value is the CHOICE, not a dismissal: someone
@@ -18,23 +42,19 @@ export default function LanguageSuggest() {
   const t = useTranslations("suggest");
   const [target, setTarget] = useState<Locale | null>(null);
 
+  // The server renders nothing here, and so does the first client render:
+  // localStorage and navigator have no server counterpart, so reading them
+  // any earlier (a lazy state initializer, say) would make the two renders
+  // disagree. The read is deferred by one macrotask and the timer is
+  // cancellable, so a locale change or an unmount cannot land a stale
+  // suggestion. The state is REPLACED on every run, offer or silence, so
+  // the no-stale-suggestion guarantee is this component's own and never
+  // leans on the subtree happening to remount across locales.
   useEffect(() => {
-    try {
-      const chosen = localStorage.getItem("ss-lang-choice");
-      if (chosen && (LOCALES as readonly string[]).includes(chosen)) {
-        if (chosen !== locale) setTarget(chosen as Locale);
-        return;
-      }
-      const preferred = navigator.languages ?? [navigator.language];
-      for (const pref of preferred) {
-        const primary = pref.toLowerCase().split("-")[0];
-        const match = LOCALES.find((l) => l === primary);
-        if (match) {
-          if (match !== locale) setTarget(match);
-          return; // first supported preference decides, matching or not
-        }
-      }
-    } catch {}
+    const timer = setTimeout(() => {
+      setTarget(pickTarget(locale));
+    }, 0);
+    return () => clearTimeout(timer);
   }, [locale]);
 
   if (!target) return null;

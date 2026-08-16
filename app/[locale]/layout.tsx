@@ -133,9 +133,7 @@ export default async function LocaleLayout({
   const { locale } = await params;
   if (!hasLocale(routing.locales, locale)) notFound();
   const t = await getTranslations({ locale, namespace: "footer" });
-  const ta = await getTranslations({ locale, namespace: "a11y" });
   const { stats, updated: catalogUpdated } = await getSite();
-  const fmt = (n: number) => n.toLocaleString(locale);
 
   return (
     // data-scroll-behavior lets the router suppress the smooth rule in
@@ -159,6 +157,7 @@ export default async function LocaleLayout({
                 {/* The masthead carries the favicon itself, tile and all, so
                     the header matches the browser tab above it. The footer
                     keeps the bare squares on its own dark ground. */}
+                {/* eslint-disable-next-line @next/next/no-img-element -- /icon.svg is the favicon, a 20px vector already in the tab: next/image cannot optimize SVG and would only add a loader hop. */}
                 <img className="wordmark-icon" src="/icon.svg" alt="" width={20} height={20} />
                 Speakshelf
               </Link>

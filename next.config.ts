@@ -21,7 +21,7 @@ const CSP = [
   "default-src 'self'",
   "script-src 'self' 'unsafe-inline' https://www.googletagmanager.com https://cdn.mxpnl.com",
   "style-src 'self' 'unsafe-inline'",
-  "connect-src 'self' https://api-js.mixpanel.com https://*.mixpanel.com https://www.googletagmanager.com https://www.google-analytics.com https://*.google-analytics.com https://*.analytics.google.com https://storage.googleapis.com https://*.r2.dev https://*.r2.cloudflarestorage.com",
+  "connect-src 'self' https://www.google.com https://api-js.mixpanel.com https://*.mixpanel.com https://www.googletagmanager.com https://www.google-analytics.com https://*.google-analytics.com https://*.analytics.google.com https://storage.googleapis.com https://*.r2.dev https://*.r2.cloudflarestorage.com",
   "img-src 'self' data: https://www.googletagmanager.com https://www.google-analytics.com",
   "media-src 'self' blob: https://storage.googleapis.com https://*.r2.dev https://*.r2.cloudflarestorage.com",
   "font-src 'self'",

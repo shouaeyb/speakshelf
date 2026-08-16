@@ -51,6 +51,10 @@ type Active = {
 const URL_TTL_MS = 18 * 60 * 60 * 1000;
 const BLOB_MAX = 24;
 const urlCache = new Map<string, { url: string; t: number }>();
+// A voice whose search document has not been built yet matches nothing
+// rather than crashing the filter. Module level so the memo below needs no
+// dependency on it.
+const EMPTY_DOC: SearchDoc = { words: [], text: "" };
 // Entries keep the raw Blob beside the object URL: the decoded replay tier
 // reads Blob.arrayBuffer() directly, because fetch(blob:) sits outside
 // connect-src. Warm requests are deduplicated so a rapid double play of a
@@ -183,7 +187,6 @@ function ExplorerCore({ provider, voices, lockLanguage, models, paramsKey }: Cor
       s: p.get("q") ?? "",
     };
     const prev = applied.current;
-    // eslint-disable-next-line react-hooks/set-state-in-effect
     setFamily((cur) => (!prev || cur === prev.f ? want.f : cur));
     setLang((cur) => (!prev || cur === prev.l ? want.l : cur));
     setGender((cur) => (!prev || cur === prev.g ? want.g : cur));
@@ -212,16 +215,25 @@ function ExplorerCore({ provider, voices, lockLanguage, models, paramsKey }: Cor
   }, [q, family, lang, gender, gmodel, lockLanguage]);
 
   useEffect(() => {
+    // The boxes, not their contents: teardown must act on whatever is
+    // playing at unmount, so snapshotting the values here (the usual answer
+    // to the exhaustive-deps ref warning) would tear down the wrong things.
+    // Aliasing the ref objects keeps the cleanup reading live state and
+    // says so.
+    const gen = playGen;
+    const audio = audioRef;
+    const replay = replayRef;
+    const timers = [errTimer, retryTimer, toastTimer];
     return () => {
       // The generation bump makes any in-flight lookup a no-op, so no
       // retry chain can fire after unmount.
-      playGen.current++;
-      audioRef.current?.pause();
-      replayRef.current?.stop();
-      replayRef.current = null;
-      if (errTimer.current) clearTimeout(errTimer.current);
-      if (retryTimer.current) clearTimeout(retryTimer.current);
-      if (toastTimer.current) clearTimeout(toastTimer.current);
+      gen.current++;
+      audio.current?.pause();
+      replay.current?.stop();
+      replay.current = null;
+      for (const timer of timers) {
+        if (timer.current) clearTimeout(timer.current);
+      }
     };
   }, []);
 
@@ -260,7 +272,7 @@ function ExplorerCore({ provider, voices, lockLanguage, models, paramsKey }: Cor
   // code in the option so the reader can tell the two apart. The rule is
   // generic: it counts the names this provider actually renders in this
   // locale, so any future pair is covered with no list to maintain. The
-  // code rides inside first-strong isolation, so an Arabic option line
+  // code rides inside an explicit LTR isolate, so an Arabic option line
   // cannot reorder it.
   const languageOptions = useMemo(() => {
     if (!all || lockLanguage) return [];
@@ -307,7 +319,6 @@ function ExplorerCore({ provider, voices, lockLanguage, models, paramsKey }: Cor
     return new Map(all.map((v) => [v.id, buildSearchDoc(v, provider, locale, localized(v))]));
   }, [all, provider, locale, t, models]);
 
-  const emptyDoc: SearchDoc = { words: [], text: "" };
   const filtered = useMemo(() => {
     if (!all) return [];
     const tokens = tokenize(q);
@@ -315,7 +326,7 @@ function ExplorerCore({ provider, voices, lockLanguage, models, paramsKey }: Cor
       if (family && v.family !== family) return false;
       if (lang && v.lang !== lang) return false;
       if (gender && v.gender !== gender) return false;
-      if (tokens.length > 0 && !matchesTokens(searchDocs.get(v.id) ?? emptyDoc, tokens)) return false;
+      if (tokens.length > 0 && !matchesTokens(searchDocs.get(v.id) ?? EMPTY_DOC, tokens)) return false;
       return true;
     });
   }, [all, q, family, lang, gender, searchDocs]);
@@ -450,7 +461,16 @@ function ExplorerCore({ provider, voices, lockLanguage, models, paramsKey }: Cor
     setActive(null);
   }
 
-  function play(v: Voice) {
+  /** clickedAt is the row's own click timestamp, read in the handler. The
+   *  patience budget below is the reader's wait and it starts at their tap,
+   *  which is also the only place the clock may be read: this function's
+   *  direct body is component scope, which react-hooks/purity cannot prove
+   *  is event-only, so a Date.now() here reads as an impure render call.
+   *  The two wall-clock reads in the nested helpers (the URL cache's age
+   *  check and its timestamp) are a matched pair and stay wall clock: a
+   *  URL fetched thirty seconds after the tap must not be stamped as if it
+   *  were fetched at the tap. */
+  function play(v: Voice, clickedAt: number) {
     const model = v.family === multiFamily ? gmodel : "";
     const cacheKey = model ? `${v.id}|${model}` : v.id;
     if (active?.id === v.id && active.model === model && active.status !== "error") {
@@ -575,9 +595,10 @@ function ExplorerCore({ provider, voices, lockLanguage, models, paramsKey }: Cor
     // over half a minute. Patience is a time budget, not a retry count,
     // and a chain that saw 202 never ends in "unavailable": the contract
     // says the sample is coming, so a blip mid-generation stays a blip.
+    // The clock runs from the tap, so the ninety seconds are the reader's,
+    // not the network's.
     const CHAIN_BUDGET_MS = 90_000;
-    const chainStart = Date.now();
-    const withinBudget = () => Date.now() - chainStart <= CHAIN_BUDGET_MS;
+    const withinBudget = () => Date.now() - clickedAt <= CHAIN_BUDGET_MS;
     let sawGenerating = false;
     let blips = 0;
 
@@ -805,7 +826,7 @@ function ExplorerCore({ provider, voices, lockLanguage, models, paramsKey }: Cor
               languageLabel={languageName(v.lang, locale)}
               modelText={v.family === multiFamily ? effectiveModel : ""}
               state={active?.id === v.id ? { status: active.status, note: active.note } : null}
-              onPlay={() => play(v)}
+              onPlay={() => play(v, Date.now())}
             />
           ))}
         </section>

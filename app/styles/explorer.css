@@ -1,0 +1,584 @@
+/* Explorer */
+
+/* Longhand only: this element also carries .shell, whose 24px side
+   gutters must survive. A padding shorthand here would zero them. */
+.explorer {
+  padding-top: 56px;
+  padding-bottom: 80px;
+}
+
+/* Anchor targets sit below the sticky masthead. */
+#models,
+#voices,
+#languages,
+#about,
+#providers {
+  scroll-margin-top: 60px;
+}
+
+.toolbar {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr 1fr 1fr;
+  gap: 1px;
+  background: var(--border-strong);
+  border: 1px solid var(--border-strong);
+}
+
+.toolbar-4 {
+  grid-template-columns: 2fr 1fr 1fr 1fr;
+}
+
+.toolbar-3 {
+  grid-template-columns: 2fr 1fr 1fr;
+}
+
+@media (max-width: 900px) {
+  .toolbar,
+  .toolbar-4,
+  .toolbar-3 {
+    grid-template-columns: 1fr 1fr;
+  }
+  /* Search gets its own row; a trailing odd field goes full width so the
+     grid never shows an empty cell, whatever the field count. */
+  .toolbar .field:first-child {
+    grid-column: 1 / -1;
+  }
+  .toolbar .field:last-child:nth-child(even) {
+    grid-column: 1 / -1;
+  }
+}
+
+@media (max-width: 520px) {
+  .toolbar,
+  .toolbar-4,
+  .toolbar-3 {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Under 721px the toolbar is the search field alone. Stacking five boxes
+   walled off the list; the rest of the fields move into the filter panel,
+   reached from the FILTERS button on the results line below. */
+@media (max-width: 720px) {
+  .toolbar,
+  .toolbar-4,
+  .toolbar-3 {
+    grid-template-columns: 1fr;
+  }
+  .toolbar > .field:not(:first-child) {
+    display: none;
+  }
+}
+
+.field {
+  background: var(--layer);
+  height: 48px;
+  display: flex;
+  align-items: center;
+  padding: 0 16px;
+  gap: 12px;
+  position: relative;
+}
+
+.field-label {
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--text-3);
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  flex: none;
+}
+
+.search-input {
+  border: none;
+  background: transparent;
+  font-family: var(--sans);
+  font-size: 14px;
+  color: var(--text);
+  width: 100%;
+  height: 100%;
+  padding: 0;
+}
+
+.search-magnifier {
+  flex: none;
+  color: var(--text-3);
+}
+
+/* The custom clear button replaces the browser's native cancel control. */
+.search-input::-webkit-search-cancel-button {
+  -webkit-appearance: none;
+  appearance: none;
+}
+
+.search-clear {
+  flex: none;
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: none;
+  border: none;
+  color: var(--text-2);
+  font-size: 13px;
+  cursor: pointer;
+  padding: 0;
+}
+
+.search-clear:hover {
+  background: var(--layer-hover);
+}
+
+.search-input::placeholder {
+  color: var(--text-3);
+}
+
+.search-input:focus {
+  outline: none;
+}
+
+.field:focus-within {
+  outline: 2px solid var(--blue);
+  outline-offset: -2px;
+}
+
+.select {
+  appearance: none;
+  border: none;
+  background: transparent;
+  font-family: var(--sans);
+  font-size: 14px;
+  color: var(--text);
+  width: 100%;
+  height: 100%;
+  padding-inline-end: 20px;
+  cursor: pointer;
+}
+
+.select:focus {
+  outline: none;
+}
+
+.select:disabled {
+  color: var(--text-3);
+  cursor: default;
+}
+
+/* iOS Safari zooms the page into any control it focuses whose text is
+   under 16px, and the zoom does not come back. Only the two controls that
+   take focus grow, and only where a touch keyboard can appear: mouse
+   desktops keep the 14px scale. No viewport maximum-scale hack, that one
+   breaks pinch zoom for everybody. */
+@media (max-width: 720px), (pointer: coarse) {
+  .search-input,
+  .select {
+    font-size: 16px;
+  }
+}
+
+.nowrap {
+  white-space: nowrap;
+}
+
+.field-caret {
+  position: absolute;
+  inset-inline-end: 16px;
+  color: var(--text-2);
+  font-size: 9px;
+  pointer-events: none;
+}
+
+.results-line {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 0;
+  gap: 16px;
+}
+
+.results-count {
+  font-family: var(--mono);
+  font-size: 12px;
+  color: var(--text-2);
+}
+
+.clear-btn {
+  font-family: var(--mono);
+  font-size: 12px;
+  color: var(--blue);
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 4px 0;
+}
+
+.clear-btn:hover {
+  color: var(--blue-hover);
+  text-decoration: underline;
+}
+
+/* The mobile entry to the filter panel, beside the result count. Desktop
+   never shows it: there the fields are already on screen. */
+.filters-btn {
+  display: none;
+  align-items: center;
+  min-height: 40px;
+  padding: 0 12px;
+  background: var(--layer);
+  border: 1px solid var(--border-strong);
+  font-family: var(--mono);
+  font-size: 12px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: var(--text);
+  cursor: pointer;
+}
+
+.filters-btn:hover {
+  background: var(--layer-hover);
+}
+
+@media (max-width: 720px) {
+  /* The button takes its own full row (owner's call, 2026-08-16): it is
+     the only way into the filters on a narrow screen, so it reads as a
+     control rather than as one item in a line of text. */
+  .filters-btn {
+    display: inline-flex;
+    flex-basis: 100%;
+  }
+  .results-line {
+    flex-wrap: wrap;
+    row-gap: 8px;
+    justify-content: flex-start;
+  }
+  /* Count and clear-all wrap together onto the line below, the count at
+     the start and clear-all keeping the far end. */
+  .results-count {
+    margin-inline-end: auto;
+  }
+}
+
+/* Mobile filter panel: a full-screen boxed dialog carrying the toolbar's
+   select fields under 721px. Positioned with logical properties so it
+   mirrors in Arabic, and sized in dynamic viewport units so a mobile
+   browser's collapsing chrome can never hide the closing button. */
+
+.fpanel {
+  position: fixed;
+  inset-block: 0;
+  inset-inline: 0;
+  z-index: 60;
+  display: flex;
+  flex-direction: column;
+  block-size: 100dvh;
+  background: var(--bg);
+}
+
+/* The dialog takes focus on open so a screen reader announces it; that
+   programmatic focus should not draw a ring around the whole panel. */
+.fpanel:focus {
+  outline: none;
+}
+
+.fpanel-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  background: var(--layer);
+  border-block-end: 1px solid var(--border-strong);
+  padding-inline: 16px;
+  padding-block: 14px;
+  padding-block-start: max(14px, env(safe-area-inset-top));
+}
+
+.fpanel-title {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.fpanel-close {
+  background: none;
+  border: none;
+  color: var(--text-2);
+  font-size: 14px;
+  cursor: pointer;
+  padding: 8px;
+  margin-inline-end: -8px;
+}
+
+.fpanel-close:hover {
+  color: var(--text);
+}
+
+.fpanel-body {
+  flex: 1;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+
+/* The same 1px-gap grid as the toolbar, stacked one field per row. */
+.fpanel-fields {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1px;
+  background: var(--border-strong);
+  border-block-end: 1px solid var(--border-strong);
+}
+
+.fpanel-foot {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  background: var(--layer);
+  border-block-start: 1px solid var(--border-strong);
+  padding-inline: 16px;
+  padding-block: 12px;
+  padding-block-end: max(12px, env(safe-area-inset-bottom));
+}
+
+.fpanel-apply {
+  flex: 1;
+  min-height: 48px;
+  padding-inline: 16px;
+  background: var(--blue);
+  border: 1px solid var(--blue);
+  color: #ffffff;
+  font-family: var(--sans);
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.fpanel-apply:hover {
+  background: var(--blue-hover);
+  border-color: var(--blue-hover);
+}
+
+/* Voice list */
+
+.lang-group {
+  content-visibility: auto;
+  contain-intrinsic-size: auto 600px;
+}
+
+.lang-head {
+  position: sticky;
+  top: 48px;
+  z-index: 10;
+  background: var(--bg);
+  padding: 20px 0 8px;
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+  border-bottom: 1px solid var(--border-strong);
+}
+
+.lang-name {
+  font-weight: 600;
+  font-size: 14px;
+}
+
+a.lang-name {
+  color: var(--text);
+}
+
+a.lang-name:hover {
+  color: var(--blue);
+  text-decoration: none;
+}
+
+.lang-code {
+  font-family: var(--mono);
+  font-size: 12px;
+  color: var(--text-2);
+}
+
+.lang-count {
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--text-3);
+  margin-inline-start: auto;
+  white-space: nowrap;
+}
+
+.vrow {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  background: var(--layer);
+  border-bottom: 1px solid var(--border);
+  padding: 0 16px;
+  min-height: 52px;
+}
+
+.vrow:hover {
+  background: var(--layer-hover);
+}
+
+.play {
+  width: 32px;
+  height: 32px;
+  border: 1px solid var(--border-strong);
+  background: var(--layer);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  flex: none;
+  padding: 0;
+}
+
+.play:hover {
+  background: var(--blue);
+  border-color: var(--blue);
+}
+
+.play:hover .glyph {
+  fill: #ffffff;
+}
+
+.play-on {
+  background: var(--blue);
+  border-color: var(--blue);
+}
+
+.glyph {
+  fill: var(--text);
+}
+
+.play-on .glyph {
+  fill: #ffffff;
+}
+
+.vname {
+  font-family: var(--mono);
+  font-size: 13px;
+  font-weight: 500;
+  min-width: 200px;
+}
+
+.vstyles {
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--text-3);
+}
+
+.vmeta {
+  margin-inline-start: auto;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.vgender {
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--text-2);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.vnote {
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--text-3);
+}
+
+/* The sub-model a row would play. Mobile only: the desktop reader has the
+   toolbar's picker in view beside the list, the mobile reader does not. */
+.vmodel {
+  display: none;
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--text-2);
+}
+
+/* Two-line rows under 721px, and nothing is dropped. Line one reads like
+   the desktop row does: name, styles, gender at the end. Line two carries
+   the model story, family tag, sub-model and trait tag, because a reader
+   cannot tell Kore-Gemini from Kore-Chirp3HD without it. Owner's line
+   order, 2026-08-16. */
+@media (max-width: 720px) {
+  .vrow {
+    position: relative;
+    flex-wrap: wrap;
+    column-gap: 10px;
+    /* The break below carries the 4px itself; see the note there. */
+    row-gap: 0;
+    padding-block: 10px;
+  }
+  /* Line one, in reading order. The name shrinks before anything wraps,
+     and .vmeta keeps its auto margin, so the gender sits at the line end
+     exactly as on desktop. */
+  .vname {
+    min-width: 0;
+    flex: 0 1 auto;
+  }
+  .vstyles {
+    order: 1;
+    min-width: 0;
+  }
+  .vmeta {
+    order: 2;
+    gap: 10px;
+  }
+  /* The line break itself: an item that claims a whole line, so everything
+     ordered after it starts on line two whatever the widths above. It is
+     also the gap between the two lines, which is why .vrow above sets
+     row-gap to zero: a break line of its own sits between two row gaps and
+     would double the 4px, and a negative margin cannot cancel one of them
+     (a flex line's cross size never goes below zero, measured in Chromium:
+     the row stayed 79px at every negative margin). Four pixels of break
+     between two zero gaps measures the same 4px the row shipped with. */
+  .vrow::after {
+    content: "";
+    order: 3;
+    flex: 0 0 100%;
+    block-size: 4px;
+  }
+  /* Line two starts under the name: the play button's tap area owns the
+     edge beside it. */
+  .vrow .tag-blue,
+  .vrow .tag-purple {
+    order: 4;
+    margin-inline-start: 42px;
+  }
+  .vmodel {
+    display: inline;
+    order: 5;
+  }
+  .vrow .tag-age {
+    order: 6;
+  }
+  /* The button keeps its 32px look; the tap area covers the row's whole
+     start edge, both lines of it. */
+  .play::after {
+    content: "";
+    position: absolute;
+    inset-block: 0;
+    inset-inline-start: 0;
+    inline-size: 56px;
+  }
+  /* A transient note owns line two while it shows, and the metadata comes
+     back when it clears: everything else on that line hides, and .vmeta
+     crosses the break to carry the note. */
+  .vrow-note .tag,
+  .vrow-note .vmodel,
+  .vrow-note .vstyles,
+  .vrow-note .vgender {
+    display: none;
+  }
+  .vrow-note .vmeta {
+    order: 4;
+    margin-inline-start: 42px;
+  }
+}
+
+/* Uppercase through CSS so translated labels never get locale-broken
+   JavaScript uppercasing. */
+.upper {
+  text-transform: uppercase;
+}
+

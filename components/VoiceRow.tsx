@@ -76,7 +76,21 @@ export default function VoiceRow({
           {voice.traits.age === "child" ? t("explorer.traits.child") : voice.traits.age.toUpperCase()}
         </span>
       )}
-      {voice.styles.length > 0 && <span className="vstyles">{voice.styles.join(" · ")}</span>}
+      {voice.styles.length > 0 && (
+        // One isolate per term, separators outside them. Joining the terms
+        // into a single string lets one bidi run swallow the whole list, so
+        // a term in another script could drag its neighbours out of place;
+        // isolated terms each keep their own direction and the middle dots
+        // stay with the line's direction, which is what a list separator
+        // should do.
+        <span className="vstyles">
+          {voice.styles.flatMap((style, i) =>
+            i === 0
+              ? [<bdi key={`${i}-${style}`}>{style}</bdi>]
+              : [" · ", <bdi key={`${i}-${style}`}>{style}</bdi>],
+          )}
+        </span>
+      )}
       <span className="vmeta">
         {state !== null && state.status === "error" && (
           <span className="vnote" role="status">

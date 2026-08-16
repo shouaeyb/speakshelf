@@ -30,8 +30,11 @@ export function writeConsentMode(mode: ConsentMode): void {
 /** The seam for real consent gating. Pass-through today by the owner's
  *  decision; when legal specifies behavior, it lands here and nowhere
  *  else. The visitor's true choice is already stored for that moment. */
-export function applyConsent(_mode: ConsentMode): void {
-  // Intentionally empty.
+export function applyConsent(mode: ConsentMode): void {
+  // Intentionally empty. The parameter is the seam's API and stays typed
+  // and named, so the day gating lands nothing at the call sites changes;
+  // void consumes it until then.
+  void mode;
 }
 
 /** Unused today (no reopen UI); kept so a future settings surface only

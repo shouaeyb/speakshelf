@@ -1,0 +1,637 @@
+:root {
+  --bg: #f4f4f4;
+  --layer: #ffffff;
+  --layer-hover: #e8e8e8;
+  --border: #e0e0e0;
+  --border-strong: #8d8d8d;
+  --text: #161616;
+  --text-2: #525252;
+  --text-3: #6f6f6f;
+  --inv-bg: #161616;
+  --inv-layer: #262626;
+  --inv-border: #393939;
+  --inv-text: #f4f4f4;
+  --inv-text-2: #a8a8a8;
+  --blue: #0f62fe;
+  --blue-hover: #0353e9;
+  --blue-soft: #78a9ff;
+  --tag-blue-bg: #d0e2ff;
+  --tag-blue-text: #0043ce;
+  --tag-purple-bg: #e8daff;
+  --tag-purple-text: #6929c4;
+  --sans: var(--font-sans), "Helvetica Neue", Helvetica, sans-serif;
+  --mono: var(--font-mono), Menlo, monospace;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+/* Readers who ask for less motion get instant scrolls everywhere: native
+   anchors through this rule, app glides through lib/glide.ts, which
+   resolves its "auto" behavior against it. */
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+}
+
+/* Script locales swap the token stacks: their own IBM Plex face leads for
+   the translated text, the Latin faces stay in the stack for voice names,
+   ids and codes. Mono keeps Plex Mono first so codes render as codes. */
+html[lang="ar"] {
+  --sans: var(--font-arabic), var(--font-sans), "Helvetica Neue", Helvetica, sans-serif;
+  --mono: var(--font-mono), var(--font-arabic), Menlo, monospace;
+}
+
+html[lang="ja"] {
+  --sans: var(--font-jp), var(--font-sans), "Helvetica Neue", Helvetica, sans-serif;
+  --mono: var(--font-mono), var(--font-jp), Menlo, monospace;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+  background: var(--bg);
+}
+
+body {
+  font-family: var(--sans);
+  color: var(--text);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+::selection {
+  background: var(--blue);
+  color: #ffffff;
+}
+
+a {
+  color: var(--blue);
+  text-decoration: none;
+}
+
+a:hover {
+  color: var(--blue-hover);
+  text-decoration: underline;
+}
+
+button {
+  font-family: inherit;
+}
+
+:focus-visible {
+  outline: 2px solid var(--blue);
+  outline-offset: 1px;
+}
+
+.shell {
+  max-width: 1312px;
+  margin: 0 auto;
+  padding: 0 24px;
+}
+
+.mono {
+  font-family: var(--mono);
+}
+
+/* Masthead */
+
+.masthead {
+  background: var(--layer);
+  border-bottom: 1px solid var(--border);
+  position: sticky;
+  top: 0;
+  z-index: 20;
+}
+
+.masthead-in {
+  height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.wordmark {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-weight: 600;
+  font-size: 14px;
+  letter-spacing: 0.16px;
+  color: var(--text);
+  white-space: nowrap;
+}
+
+.wordmark:hover {
+  text-decoration: none;
+  color: var(--text);
+}
+
+.wordmark-icon {
+  display: block;
+  flex: none;
+}
+
+/* The bare Speakshelf mark for dark grounds (footer, OG card): the two
+   favicon squares without the tile, since the surface is the tile. The
+   companion square takes the surface's text color via currentColor. */
+.wordmark-sq {
+  width: 14px;
+  height: 14px;
+  position: relative;
+  flex: none;
+}
+
+/* Favicon geometry, scale-free: each square is 45% of the box and the
+   diagonal gap is 10%, matching icon.svg (9px squares, 2px gap, 20px
+   cluster). Keep these ratios when resizing the mark. Deliberately
+   physical left/right: the mark never mirrors in RTL, it must match the
+   favicon in the tab above it. */
+.wordmark-sq::before,
+.wordmark-sq::after {
+  content: "";
+  position: absolute;
+  width: 45%;
+  height: 45%;
+}
+
+.wordmark-sq::before {
+  top: 0;
+  left: 0;
+  background: var(--blue);
+}
+
+.wordmark-sq::after {
+  right: 0;
+  bottom: 0;
+  background: currentColor;
+}
+
+/* Provider tabs: the masthead's nav is global. The active provider gets
+   the Carbon tab underline; pages carry their own section jump links. */
+.mast-nav {
+  display: flex;
+  gap: 4px;
+  height: 100%;
+}
+
+.mast-link {
+  font-size: 13px;
+  color: var(--text-2);
+  white-space: nowrap;
+  display: flex;
+  align-items: center;
+  padding: 0 12px;
+  height: 100%;
+}
+
+.mast-link:hover {
+  color: var(--text);
+  text-decoration: none;
+  background: var(--bg);
+}
+
+.mast-active {
+  color: var(--text);
+  font-weight: 500;
+  box-shadow: inset 0 -2px 0 var(--blue);
+}
+
+.mast-short {
+  display: none;
+}
+
+@media (max-width: 560px) {
+  .mast-long {
+    display: none;
+  }
+  .mast-short {
+    display: inline;
+  }
+  .mast-link {
+    padding: 0 9px;
+    font-size: 12px;
+  }
+}
+
+/* Hero */
+
+.hero {
+  background: var(--inv-bg);
+  color: var(--inv-text);
+  padding: 72px 0 0;
+}
+
+.hero-rule {
+  width: 48px;
+  height: 4px;
+  background: var(--blue);
+  margin-bottom: 24px;
+}
+
+.eyebrow {
+  font-family: var(--mono);
+  font-size: 12px;
+  letter-spacing: 2px;
+  color: var(--blue-soft);
+  margin: 0 0 16px;
+}
+
+.hero h1 {
+  font-weight: 300;
+  font-size: clamp(36px, 5.5vw, 56px);
+  line-height: 1.12;
+  margin: 0 0 20px;
+  max-width: 720px;
+  letter-spacing: -0.5px;
+  text-wrap: balance;
+}
+
+.hero-sub {
+  font-size: 16px;
+  line-height: 1.5;
+  color: #c6c6c6;
+  max-width: 600px;
+  margin: 0 0 28px;
+  text-wrap: pretty;
+}
+
+/* Section jump links inside the hero: local wayfinding, since the
+   masthead only navigates between providers. */
+.hero-jumps {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  margin: 0 0 48px;
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 1px;
+}
+
+.hero-jumps a {
+  color: var(--blue-soft);
+}
+
+.hero-jumps a:hover {
+  color: #a6c8ff;
+}
+
+.stats {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  border-top: 1px solid var(--inv-border);
+}
+
+.stat {
+  padding-block: 24px 32px;
+  padding-inline: 0 24px;
+  border-inline-end: 1px solid var(--inv-border);
+}
+
+.stat:last-child {
+  border-inline-end: none;
+}
+
+.stat + .stat {
+  padding-inline-start: 24px;
+}
+
+.stat-num {
+  font-weight: 300;
+  font-size: clamp(30px, 3.5vw, 42px);
+  line-height: 1;
+  margin-bottom: 8px;
+}
+
+.stat-label {
+  font-family: var(--mono);
+  font-size: 12px;
+  letter-spacing: 1px;
+  color: var(--inv-text-2);
+}
+
+@media (max-width: 720px) {
+  .stats {
+    grid-template-columns: 1fr 1fr;
+  }
+  .stat {
+    border-inline-end: none;
+    border-bottom: 1px solid var(--inv-border);
+    padding-inline-start: 0;
+  }
+  .stat + .stat {
+    padding-inline-start: 0;
+  }
+  .stat:nth-child(odd) {
+    border-inline-end: 1px solid var(--inv-border);
+    padding-inline-end: 24px;
+  }
+  .stat:nth-child(even) {
+    padding-inline-start: 24px;
+  }
+  .stat:nth-last-child(-n + 2) {
+    border-bottom: none;
+  }
+}
+
+/* Entrance animation, one orchestrated load */
+
+@media (prefers-reduced-motion: no-preference) {
+  .rise {
+    opacity: 0;
+    transform: translateY(12px);
+    animation: rise 0.6s cubic-bezier(0.2, 0, 0.38, 0.9) forwards;
+  }
+  .rise-2 {
+    animation-delay: 0.1s;
+  }
+  .rise-3 {
+    animation-delay: 0.2s;
+  }
+  .rise-4 {
+    animation-delay: 0.3s;
+  }
+  @keyframes rise {
+    to {
+      opacity: 1;
+      transform: none;
+    }
+  }
+}
+
+/* Sections */
+
+.sec-title {
+  font-weight: 400;
+  font-size: 28px;
+  margin: 0 0 8px;
+  letter-spacing: -0.25px;
+}
+
+.sec-sub {
+  font-size: 14px;
+  color: var(--text-2);
+  margin: 0 0 32px;
+  max-width: 640px;
+  line-height: 1.5;
+  text-wrap: pretty;
+}
+
+/* Family tiles */
+
+.families {
+  background: var(--layer);
+  border-bottom: 1px solid var(--border);
+  padding: 56px 0 64px;
+}
+
+.fam-grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 1px;
+  background: var(--border);
+  border: 1px solid var(--border);
+}
+
+/* Providers with fewer families than columns would show dead cells at
+   desktop, so the column count follows the tile count (google 10, polly
+   4, kokoro 1 today). Partial last rows at breakpoints stay as they are. */
+.fam-grid-4 {
+  grid-template-columns: repeat(4, 1fr);
+}
+
+.fam-grid-3 {
+  grid-template-columns: repeat(3, 1fr);
+}
+
+.fam-grid-2 {
+  grid-template-columns: repeat(2, 1fr);
+}
+
+.fam-grid-1 {
+  grid-template-columns: 1fr;
+}
+
+@media (max-width: 1080px) {
+  .fam-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+  .fam-grid-2 {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .fam-grid-1 {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 640px) {
+  .fam-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .fam-grid-1 {
+    grid-template-columns: 1fr;
+  }
+}
+
+.fam-tile {
+  background: var(--layer);
+  padding: 16px;
+  min-height: 150px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  color: var(--text);
+}
+
+.fam-tile:hover {
+  background: var(--layer-hover);
+  text-decoration: none;
+  color: var(--text);
+}
+
+.fam-name {
+  font-weight: 600;
+  font-size: 15px;
+}
+
+.fam-desc {
+  font-size: 12.5px;
+  line-height: 1.45;
+  color: var(--text-2);
+  flex: 1;
+  text-wrap: pretty;
+}
+
+.fam-meta {
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--text-3);
+}
+
+/* Tags */
+
+.tag {
+  display: inline-flex;
+  align-items: center;
+  height: 18px;
+  padding: 0 8px;
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.5px;
+  width: fit-content;
+  white-space: nowrap;
+}
+
+.tag-blue {
+  background: var(--tag-blue-bg);
+  color: var(--tag-blue-text);
+}
+
+.tag-purple {
+  background: var(--tag-purple-bg);
+  color: var(--tag-purple-text);
+}
+
+/* Trait tags (CHILD today): quiet gray. Mobile keeps them on the row's
+   second line beside the family tag; only a transient note hides them. */
+.tag-gray {
+  background: var(--border);
+  color: var(--text-2);
+}
+
+/* Umbrella provider cards */
+
+.providers {
+  background: var(--layer);
+  border-bottom: 1px solid var(--border);
+  padding: 56px 0 64px;
+}
+
+.prov-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1px;
+  background: var(--border);
+  border: 1px solid var(--border);
+}
+
+@media (max-width: 900px) {
+  .prov-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.prov-card {
+  background: var(--layer);
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  color: var(--text);
+}
+
+.prov-card:hover {
+  background: var(--layer-hover);
+  text-decoration: none;
+  color: var(--text);
+}
+
+.prov-key {
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 1.5px;
+  color: var(--text-3);
+}
+
+.prov-name {
+  font-weight: 600;
+  font-size: 18px;
+}
+
+.prov-count {
+  font-weight: 300;
+  font-size: 40px;
+  line-height: 1;
+  margin-top: 6px;
+}
+
+.prov-count small {
+  font-size: 14px;
+  font-weight: 400;
+  color: var(--text-2);
+  margin-inline-start: 6px;
+}
+
+.prov-meta {
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--text-3);
+}
+
+.prov-desc {
+  font-size: 13px;
+  line-height: 1.5;
+  color: var(--text-2);
+  flex: 1;
+  text-wrap: pretty;
+  margin-top: 2px;
+}
+
+.prov-go {
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 1px;
+  color: var(--blue);
+  margin-top: 8px;
+}
+
+.prov-card:hover .prov-go {
+  color: var(--blue-hover);
+}
+
+/* Umbrella "why one shelf" band */
+
+.why {
+  padding: 56px 0 64px;
+}
+
+.why-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1px;
+  background: var(--border);
+  border: 1px solid var(--border);
+}
+
+@media (max-width: 800px) {
+  .why-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.why-cell {
+  background: var(--layer);
+  padding: 20px 24px 24px;
+}
+
+.why-cell h3 {
+  font-size: 15px;
+  font-weight: 600;
+  margin: 0 0 8px;
+}
+
+.why-cell p {
+  font-size: 13px;
+  line-height: 1.55;
+  color: var(--text-2);
+  margin: 0;
+  text-wrap: pretty;
+}
+

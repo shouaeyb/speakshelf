@@ -11,7 +11,13 @@ import { localeAlternates, localeUrl } from "@/lib/seo";
 import { PROVIDERS, getProvider } from "@/lib/providers";
 
 // The catalog refreshes itself from the live API once a day. Providers are
-// the blessed set only: an unknown segment 404s at routing.
+// the blessed set only, prerendered by generateStaticParams, and
+// dynamicParams stays false so an unknown one-segment path never renders
+// here and never writes a cached not-found entry (this route is ISR; a
+// rendered notFound() would be persisted per garbage URL, on Cloud Run's
+// tmpfs). The unmatched segment falls through to the [...rest] catch-all
+// beside this route, which renders dynamically, caches nothing, and
+// reaches the branded localized 404.
 export const revalidate = 86400;
 export const dynamicParams = false;
 

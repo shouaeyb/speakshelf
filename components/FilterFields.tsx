@@ -109,9 +109,19 @@ export default function FilterFields({
             title={t("explorer.modelPickTitle", { family: familyLabel(provider, model.family) })}
             onChange={(e) => onChange("model", e.target.value)}
           >
+            {/* Explicit LTR isolation (LRI) around the rendered option text
+                only; first-strong would also work for these Latin labels,
+                but a label opening with digits makes the explicit direction
+                the safer pin.
+                A label like "2.5 Flash" opens with digits, so an RTL select
+                reorders it to "Flash 2.5" in the closed control; the
+                isolate pins it. An option cannot carry a dir attribute
+                reliably across engines, hence the characters. It is applied
+                here and never inside modelLabel, which also feeds the
+                search index and the mobile row's model text. */}
             {model.ids.map((m) => (
               <option key={m} value={m}>
-                {modelLabel(m)}
+                {`\u2066${modelLabel(m)}\u2069`}
               </option>
             ))}
           </select>

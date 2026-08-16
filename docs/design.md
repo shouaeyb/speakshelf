@@ -1,10 +1,10 @@
 # Design system and copy voice
 
-The look is IBM Carbon inspired: engineered, boxy, quiet. The implementation in `app/globals.css` is the source of truth. This page explains the intent so changes stay coherent.
+The look is IBM Carbon inspired: engineered, boxy, quiet. The implementation is the source of truth, and it is a set of sheets, not one file: `app/globals.css` is the manifest, carrying no rules of its own and importing `app/styles/base.css`, `app/styles/explorer.css` and `app/styles/site.css` in that order. Import order is the cascade, so a rule's sheet and its position in it both matter. This page explains the intent so changes stay coherent.
 
 ## Tokens
 
-All colors, spacing and type run through the CSS variables at the top of `globals.css`. The palette, by role:
+All colors, spacing and type run through the CSS variables at the top of `app/styles/base.css`, the first sheet the manifest imports. The palette, by role:
 
 | Role | Value |
 | --- | --- |
@@ -56,7 +56,7 @@ New surfaces get designed before they get built: mock the page, screenshot it at
 Not every agent has Claude Design tools, and that must never block work:
 
 - If you have access (the mcp claude-design tools are in your toolset): mock there, keep the artifact roughly in sync when you change the app's look, and note the sync state here.
-- If you do not: design directly against `globals.css` in a branch of the real app, and verify with headless browser screenshots (the Playwright pattern in `AGENTS.md`). The repo is always the source of truth either way.
+- If you do not: design directly against the stylesheet set in a branch of the real app (the sheet your rules belong in, reached from the `app/globals.css` manifest), and verify with headless browser screenshots (the Playwright pattern in `AGENTS.md`). The repo is always the source of truth either way.
 
 ## Verification bar for UI work
 
