@@ -189,7 +189,8 @@ export default async function ProviderPage({ params }: { params: Promise<Params>
               })}
             </p>
             <p>
-              {t.rich("attribution.body", {
+              {t("attribution.independenceNamed", { name: meta.label })}{" "}
+              {t.rich("attribution.source", {
                 link: (chunks) => <a href="https://aitts.theproductivepixel.com">{chunks}</a>,
               })}
             </p>

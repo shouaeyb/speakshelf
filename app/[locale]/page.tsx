@@ -176,7 +176,8 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
               })}
             </p>
             <p>
-              {t.rich("attribution.body", {
+              {t("attribution.independence")}{" "}
+              {t.rich("attribution.source", {
                 link: (chunks) => <a href="https://aitts.theproductivepixel.com">{chunks}</a>,
               })}
             </p>

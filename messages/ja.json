@@ -35,7 +35,9 @@
     "aboutBody": "Speakshelf はテキスト読み上げ音声のリファレンスカタログです。今日は {providers, plural, other {# プロバイダー}}の {voices, number} 音声を {languages, plural, other {# 言語}}で収め、どれも再生できるサンプル付きです。音声はプロバイダー自身の分け方どおり、モデルファミリーとエンジンでまとめてあるので、聴いたものがそのまま導入するものに対応します。"
   },
   "attribution": {
-    "body": "Speakshelf は独立したサイトで、Google、Amazon、Kokoro プロジェクトとは無関係です。音声データとオーディオは、Google、Amazon、Azure ほかの音声プロバイダーをひとつのエンドポイントに束ねるサービス <link>AI TTS Microservice</link> から来ています。サンプルはオンデマンドで配信され、聴くのは無料です。"
+    "independence": "Speakshelf は独立したサイトで、掲載しているどのプロバイダーとも無関係です。",
+    "independenceNamed": "Speakshelf は独立したサイトで、{name} とは無関係です。",
+    "source": "音声データとオーディオは、Google、Amazon、Azure ほかの音声プロバイダーをひとつのエンドポイントに束ねるサービス <link>AI TTS Microservice</link> から来ています。サンプルはオンデマンドで配信され、聴くのは無料です。"
   },
   "providers": {
     "google": {
@@ -201,7 +203,7 @@
   },
   "footer": {
     "note": "カタログ更新 {date} · {providers, plural, other {# プロバイダー}}の {voices, number} 音声、{languages, plural, other {# 言語}}",
-    "served": "サンプル配信は <link>AI TTS Microservice</link> · 独立サイト、Google・Amazon・Kokoro プロジェクトとは無関係",
+    "served": "サンプル配信は <link>AI TTS Microservice</link> · 独立サイト、掲載するどのプロバイダーとも無関係",
     "contact": "連絡先",
     "languageLabel": "言語"
   },

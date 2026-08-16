@@ -35,7 +35,9 @@
     "aboutBody": "Speakshelf فهرس مرجعي لأصوات تحويل النص إلى كلام. يضم اليوم {voices, plural, one {صوتًا واحدًا} two {صوتين} few {# أصوات} many {# صوتًا} other {# صوت}} من {providers, plural, one {مزوّد واحد} two {مزوّدين} few {# مزوّدين} many {# مزوّدًا} other {# مزوّد}} في {languages, plural, one {لغة واحدة} two {لغتين} few {# لغات} many {# لغةً} other {# لغة}}، ولكل صوت عيّنة قابلة للتشغيل. الأصوات مجموعة كما يجمعها مزوّدوها، في عائلات نماذج ومحرّكات، ليقابل ما تسمعه ما ستنشره فعلًا."
   },
   "attribution": {
-    "body": "Speakshelf مستقل وغير تابع لـ Google أو Amazon أو مشروع Kokoro. بيانات الأصوات والصوتيات تأتي من <link>AI TTS Microservice</link>، وهي خدمة توحّد Google وAmazon وAzure ومزوّدي كلام آخرين خلف نقطة وصول واحدة. تُبثّ العيّنات عند الطلب، والاستماع مجاني."
+    "independence": "Speakshelf مستقل وغير تابع لأي مزوّد يضمّه الفهرس.",
+    "independenceNamed": "Speakshelf مستقل وغير تابع لـ {name}.",
+    "source": "بيانات الأصوات والصوتيات تأتي من <link>AI TTS Microservice</link>، وهي خدمة توحّد Google وAmazon وAzure ومزوّدي كلام آخرين خلف نقطة وصول واحدة. تُبثّ العيّنات عند الطلب، والاستماع مجاني."
   },
   "providers": {
     "google": {
@@ -201,7 +203,7 @@
   },
   "footer": {
     "note": "حُدِّث الفهرس {date} · {voices, plural, one {صوت واحد} two {صوتان} few {# أصوات} many {# صوتًا} other {# صوت}} من {providers, plural, one {مزوّد واحد} two {مزوّدين} few {# مزوّدين} many {# مزوّدًا} other {# مزوّد}} في {languages, plural, one {لغة واحدة} two {لغتين} few {# لغات} many {# لغةً} other {# لغة}}",
-    "served": "العيّنات تقدَّم من <link>AI TTS Microservice</link> · مستقل، غير تابع لـ Google أو Amazon أو مشروع Kokoro",
+    "served": "العيّنات تُقدَّم من <link>AI TTS Microservice</link> · مستقل، غير تابع لأي مزوّد يضمّه الفهرس",
     "contact": "التواصل",
     "languageLabel": "اللغة"
   },

@@ -35,7 +35,9 @@
     "aboutBody": "O Speakshelf é um catálogo de referência de vozes de texto para fala. Hoje reúne {voices, number} vozes de {providers, plural, one {# provedor} other {# provedores}} em {languages, plural, one {# idioma} other {# idiomas}}, cada uma com uma amostra para ouvir. As vozes são agrupadas como seus provedores as agrupam, em famílias de modelos e motores, para que o que você ouve corresponda ao que implantaria."
   },
   "attribution": {
-    "body": "O Speakshelf é independente e não é afiliado ao Google, à Amazon nem ao projeto Kokoro. Os dados de vozes e o áudio vêm do <link>AI TTS Microservice</link>, um serviço que unifica Google, Amazon, Azure e outros provedores de fala atrás de um único ponto de acesso. As amostras são geradas sob demanda, então ouvir é grátis."
+    "independence": "O Speakshelf é independente e não é afiliado a nenhum dos provedores que cataloga.",
+    "independenceNamed": "O Speakshelf é independente e não é afiliado a {name}.",
+    "source": "Os dados de vozes e o áudio vêm do <link>AI TTS Microservice</link>, um serviço que unifica Google, Amazon, Azure e outros provedores de fala atrás de um único ponto de acesso. As amostras são geradas sob demanda, então ouvir é grátis."
   },
   "providers": {
     "google": {
@@ -201,7 +203,7 @@
   },
   "footer": {
     "note": "Catálogo atualizado em {date} · {voices, number} vozes de {providers, plural, one {# provedor} other {# provedores}} em {languages, plural, one {# idioma} other {# idiomas}}",
-    "served": "Amostras servidas pelo <link>AI TTS Microservice</link> · Independente, sem afiliação com Google, Amazon ou o projeto Kokoro",
+    "served": "Amostras servidas pelo <link>AI TTS Microservice</link> · Independente, sem afiliação com nenhum provedor catalogado",
     "contact": "Contato",
     "languageLabel": "Idioma"
   },

@@ -35,7 +35,9 @@
     "aboutBody": "Speakshelf টেক্সট টু স্পিচ কণ্ঠের একটি রেফারেন্স ক্যাটালগ। আজ এতে {providers, plural, one {#টি প্রোভাইডারের} other {#টি প্রোভাইডারের}} {voices, number} কণ্ঠ আছে {languages, plural, one {#টি ভাষায়} other {#টি ভাষায়}}, প্রতিটির সঙ্গে শোনার মতো নমুনা। কণ্ঠগুলো প্রোভাইডারদের নিজস্ব নিয়মেই সাজানো, অর্থাৎ মডেল পরিবার ও ইঞ্জিনে, যাতে আপনি যা শোনেন তা-ই আপনার ডিপ্লয়ের সঙ্গে মেলে।"
   },
   "attribution": {
-    "body": "Speakshelf স্বাধীন এবং Google, Amazon বা Kokoro প্রকল্পের সঙ্গে সম্পর্কিত নয়। কণ্ঠের তথ্য ও অডিও আসে <link>AI TTS Microservice</link> থেকে, যে সেবাটি Google, Amazon, Azure ও অন্যান্য স্পিচ প্রোভাইডারকে একটিমাত্র প্রবেশপথের পেছনে এক করে। নমুনা চাহিদামতো তৈরি হয়, তাই শোনা বিনামূল্যে।"
+    "independence": "Speakshelf স্বাধীন এবং এখানে তালিকাভুক্ত কোনো প্রোভাইডারের সঙ্গে সম্পর্কিত নয়।",
+    "independenceNamed": "Speakshelf স্বাধীন এবং {name}-এর সঙ্গে সম্পর্কিত নয়।",
+    "source": "কণ্ঠের তথ্য ও অডিও আসে <link>AI TTS Microservice</link> থেকে, যে সেবাটি Google, Amazon, Azure ও অন্যান্য স্পিচ প্রোভাইডারকে একটিমাত্র প্রবেশপথের পেছনে এক করে। নমুনা চাহিদামতো তৈরি হয়, তাই শোনা বিনামূল্যে।"
   },
   "providers": {
     "google": {
@@ -201,7 +203,7 @@
   },
   "footer": {
     "note": "ক্যাটালগ হালনাগাদ {date} · {providers, plural, one {#টি প্রোভাইডারের} other {#টি প্রোভাইডারের}} {voices, number} কণ্ঠ {languages, plural, one {#টি ভাষায়} other {#টি ভাষায়}}",
-    "served": "নমুনা পরিবেশন করে <link>AI TTS Microservice</link> · স্বাধীন, Google, Amazon বা Kokoro প্রকল্পের সঙ্গে সম্পর্কহীন",
+    "served": "নমুনা পরিবেশন করে <link>AI TTS Microservice</link> · স্বাধীন, এখানে তালিকাভুক্ত কোনো প্রোভাইডারের সঙ্গে সম্পর্কহীন",
     "contact": "যোগাযোগ",
     "languageLabel": "ভাষা"
   },

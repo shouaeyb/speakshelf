@@ -35,7 +35,9 @@
     "aboutBody": "Speakshelf ist ein Referenzkatalog für Text-to-Speech-Stimmen. Heute führt er {voices, number} Stimmen von {providers, plural, one {# Anbieter} other {# Anbietern}} in {languages, plural, one {# Sprache} other {# Sprachen}}, jede mit einer abspielbaren Hörprobe. Stimmen sind so gruppiert, wie ihre Anbieter sie gruppieren, in Modellfamilien und Engines, damit das Gehörte dem entspricht, was man einsetzen würde."
   },
   "attribution": {
-    "body": "Speakshelf ist unabhängig und nicht mit Google, Amazon oder dem Kokoro-Projekt verbunden. Stimmdaten und Audio kommen vom <link>AI TTS Microservice</link>, einem Dienst, der Google, Amazon, Azure und weitere Sprachanbieter hinter einem Endpunkt vereint. Hörproben streamen auf Abruf, das Anhören ist kostenlos."
+    "independence": "Speakshelf ist unabhängig und mit keinem der hier katalogisierten Anbieter verbunden.",
+    "independenceNamed": "Speakshelf ist unabhängig und nicht mit {name} verbunden.",
+    "source": "Stimmdaten und Audio kommen vom <link>AI TTS Microservice</link>, einem Dienst, der Google, Amazon, Azure und weitere Sprachanbieter hinter einem Endpunkt vereint. Hörproben streamen auf Abruf, das Anhören ist kostenlos."
   },
   "providers": {
     "google": {
@@ -201,7 +203,7 @@
   },
   "footer": {
     "note": "Katalog aktualisiert {date} · {voices, number} Stimmen von {providers, plural, one {# Anbieter} other {# Anbietern}} in {languages, plural, one {# Sprache} other {# Sprachen}}",
-    "served": "Hörproben vom <link>AI TTS Microservice</link> · Unabhängig, nicht verbunden mit Google, Amazon oder dem Kokoro-Projekt",
+    "served": "Hörproben vom <link>AI TTS Microservice</link> · Unabhängig, mit keinem der katalogisierten Anbieter verbunden",
     "contact": "Kontakt",
     "languageLabel": "Sprache"
   },

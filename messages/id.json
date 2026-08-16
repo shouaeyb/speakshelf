@@ -35,7 +35,9 @@
     "aboutBody": "Speakshelf adalah katalog rujukan untuk suara text to speech. Hari ini memuat {voices, number} suara dari {providers, plural, other {# penyedia}} dalam {languages, plural, other {# bahasa}}, masing-masing dengan sampel yang bisa diputar. Suara dikelompokkan sebagaimana penyedianya mengelompokkan, dalam keluarga model dan engine, supaya yang Anda dengar sesuai dengan yang akan Anda pakai."
   },
   "attribution": {
-    "body": "Speakshelf independen dan tidak berafiliasi dengan Google, Amazon, atau proyek Kokoro. Data suara dan audio berasal dari <link>AI TTS Microservice</link>, layanan yang menyatukan Google, Amazon, Azure, dan penyedia suara lain di balik satu endpoint. Sampel dialirkan sesuai permintaan, mendengarkan gratis."
+    "independence": "Speakshelf independen dan tidak berafiliasi dengan penyedia mana pun yang ada di katalog ini.",
+    "independenceNamed": "Speakshelf independen dan tidak berafiliasi dengan {name}.",
+    "source": "Data suara dan audio berasal dari <link>AI TTS Microservice</link>, layanan yang menyatukan Google, Amazon, Azure, dan penyedia suara lain di balik satu endpoint. Sampel dialirkan sesuai permintaan, mendengarkan gratis."
   },
   "providers": {
     "google": {
@@ -201,7 +203,7 @@
   },
   "footer": {
     "note": "Katalog diperbarui {date} · {voices, number} suara dari {providers, plural, other {# penyedia}} dalam {languages, plural, other {# bahasa}}",
-    "served": "Sampel disajikan oleh <link>AI TTS Microservice</link> · Independen, tidak berafiliasi dengan Google, Amazon, atau proyek Kokoro",
+    "served": "Sampel disajikan oleh <link>AI TTS Microservice</link> · Independen, tidak berafiliasi dengan penyedia mana pun dalam katalog ini",
     "contact": "Kontak",
     "languageLabel": "Bahasa"
   },

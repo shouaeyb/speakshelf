@@ -35,7 +35,9 @@
     "aboutBody": "Speakshelf is a reference catalog for text to speech voices. Today it carries {voices, number} voices from {providers, plural, one {# provider} other {# providers}} in {languages, plural, one {# language} other {# languages}}, every one with a sample you can play. Voices are grouped the way their providers group them, into model families and engines, so what you hear maps onto what you would deploy."
   },
   "attribution": {
-    "body": "Speakshelf is independent and not affiliated with Google, Amazon or the Kokoro project. Voice data and audio come from the <link>AI TTS Microservice</link>, a service that unifies Google, Amazon, Azure and other speech providers behind a single endpoint. Samples stream on demand, so listening is free."
+    "independence": "Speakshelf is independent and not affiliated with any provider it catalogs.",
+    "independenceNamed": "Speakshelf is independent and not affiliated with {name}.",
+    "source": "Voice data and audio come from the <link>AI TTS Microservice</link>, a service that unifies Google, Amazon, Azure and other speech providers behind a single endpoint. Samples stream on demand, so listening is free."
   },
   "providers": {
     "google": {
@@ -201,7 +203,7 @@
   },
   "footer": {
     "note": "Catalog updated {date} · {voices, number} voices from {providers, plural, one {# provider} other {# providers}} in {languages, plural, one {# language} other {# languages}}",
-    "served": "Samples served by the <link>AI TTS Microservice</link> · Independent, not affiliated with Google, Amazon or the Kokoro project",
+    "served": "Samples served by the <link>AI TTS Microservice</link> · Independent, not affiliated with any provider it catalogs",
     "contact": "Contact",
     "languageLabel": "Language"
   },

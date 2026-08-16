@@ -37,7 +37,7 @@ export async function GET() {
 
   const body = `# Speakshelf
 
-> A reference catalog of text to speech voices from ${nameList}: ${fmt(stats.voices)} voices in ${stats.languages} languages, with ${fmt(stats.samples)} playable audio samples. Data and audio come from the AI TTS Microservice. Independent site, not affiliated with Google, Amazon or the Kokoro project.
+> A reference catalog of text to speech voices from ${nameList}: ${fmt(stats.voices)} voices in ${stats.languages} languages, with ${fmt(stats.samples)} playable audio samples. Data and audio come from the AI TTS Microservice. Independent site, not affiliated with any provider it catalogs.
 
 Voice ids follow the pattern {provider}:{language}-{Family}-{Name}, for example google:en-US-Chirp3HD-Charon or polly:en-US-Neural-Joanna. Google's Gemini voices can each be rendered by several sub-models, one sample per sub-model.
 

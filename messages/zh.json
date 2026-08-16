@@ -35,7 +35,9 @@
     "aboutBody": "Speakshelf 是文字转语音语音的参考目录。目前收录来自 {providers, plural, other {# 家提供商}}的 {voices, number} 个语音，覆盖 {languages, plural, other {# 种语言}}，每个语音都有可播放的示例。语音按提供商自己的方式分组，即模型家族与引擎，让你听到的与将要部署的一一对应。"
   },
   "attribution": {
-    "body": "Speakshelf 是独立网站，与 Google、Amazon 或 Kokoro 项目均无关联。语音数据与音频来自 <link>AI TTS Microservice</link>，该服务将 Google、Amazon、Azure 及其他语音提供商统一到单一接入点之后。示例按需生成，因此试听免费。"
+    "independence": "Speakshelf 是独立网站，与所收录的任何提供商均无关联。",
+    "independenceNamed": "Speakshelf 是独立网站，与 {name} 无关联。",
+    "source": "语音数据与音频来自 <link>AI TTS Microservice</link>，该服务将 Google、Amazon、Azure 及其他语音提供商统一到单一接入点之后。示例按需生成，因此试听免费。"
   },
   "providers": {
     "google": {
@@ -201,7 +203,7 @@
   },
   "footer": {
     "note": "目录更新于 {date} · 来自 {providers, plural, other {# 家提供商}}的 {voices, number} 个语音，覆盖 {languages, plural, other {# 种语言}}",
-    "served": "示例由 <link>AI TTS Microservice</link> 提供 · 独立网站，与 Google、Amazon 或 Kokoro 项目均无关联",
+    "served": "示例由 <link>AI TTS Microservice</link> 提供 · 独立网站，与所收录的任何提供商均无关联",
     "contact": "联系",
     "languageLabel": "语言"
   },

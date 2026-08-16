@@ -35,7 +35,9 @@
     "aboutBody": "Speakshelf ni katalogi ya marejeleo ya sauti za text to speech. Leo ina sauti {voices, number} kutoka kwa {providers, plural, one {mtoa huduma #} other {watoa huduma #}} katika {languages, plural, one {lugha #} other {lugha #}}, kila moja ikiwa na sampuli ya kucheza. Sauti zimepangwa jinsi watoa huduma wao wanavyozipanga, katika familia za modeli na injini, ili unachosikia kilingane na utakachotumia."
   },
   "attribution": {
-    "body": "Speakshelf iko huru na haihusiani na Google, Amazon wala mradi wa Kokoro. Data ya sauti na sauti zenyewe hutoka kwa <link>AI TTS Microservice</link>, huduma inayounganisha Google, Amazon, Azure na watoa huduma wengine wa sauti nyuma ya kituo kimoja. Sampuli hutiririshwa zinapohitajika, kusikiliza ni bure."
+    "independence": "Speakshelf iko huru na haihusiani na mtoa huduma yeyote aliyeorodheshwa hapa.",
+    "independenceNamed": "Speakshelf iko huru na haihusiani na {name}.",
+    "source": "Data ya sauti na sauti zenyewe hutoka kwa <link>AI TTS Microservice</link>, huduma inayounganisha Google, Amazon, Azure na watoa huduma wengine wa sauti nyuma ya kituo kimoja. Sampuli hutiririshwa zinapohitajika, kusikiliza ni bure."
   },
   "providers": {
     "google": {
@@ -201,7 +203,7 @@
   },
   "footer": {
     "note": "Katalogi imesasishwa {date} · Sauti {voices, number} kutoka kwa {providers, plural, one {mtoa huduma #} other {watoa huduma #}} katika {languages, plural, one {lugha #} other {lugha #}}",
-    "served": "Sampuli zinahudumiwa na <link>AI TTS Microservice</link> · Huru, haihusiani na Google, Amazon wala mradi wa Kokoro",
+    "served": "Sampuli zinahudumiwa na <link>AI TTS Microservice</link> · Huru, haihusiani na mtoa huduma yeyote aliyeorodheshwa hapa",
     "contact": "Mawasiliano",
     "languageLabel": "Lugha"
   },
