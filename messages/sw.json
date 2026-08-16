@@ -91,7 +91,7 @@
     "google": {
       "Gemini": {
         "blurb": "Usemi asilia kutoka Gemini. Kila sauti inaweza kutolewa na kila modeli ndogo, na uwasilishaji hufuata maelekezo ya mtindo yaliyoandikwa.",
-        "note": "Sampuli huonyesha kila sauti kwa uaminifu, pamoja na tabia zake. Baadhi ya sauti za Gemini zinaweza kutoa lafudhi tofauti na lebo ya eneo lake, sauti ya en-US ikisikika en-IN kwa mfano. Katika maelekezo yako ya kuzalisha, agizo rahisi kama \"say this in an American accent\" kwa kawaida huirekebisha."
+        "note": "Sampuli huonyesha kila sauti kwa uaminifu, pamoja na tabia zake. Baadhi ya sauti za Gemini zinaweza kutoa lafudhi tofauti na lebo ya eneo lake, sauti ya en-US ikisikika en-IN kwa mfano. Katika maelekezo yako ya kuzalisha, agizo rahisi kama \"sema hivi kwa lafudhi ya Kimarekani\" kwa kawaida huirekebisha."
       },
       "Chirp3HD": {
         "blurb": "Kizazi cha sasa cha HD, kilichorekebishwa kwa mazungumzo ya kawaida."

@@ -91,7 +91,7 @@
     "google": {
       "Gemini": {
         "blurb": "Suara asli dari Gemini. Setiap suara bisa dirender oleh setiap sub-model, dan pembawaannya mengikuti prompt gaya tertulis.",
-        "note": "Sampel menampilkan setiap suara apa adanya, termasuk keunikannya. Beberapa suara Gemini bisa merender aksen yang berbeda dari label lokalnya, suara en-US terdengar en-IN misalnya. Di prompt generasi Anda sendiri, instruksi sederhana seperti \"say this in an American accent\" biasanya memperbaikinya."
+        "note": "Sampel menampilkan setiap suara apa adanya, termasuk keunikannya. Beberapa suara Gemini bisa merender aksen yang berbeda dari label lokalnya, suara en-US terdengar en-IN misalnya. Di prompt generasi Anda sendiri, instruksi sederhana seperti \"ucapkan ini dengan aksen Amerika\" biasanya memperbaikinya."
       },
       "Chirp3HD": {
         "blurb": "Generasi HD terkini, disetel untuk percakapan alami."

@@ -91,7 +91,7 @@
     "google": {
       "Gemini": {
         "blurb": "Native Sprachausgabe von Gemini. Jede Stimme kann von jedem Untermodell gerendert werden, und der Vortrag folgt einem geschriebenen Stil-Prompt.",
-        "note": "Hörproben zeigen jede Stimme ehrlich, Eigenheiten eingeschlossen. Manche Gemini-Stimmen rendern einen anderen Akzent als ihr Sprachcode angibt, eine en-US-Stimme klingt etwa nach en-IN. Im eigenen Generierungs-Prompt behebt das meist eine schlichte Anweisung wie \"say this in an American accent\"."
+        "note": "Hörproben zeigen jede Stimme ehrlich, Eigenheiten eingeschlossen. Manche Gemini-Stimmen rendern einen anderen Akzent als ihr Sprachcode angibt, eine en-US-Stimme klingt etwa nach en-IN. Im eigenen Generierungs-Prompt behebt das meist eine schlichte Anweisung wie \"sag das mit amerikanischem Akzent\"."
       },
       "Chirp3HD": {
         "blurb": "Die aktuelle HD-Generation, abgestimmt auf natürliche Konversation."

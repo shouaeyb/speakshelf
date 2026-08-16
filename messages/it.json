@@ -91,7 +91,7 @@
     "google": {
       "Gemini": {
         "blurb": "Sintesi vocale nativa di Gemini. Ogni voce può essere resa da ogni sottomodello, e la resa segue un prompt di stile scritto.",
-        "note": "I campioni mostrano ogni voce onestamente, stranezze comprese. Alcune voci Gemini possono rendere un accento diverso dal loro codice, una voce en-US che suona en-IN per esempio. Nel tuo prompt di generazione, un'istruzione semplice come \"say this in an American accent\" di solito corregge."
+        "note": "I campioni mostrano ogni voce onestamente, stranezze comprese. Alcune voci Gemini possono rendere un accento diverso dal loro codice, una voce en-US che suona en-IN per esempio. Nel tuo prompt di generazione, un'istruzione semplice come \"dillo con accento americano\" di solito corregge."
       },
       "Chirp3HD": {
         "blurb": "La generazione HD attuale, calibrata sulla conversazione naturale."
