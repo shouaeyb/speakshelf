@@ -22,7 +22,7 @@
     "browse": "VINJARI →",
     "whyTitle": "Kwa nini rafu moja",
     "whySub": "Katalogi hutofautiana kwa zaidi ya ukubwa. Kuziweka bega kwa bega huonyesha mapengo, miingiliano na tabia ya kila moja.",
-    "why1Title": "Ufikiaji unajumlika",
+    "why1Title": "Wigo unaongezeka",
     "why1GapAndVariants": "Amazon Polly inaleta {gap}, ambayo Google Cloud haina kabisa, pamoja na lahaja za kieneo kama {v1} na {v2}. Rafu moja huonyesha kile kila mtoa huduma alicho nacho na wengine wanakosa.",
     "why1GapOnly": "Amazon Polly inaleta {gap}, ambayo Google Cloud haina kabisa. Rafu moja huonyesha kile kila mtoa huduma alicho nacho na wengine wanakosa.",
     "why1VariantsOnly": "Amazon Polly inaongeza lahaja za kieneo kama {v1} na {v2}. Rafu moja huonyesha kile kila mtoa huduma alicho nacho na wengine wanakosa.",
@@ -37,7 +37,7 @@
   "attribution": {
     "independence": "Speakshelf iko huru na haihusiani na mtoa huduma yeyote aliyeorodheshwa hapa.",
     "independenceNamed": "Speakshelf iko huru na haihusiani na {name}.",
-    "source": "Data ya sauti na sauti zenyewe hutoka kwa <link>AI TTS Microservice</link>, huduma inayounganisha Google, Amazon, Azure na watoa huduma wengine wa sauti nyuma ya kituo kimoja. Sampuli hutiririshwa zinapohitajika, kusikiliza ni bure."
+    "source": "Data ya sauti na rekodi za sauti hutoka kwa <link>AI TTS Microservice</link>, huduma inayounganisha Google, Amazon, Azure na watoa huduma wengine wa sauti nyuma ya kituo kimoja. Sampuli hutiririshwa zinapohitajika, kusikiliza ni bure."
   },
   "providers": {
     "google": {
@@ -46,9 +46,9 @@
       "heroSub": "Cheza sampuli ya kila sauti katika katalogi ya Google Cloud. Chuja kwa familia ya modeli, lugha na jinsia. Bila akaunti, bila usanidi, sauti tu.",
       "familyWord": "{count, plural, one {familia ya modeli} other {familia za modeli}}",
       "jump": "MODELI",
-      "familiesIntro": "Google inaendelea kutoa usanifu mpya wa sauti na kila kizazi bado kinatumika. Katalogi inaanzia sauti fupi za kiparametriki hadi modeli unazoweza kuelekeza kwa sentensi moja.",
+      "familiesIntro": "Google inaendelea kutoa usanifu mpya wa sauti na kila kizazi bado kinatumika. Katalogi inaanzia sauti za kiparametriki zenye muundo mwepesi hadi modeli unazoweza kuelekeza kwa sentensi moja.",
       "card": "Rafu yenye kina zaidi hapa: familia za modeli kuanzia Standard na WaveNet hadi Chirp 3 na sauti za Gemini zinazofuata maelekezo ya mtindo yaliyoandikwa.",
-      "about": "Google Cloud inaendesha mojawapo ya katalogi kubwa zaidi za text to speech kati ya watoa huduma wa cloud. Inajumuisha familia za modeli {families, number}, kuanzia sauti za WaveNet zilizoifanya sauti ya neva kuwa ya kawaida hadi sauti za Gemini zinazobadilisha uwasilishaji unapoeleza sauti unayotaka. Gemini kwa kweli ni modeli {models, number} ndani ya moja: kila sauti ya Gemini inaweza kutolewa na modeli ndogo yoyote yake, na kila toleo lina sampuli yake hapa. Kila sauti nyingine katika katalogi pia ina sampuli.",
+      "about": "Google Cloud inaendesha mojawapo ya katalogi kubwa zaidi za text to speech kati ya watoa huduma wa cloud. Inajumuisha familia za modeli {families, number}, kuanzia sauti za WaveNet zilizoifanya sauti ya neva kuwa ya kawaida hadi sauti za Gemini zinazobadilisha uwasilishaji unapoeleza toni unayotaka. Gemini kwa kweli ni modeli {models, number} ndani ya moja: kila sauti ya Gemini inaweza kutolewa na modeli ndogo yoyote yake, na kila toleo lina sampuli yake hapa. Kila sauti nyingine katika katalogi pia ina sampuli.",
       "unknownFamily": "Nyongeza mpya katika katalogi ya Google."
     },
     "polly": {
@@ -59,18 +59,18 @@
       "jump": "INJINI",
       "familiesIntro": "Polly hupanga sauti zake kwa injini. Katalogi inaanzia sauti za standard hadi injini ya generative, ikiwa na ngazi ya long-form iliyoundwa kwa usikilizaji mrefu.",
       "card": "Huduma ya text to speech ya AWS: injini za standard, neural, generative na long-form.",
-      "about": "Amazon Polly ni huduma ya text to speech kwenye AWS, inayogeuza maandishi kuwa sauti halisi. Sauti zake {voices, number} hapa zinajumuisha injini {families, number}: standard na neural, injini ya generative iliyojengwa kwa mbinu za AI ya kizazi, na sauti za long-form zilizoundwa kwa maudhui marefu kama makala na nyenzo za mafunzo. Kila sauti ina sampuli ya kucheza.",
+      "about": "Amazon Polly ni huduma ya text to speech kwenye AWS, inayogeuza maandishi kuwa usemi kama wa binadamu. Sauti zake {voices, number} hapa zinajumuisha injini {families, number}: standard na neural, injini ya generative iliyojengwa kwa mbinu za AI zalishi, na sauti za long-form zilizoundwa kwa maudhui marefu kama makala na nyenzo za mafunzo. Kila sauti ina sampuli ya kucheza.",
       "unknownFamily": "Nyongeza mpya katika katalogi ya Amazon Polly."
     },
     "kokoro": {
       "eyebrow": "KOKORO TEXT TO SPEECH",
       "heroTitle": "Kila sauti ya Kokoro, ukurasa mmoja.",
-      "heroSub": "Cheza sampuli ya kila sauti ya modeli huria ya Kokoro. Chuja kwa lugha na jinsia. Bila akaunti, bila usanidi, sauti tu.",
+      "heroSub": "Cheza sampuli ya kila sauti ya modeli ya uzani wazi ya Kokoro. Chuja kwa lugha na jinsia. Bila akaunti, bila usanidi, sauti tu.",
       "familyWord": "{count, plural, one {familia ya modeli} other {familia za modeli}}",
       "jump": "MODELI",
       "familiesIntro": "Kokoro ni modeli moja badala ya kundi la injini, hivyo katalogi yake yote iko katika familia moja.",
-      "card": "Modeli ya uzito huria, parameta milioni 82 chini ya leseni ya Apache 2.0.",
-      "about": "Kokoro ni modeli ya text to speech ya uzito huria: parameta milioni 82, iliyotolewa chini ya leseni ya Apache 2.0. AI TTS Microservice inaihudumia kando ya katalogi za cloud, hivyo sauti zake {voices, number} katika lugha {languages, number} hucheza hapa kama rafu nyingine yoyote. Kila sauti ina sampuli ya kucheza.",
+      "card": "Modeli ya uzani wazi, parameta milioni 82 chini ya leseni ya Apache 2.0.",
+      "about": "Kokoro ni modeli ya text to speech ya uzani wazi: parameta milioni 82, iliyotolewa chini ya leseni ya Apache 2.0. AI TTS Microservice inaihudumia kando ya katalogi za cloud, hivyo sauti zake {voices, number} katika lugha {languages, number} hucheza hapa kama kwenye rafu nyingine yoyote. Kila sauti ina sampuli ya kucheza.",
       "unknownFamily": "Nyongeza mpya katika katalogi ya Kokoro."
     }
   },
@@ -90,8 +90,8 @@
   "families": {
     "google": {
       "Gemini": {
-        "blurb": "Sauti asilia kutoka Gemini. Kila sauti inaweza kutolewa na kila modeli ndogo, na uwasilishaji hufuata maelekezo ya mtindo yaliyoandikwa.",
-        "note": "Sampuli huonyesha kila sauti kwa uaminifu, pamoja na tabia zake. Baadhi ya sauti za Gemini zinaweza kutoa lafudhi tofauti na lebo ya eneo lake, sauti ya en-US ikisikika en-IN kwa mfano. Katika maelekezo yako ya kuzalisha, agizo rahisi kama \"say this in an American accent\" kwa kawaida hulirekebisha."
+        "blurb": "Usemi asilia kutoka Gemini. Kila sauti inaweza kutolewa na kila modeli ndogo, na uwasilishaji hufuata maelekezo ya mtindo yaliyoandikwa.",
+        "note": "Sampuli huonyesha kila sauti kwa uaminifu, pamoja na tabia zake. Baadhi ya sauti za Gemini zinaweza kutoa lafudhi tofauti na lebo ya eneo lake, sauti ya en-US ikisikika en-IN kwa mfano. Katika maelekezo yako ya kuzalisha, agizo rahisi kama \"say this in an American accent\" kwa kawaida huirekebisha."
       },
       "Chirp3HD": {
         "blurb": "Kizazi cha sasa cha HD, kilichorekebishwa kwa mazungumzo ya kawaida."
@@ -129,7 +129,7 @@
         "blurb": "Injini ya standard, sauti za msingi za Polly zenye ufikiaji mpana wa lugha."
       },
       "Generative": {
-        "blurb": "Injini mpya zaidi ya Polly, iliyojengwa juu ya AI ya kizazi kwa sauti ya mazungumzo."
+        "blurb": "Injini mpya zaidi ya Polly, iliyojengwa juu ya AI zalishi kwa sauti ya mazungumzo."
       },
       "LongForm": {
         "blurb": "Imetengenezwa kwa usikilizaji mrefu: makala, nyenzo za mafunzo na usimulizi."
@@ -137,7 +137,7 @@
     },
     "kokoro": {
       "Kokoro": {
-        "blurb": "Kila sauti ya Kokoro: modeli moja ya uzito huria, parameta milioni 82, Apache 2.0."
+        "blurb": "Kila sauti ya Kokoro: modeli moja ya uzani wazi, parameta milioni 82, Apache 2.0."
       }
     }
   },
@@ -168,7 +168,7 @@
     "dismissAria": "Funga",
     "noteUnavailable": "sampuli haipatikani",
     "noteTapAgain": "gusa cheza tena",
-    "noteBusy": "imebanwa, jaribu tena baada ya dakika",
+    "noteBusy": "ina shughuli nyingi, jaribu tena baada ya dakika",
     "notePreparing": "bado inaandaliwa, jaribu tena hivi punde",
     "noteGenerating": "inaandaa sampuli",
     "listNoteModels": "Sauti za {family} zina sampuli moja kwa kila modeli ndogo, hivyo kidhibiti cha {familyUpper} huchagua toleo unalosikia.",

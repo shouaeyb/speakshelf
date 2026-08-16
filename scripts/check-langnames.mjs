@@ -2,8 +2,16 @@
 // the packed data must render a bracketed display name in every UI locale,
 // unique except for the one sanctioned twin pair, with no CLDR
 // pseudo-region or raw-subtag labels leaking. Run manually after touching
-// lib/lang.ts or refreshing data: node scripts/check-langnames.mjs
+// lib/lang.ts or lib/lang-data.mjs, or after refreshing data:
+// node scripts/check-langnames.mjs
 import { readFileSync, readdirSync } from "node:fs";
+import {
+  ARB_NAMES,
+  EN_SHORT_REGIONS,
+  JAVA_NAMES,
+  MSA_NAMES,
+  WLS_NAMES,
+} from "../lib/lang-data.mjs";
 
 const packed = JSON.parse(readFileSync(new URL("../data/voices.packed.json", import.meta.url)));
 const codes = new Set();
@@ -13,41 +21,15 @@ const locales = readdirSync(new URL("../messages", import.meta.url))
   .filter((f) => f.endsWith(".json"))
   .map((f) => f.replace(".json", ""));
 
-// Mirror of lib/lang.ts (kept tiny; the library is TypeScript and this
-// fixture stays runnable with bare node). Keep both sides in step.
-const WLS_NAMES = {
-  en: "English (Wales)", es: "inglés (Gales)", fr: "anglais (pays de Galles)",
-  pt: "inglês (País de Gales)", ru: "английский (Уэльс)", zh: "英语（威尔士）",
-  hi: "अंग्रेज़ी (वेल्स)", bn: "ইংরেজি (ওয়েলস)", ar: "الإنجليزية (ويلز)",
-  ja: "英語 (ウェールズ)", de: "Englisch (Wales)", it: "inglese (Galles)",
-  id: "Inggris (Wales)", sw: "Kiingereza (Wales)",
-};
-const ARB_NAMES = {
-  en: "Arabic (Standard)", es: "árabe (estándar)", fr: "arabe (standard)",
-  pt: "árabe (padrão)", ru: "арабский (стандартный)", zh: "阿拉伯语（标准）",
-  hi: "अरबी (मानक)", bn: "আরবি (প্রমিত)", ar: "العربية (الفصحى)",
-  ja: "アラビア語 (標準)", de: "Arabisch (Standard)", it: "arabo (standard)",
-  id: "Arab (Standar)", sw: "Kiarabu (Sanifu)",
-};
-const MSA_NAMES = {
-  en: "Arabic (Modern Standard)", es: "árabe (estándar moderno)", fr: "arabe (standard moderne)",
-  pt: "árabe (padrão moderno)", ru: "арабский (современный стандартный)", zh: "阿拉伯语（现代标准）",
-  hi: "अरबी (आधुनिक मानक)", bn: "আরবি (আধুনিক প্রমিত)", ar: "العربية (الفصحى الحديثة)",
-  ja: "アラビア語 (現代標準)", de: "Arabisch (Modernes Hocharabisch)", it: "arabo (standard moderno)",
-  id: "Arab (Standar Modern)", sw: "Kiarabu (Sanifu cha Kisasa)",
-};
-const JAVA_NAMES = {
-  en: "Javanese (Java)", es: "javanés (Java)", fr: "javanais (Java)",
-  pt: "javanês (Java)", ru: "яванский (Ява)", zh: "爪哇语（爪哇）",
-  hi: "जावानीज़ (जावा)", bn: "জাভানিজ (জাভা)", ar: "الجاوية (جاوة)",
-  ja: "ジャワ語 (ジャワ)", de: "Javanisch (Java)", it: "giavanese (Giava)",
-  id: "Jawa (Jawa)", sw: "Kijava (Java)",
-};
-const EN_SHORT = [
-  ["(United States)", "(US)"], ["(United Kingdom)", "(GB)"],
-  ["(Hong Kong SAR China)", "(Hong Kong)"], ["(Myanmar [Burma])", "(Myanmar)"],
-  ["(United Arab Emirates)", "(UAE)"],
-];
+// The maps come from lib/lang-data.mjs, the same file lib/lang.ts renders
+// the site from: this fixture used to transcribe all five of them, so a
+// label could be corrected in the library and still be graded against the
+// old copy here. The resolution below stays a small reimplementation,
+// because the library is TypeScript and this fixture runs under bare node.
+// One ordering difference is deliberate and harmless: the library applies
+// the English shortenings after the hand maps, this returns hand-mapped
+// names before reaching them. No hand label ends in a shortened region
+// today, and if one ever did the fixture would fail rather than pass.
 function name(code, locale) {
   let n;
   if (code === "arb") return ARB_NAMES[locale] ?? ARB_NAMES.en;
@@ -58,7 +40,9 @@ function name(code, locale) {
     n = new Intl.DisplayNames([locale], { type: "language", languageDisplay: "standard" }).of(code);
   } catch {}
   if (!n) n = code;
-  if (locale === "en") for (const [l, s] of EN_SHORT) if (n.endsWith(l)) n = n.slice(0, -l.length) + s;
+  if (locale === "en") {
+    for (const [l, s] of EN_SHORT_REGIONS) if (n.endsWith(l)) n = n.slice(0, -l.length) + s;
+  }
   return n;
 }
 

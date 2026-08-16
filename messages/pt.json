@@ -28,7 +28,7 @@
     "why1VariantsOnly": "O Amazon Polly acrescenta variantes regionais como {v1} e {v2}. Uma só estante mostra o que cada provedor tem e falta aos demais.",
     "why1Generic": "Uma só estante mostra o que cada provedor tem e falta aos demais.",
     "why2Title": "Um só jeito de ouvir",
-    "why2Body": "Os mesmos filtros, o mesmo player, o mesmo esquema de identificadores em cada estante. Comparar vozes entre provedores são dois cliques, não dois consoles.",
+    "why2Body": "Os mesmos filtros, o mesmo player, o mesmo esquema de identificadores em cada estante. Comparar vozes entre provedores exige dois cliques, não dois consoles.",
     "why3Title": "Atualiza sozinho",
     "why3Body": "Cada estante se atualiza diariamente a partir do AI TTS Microservice. Vozes, idiomas e submodelos novos aparecem aqui sem que ninguém edite o site.",
     "aboutTitle": "Sobre este catálogo",
@@ -37,7 +37,7 @@
   "attribution": {
     "independence": "O Speakshelf é independente e não é afiliado a nenhum dos provedores que cataloga.",
     "independenceNamed": "O Speakshelf é independente e não é afiliado a {name}.",
-    "source": "Os dados de vozes e o áudio vêm do <link>AI TTS Microservice</link>, um serviço que unifica Google, Amazon, Azure e outros provedores de fala atrás de um único ponto de acesso. As amostras são geradas sob demanda, então ouvir é grátis."
+    "source": "Os dados de vozes e o áudio vêm do <link>AI TTS Microservice</link>, um serviço que unifica Google, Amazon, Azure e outros provedores de fala por trás de um único ponto de acesso. As amostras são transmitidas sob demanda, então ouvir é grátis."
   },
   "providers": {
     "google": {
@@ -57,7 +57,7 @@
       "heroSub": "Ouça uma amostra de cada voz do catálogo do Amazon Polly. Filtre por motor, idioma e gênero. Sem conta, sem configuração, só as vozes.",
       "familyWord": "{count, plural, one {motor} other {motores}}",
       "jump": "MOTORES",
-      "familiesIntro": "O Polly agrupa suas vozes por motor. O catálogo vai das vozes standard ao motor generative, com um nível long-form pensado para escutas longas.",
+      "familiesIntro": "O Polly agrupa suas vozes por motor. O catálogo vai das vozes standard ao motor generative, com um nível long-form pensado para escuta prolongada.",
       "card": "O serviço de texto para fala da AWS: motores standard, neural, generative e long-form.",
       "about": "O Amazon Polly é o serviço de texto para fala da AWS, que converte texto em fala natural. Suas {voices, number} vozes aqui abrangem {families, number} motores: standard e neural, um motor generative construído com técnicas de IA generativa, e vozes long-form projetadas para conteúdos longos como artigos e materiais de treinamento. Cada voz tem uma amostra para ouvir.",
       "unknownFamily": "Uma adição recente ao catálogo do Amazon Polly."
@@ -70,7 +70,7 @@
       "jump": "MODELO",
       "familiesIntro": "O Kokoro é um modelo único, não uma coleção de motores, então todo o seu catálogo cabe em uma só família.",
       "card": "Um modelo de pesos abertos, 82 milhões de parâmetros sob a licença Apache 2.0.",
-      "about": "O Kokoro é um modelo de texto para fala de pesos abertos: 82 milhões de parâmetros, publicado sob a licença Apache 2.0. O AI TTS Microservice o serve ao lado dos catálogos de nuvem, de modo que suas {voices, number} vozes em {languages, number} idiomas tocam aqui como qualquer outra estante. Cada voz tem uma amostra para ouvir.",
+      "about": "O Kokoro é um modelo de texto para fala de pesos abertos: 82 milhões de parâmetros, publicado sob a licença Apache 2.0. O AI TTS Microservice o serve ao lado dos catálogos de nuvem, de modo que suas {voices, number} vozes em {languages, number} idiomas tocam aqui como em qualquer outra estante. Cada voz tem uma amostra para ouvir.",
       "unknownFamily": "Uma adição recente ao catálogo do Kokoro."
     }
   },
@@ -90,7 +90,7 @@
   "families": {
     "google": {
       "Gemini": {
-        "blurb": "Fala nativa do Gemini. Cada voz pode ser renderizada por todos os submodelos, e a entrega segue uma instrução de estilo escrita.",
+        "blurb": "Síntese de fala nativa do Gemini. Cada voz pode ser renderizada por todos os submodelos, e a entrega segue uma instrução de estilo escrita.",
         "note": "As amostras mostram cada voz com honestidade, esquisitices incluídas. Algumas vozes Gemini podem soar com um sotaque diferente do rótulo regional, por exemplo uma voz en-US soando en-IN. Na sua própria instrução de geração, um pedido simples como \"diga isto com sotaque americano\" costuma corrigir."
       },
       "Chirp3HD": {
@@ -132,7 +132,7 @@
         "blurb": "O motor mais novo do Polly, construído com IA generativa para fala conversacional."
       },
       "LongForm": {
-        "blurb": "Feito para escutas longas: artigos, materiais de treinamento e narração."
+        "blurb": "Feito para escuta prolongada: artigos, materiais de treinamento e narração."
       }
     },
     "kokoro": {
@@ -187,7 +187,7 @@
     "meta": "{code} · {voices, plural, one {# voz} other {# vozes}} · {families, number} {familyWord} · {samples, plural, one {# amostra reproduzível} other {# amostras reproduzíveis}}"
   },
   "consent": {
-    "text": "O Speakshelf usa cookies e análises para entender como o catálogo é usado.",
+    "text": "O Speakshelf usa cookies e ferramentas de análise para entender como o catálogo é usado.",
     "necessary": "Só o necessário",
     "accept": "Aceitar tudo"
   },

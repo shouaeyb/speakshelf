@@ -28,16 +28,16 @@
     "why1VariantsOnly": "Amazon Polly menambah varian regional seperti {v1} dan {v2}. Satu rak memperlihatkan apa yang dimiliki tiap penyedia dan tidak dimiliki yang lain.",
     "why1Generic": "Satu rak memperlihatkan apa yang dimiliki tiap penyedia dan tidak dimiliki yang lain.",
     "why2Title": "Satu cara mendengarkan",
-    "why2Body": "Filter yang sama, pemutar yang sama, skema id suara yang sama di setiap rak. Membandingkan suara antar penyedia cukup dua klik, bukan dua konsol.",
-    "why3Title": "Segar dengan sendirinya",
-    "why3Body": "Setiap rak diperbarui harian dari AI TTS Microservice. Suara, bahasa, dan sub-model baru muncul di sini tanpa ada yang menyunting situs.",
+    "why2Body": "Filter yang sama, pemutar yang sama, skema ID suara yang sama di setiap rak. Membandingkan suara antar penyedia cukup dua klik, bukan dua konsol.",
+    "why3Title": "Diperbarui dengan sendirinya",
+    "why3Body": "Setiap rak diperbarui setiap hari dari AI TTS Microservice. Suara, bahasa, dan sub-model baru muncul di sini tanpa ada yang menyunting situs.",
     "aboutTitle": "Tentang katalog ini",
-    "aboutBody": "Speakshelf adalah katalog rujukan untuk suara text to speech. Hari ini memuat {voices, number} suara dari {providers, plural, other {# penyedia}} dalam {languages, plural, other {# bahasa}}, masing-masing dengan sampel yang bisa diputar. Suara dikelompokkan sebagaimana penyedianya mengelompokkan, dalam keluarga model dan engine, supaya yang Anda dengar sesuai dengan yang akan Anda pakai."
+    "aboutBody": "Speakshelf adalah katalog rujukan untuk suara text to speech. Saat ini memuat {voices, number} suara dari {providers, plural, other {# penyedia}} dalam {languages, plural, other {# bahasa}}, masing-masing dengan sampel yang bisa diputar. Suara dikelompokkan sebagaimana penyedianya mengelompokkan, dalam keluarga model dan engine, supaya yang Anda dengar sesuai dengan yang akan Anda pakai."
   },
   "attribution": {
     "independence": "Speakshelf independen dan tidak berafiliasi dengan penyedia mana pun yang ada di katalog ini.",
     "independenceNamed": "Speakshelf independen dan tidak berafiliasi dengan {name}.",
-    "source": "Data suara dan audio berasal dari <link>AI TTS Microservice</link>, layanan yang menyatukan Google, Amazon, Azure, dan penyedia suara lain di balik satu endpoint. Sampel dialirkan sesuai permintaan, mendengarkan gratis."
+    "source": "Data suara dan audio berasal dari <link>AI TTS Microservice</link>, layanan yang menyatukan Google, Amazon, Azure, dan penyedia suara lain di balik satu endpoint. Sampel dialirkan sesuai permintaan, jadi mendengarkan gratis."
   },
   "providers": {
     "google": {
@@ -57,7 +57,7 @@
       "heroSub": "Putar sampel setiap suara di katalog Amazon Polly. Saring berdasar engine, bahasa, dan gender. Tanpa akun, tanpa penyiapan, hanya suaranya.",
       "familyWord": "{count, plural, other {engine}}",
       "jump": "ENGINE",
-      "familiesIntro": "Polly mengelompokkan suaranya per engine. Katalognya membentang dari suara standard sampai engine generative, dengan tingkat long-form untuk pendengaran panjang.",
+      "familiesIntro": "Polly mengelompokkan suaranya per engine. Katalognya membentang dari suara standard sampai engine generative, dengan tingkat long-form untuk konten berdurasi panjang.",
       "card": "Layanan text to speech dari AWS: engine standard, neural, generative, dan long-form.",
       "about": "Amazon Polly adalah layanan text to speech di AWS yang mengubah teks menjadi suara alami. {voices, number} suaranya di sini mencakup {families, number} engine: standard dan neural, engine generative yang dibangun dengan teknik AI generatif, dan suara long-form untuk konten panjang seperti artikel dan materi pelatihan. Setiap suara punya sampel yang bisa diputar.",
       "unknownFamily": "Tambahan baru di katalog Amazon Polly."
@@ -70,7 +70,7 @@
       "jump": "MODEL",
       "familiesIntro": "Kokoro adalah satu model, bukan deretan engine, jadi seluruh katalognya berada dalam satu keluarga.",
       "card": "Model open-weight, 82 juta parameter di bawah lisensi Apache 2.0.",
-      "about": "Kokoro adalah model text to speech open-weight: 82 juta parameter, dirilis di bawah lisensi Apache 2.0. AI TTS Microservice menyajikannya berdampingan dengan katalog cloud, jadi {voices, number} suaranya dalam {languages, number} bahasa diputar di sini seperti rak lainnya. Setiap suara punya sampel yang bisa diputar.",
+      "about": "Kokoro adalah model text to speech open-weight: 82 juta parameter, dirilis di bawah lisensi Apache 2.0. AI TTS Microservice menyajikannya berdampingan dengan katalog cloud, jadi {voices, number} suaranya dalam {languages, number} bahasa diputar di sini seperti di rak lainnya. Setiap suara punya sampel yang bisa diputar.",
       "unknownFamily": "Tambahan baru di katalog Kokoro."
     }
   },
@@ -132,7 +132,7 @@
         "blurb": "Engine Polly terbaru, dibangun di atas AI generatif untuk suara percakapan."
       },
       "LongForm": {
-        "blurb": "Dibuat untuk pendengaran panjang: artikel, materi pelatihan, dan narasi."
+        "blurb": "Dibuat untuk konten berdurasi panjang: artikel, materi pelatihan, dan narasi."
       }
     },
     "kokoro": {
@@ -216,7 +216,7 @@
     "providerTitle": "Suara text to speech {label}",
     "providerDescription": "Putar sampel seluruh katalog text to speech {label}: {voices, number} suara dalam {languages, number} bahasa, dengan filter {familyWord}, bahasa, dan gender.",
     "providerShareDescription": "Seluruh katalog text to speech {label} dengan sampel siap putar untuk setiap suara.",
-    "providerJsonLd": "Katalog setiap suara text to speech {label}, dengan sampel yang bisa diputar di browser.",
+    "providerJsonLd": "Katalog semua suara text to speech {label}, dengan sampel yang bisa diputar di browser.",
     "langTitle": "Suara {label} {language}",
     "langDescription": "Semua {voices, number} suara text to speech {label} untuk {language} ({code}), dengan sampel yang bisa diputar di browser.",
     "langShareDescription": "Suara text to speech {label} untuk {language}, dengan sampel siap putar.",

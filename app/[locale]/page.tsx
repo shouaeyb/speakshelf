@@ -30,11 +30,20 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
   const t = await getTranslations({ locale });
   const fmt = (n: number) => n.toLocaleString(locale);
 
-  // Scale cap: the hero sentence names at most three shelves as a bare
-  // comma list; the message itself closes with its locale's "and more", so
-  // the line stays true as providers land and never turns into a paragraph.
+  // The hero sentence closes with its locale's "and more", so like the
+  // share surfaces in the layout it names one shelf fewer than the catalog
+  // carries: "and more" then points at a real shelf, not at nothing. Capped
+  // at three names so the line never turns into a paragraph. The <= 1
+  // branch below only keeps the render alive through an upstream data
+  // incident: the umbrella home REQUIRES at least two live providers
+  // (decisions 2026-08-16), because home.sub bakes "and more" into all
+  // fourteen locales and a one-provider shelf would make it false. Blessing
+  // down to one provider means rewriting home.sub first.
   const providerNames = PROVIDERS.filter((p) => site.providers.has(p.key)).map((p) => p.label);
-  const nameList = listNamesPlain(providerNames.slice(0, 3), locale);
+  const nameList = listNamesPlain(
+    providerNames.length <= 1 ? providerNames : providerNames.slice(0, Math.min(3, providerNames.length - 1)),
+    locale,
+  );
 
   // "Coverage adds up" derives from CODES, never from parsing display
   // strings: compare by primary language subtag so two codes for the same

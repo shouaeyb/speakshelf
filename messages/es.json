@@ -28,7 +28,7 @@
     "why1VariantsOnly": "Amazon Polly añade variantes regionales como {v1} y {v2}. Un solo estante muestra lo que cada proveedor tiene y a los demás les falta.",
     "why1Generic": "Un solo estante muestra lo que cada proveedor tiene y a los demás les falta.",
     "why2Title": "Una sola forma de escuchar",
-    "why2Body": "Los mismos filtros, el mismo reproductor, el mismo esquema de identificadores en cada estante. Comparar voces entre proveedores son dos clics, no dos consolas.",
+    "why2Body": "Los mismos filtros, el mismo reproductor, el mismo esquema de identificadores en cada estante. Comparar voces entre proveedores requiere dos clics, no dos consolas.",
     "why3Title": "Se actualiza solo",
     "why3Body": "Cada estante se actualiza a diario desde el AI TTS Microservice. Voces, idiomas y submodelos nuevos aparecen aquí sin que nadie edite el sitio.",
     "aboutTitle": "Sobre este catálogo",
@@ -37,7 +37,7 @@
   "attribution": {
     "independence": "Speakshelf es independiente y no está afiliado a ninguno de los proveedores que cataloga.",
     "independenceNamed": "Speakshelf es independiente y no está afiliado a {name}.",
-    "source": "Los datos de voces y el audio provienen del <link>AI TTS Microservice</link>, un servicio que unifica Google, Amazon, Azure y otros proveedores de voz tras un único punto de acceso. Las muestras se generan bajo demanda, así que escuchar es gratis."
+    "source": "Los datos de voces y el audio provienen del <link>AI TTS Microservice</link>, un servicio que unifica Google, Amazon, Azure y otros proveedores de voz tras un único punto de acceso. Las muestras se transmiten bajo demanda, así que escuchar es gratis."
   },
   "providers": {
     "google": {
@@ -70,7 +70,7 @@
       "jump": "MODELO",
       "familiesIntro": "Kokoro es un único modelo y no una colección de motores, así que todo su catálogo cabe en una sola familia.",
       "card": "Un modelo de pesos abiertos, 82 millones de parámetros bajo licencia Apache 2.0.",
-      "about": "Kokoro es un modelo de texto a voz de pesos abiertos: 82 millones de parámetros, publicado bajo la licencia Apache 2.0. El AI TTS Microservice lo sirve junto a los catálogos de nube, de modo que sus {voices, number} voces en {languages, number} idiomas se reproducen aquí como cualquier otro estante. Cada voz tiene una muestra reproducible.",
+      "about": "Kokoro es un modelo de texto a voz de pesos abiertos: 82 millones de parámetros, publicado bajo la licencia Apache 2.0. El AI TTS Microservice lo sirve junto a los catálogos de nube, de modo que sus {voices, number} voces en {languages, number} idiomas se reproducen aquí como en cualquier otro estante. Cada voz tiene una muestra reproducible.",
       "unknownFamily": "Una incorporación reciente al catálogo de Kokoro."
     }
   },
@@ -90,7 +90,7 @@
   "families": {
     "google": {
       "Gemini": {
-        "blurb": "Voz nativa de Gemini. Cada voz puede renderizarse con todos los submodelos, y la entrega sigue una instrucción de estilo escrita.",
+        "blurb": "Síntesis de voz nativa de Gemini. Cada voz puede renderizarse con todos los submodelos, y la entrega sigue una instrucción de estilo escrita.",
         "note": "Las muestras presentan cada voz con honestidad, rarezas incluidas. Algunas voces Gemini pueden sonar con un acento distinto al de su etiqueta regional, por ejemplo una voz en-US que suena en-IN. En tu propia instrucción de generación, una indicación simple como \"di esto con acento americano\" suele corregirlo."
       },
       "Chirp3HD": {
@@ -106,7 +106,7 @@
         "blurb": "Voces neuronales de segunda generación, la opción por defecto de muchos productos."
       },
       "ChirpHD": {
-        "blurb": "La primera generación Chirp, aún muy desplegada."
+        "blurb": "La primera generación Chirp, todavía muy utilizada."
       },
       "News": {
         "blurb": "Voces de estilo informativo afinadas para leer noticias."

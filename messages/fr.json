@@ -37,7 +37,7 @@
   "attribution": {
     "independence": "Speakshelf est indépendant et n'est affilié à aucun des fournisseurs qu'il catalogue.",
     "independenceNamed": "Speakshelf est indépendant et n'est pas affilié à {name}.",
-    "source": "Les données et l'audio proviennent de l''<link>AI TTS Microservice</link>, un service qui unifie Google, Amazon, Azure et d'autres fournisseurs de voix derrière un point d'accès unique. Les extraits sont générés à la demande, l'écoute est donc gratuite."
+    "source": "Les données vocales et l'audio proviennent de l''<link>AI TTS Microservice</link>, un service qui unifie Google, Amazon, Azure et d'autres fournisseurs de voix derrière un point d'accès unique. Les extraits sont diffusés à la demande, l'écoute est donc gratuite."
   },
   "providers": {
     "google": {
@@ -70,7 +70,7 @@
       "jump": "MODÈLE",
       "familiesIntro": "Kokoro est un modèle unique et non une collection de moteurs : tout son catalogue tient dans une seule famille.",
       "card": "Un modèle à poids ouverts, 82 millions de paramètres sous licence Apache 2.0.",
-      "about": "Kokoro est un modèle de synthèse vocale à poids ouverts : 82 millions de paramètres, publié sous licence Apache 2.0. L'AI TTS Microservice le sert aux côtés des catalogues cloud, si bien que ses {voices, number} voix en {languages, number} langues s'écoutent ici comme n'importe quelle autre étagère. Chaque voix a un extrait à écouter.",
+      "about": "Kokoro est un modèle de synthèse vocale à poids ouverts : 82 millions de paramètres, publié sous licence Apache 2.0. L'AI TTS Microservice le sert aux côtés des catalogues cloud, si bien que ses {voices, number} voix en {languages, number} langues s'écoutent ici comme sur n'importe quelle autre étagère. Chaque voix a un extrait à écouter.",
       "unknownFamily": "Un ajout récent au catalogue Kokoro."
     }
   },
@@ -90,8 +90,8 @@
   "families": {
     "google": {
       "Gemini": {
-        "blurb": "La voix native de Gemini. Chaque voix peut être rendue par tous les sous-modèles, et l'interprétation suit une consigne de style écrite.",
-        "note": "Les extraits présentent chaque voix honnêtement, défauts compris. Certaines voix Gemini peuvent rendre un accent différent de leur étiquette régionale, par exemple une voix en-US qui sonne en-IN. Dans votre propre consigne de génération, une instruction simple comme « dis ceci avec un accent américain » corrige généralement le problème."
+        "blurb": "La synthèse vocale native de Gemini. Chaque voix peut être rendue par tous les sous-modèles, et l'interprétation suit une consigne de style écrite.",
+        "note": "Les extraits présentent chaque voix honnêtement, particularités comprises. Certaines voix Gemini peuvent rendre un accent différent de leur étiquette régionale, par exemple une voix en-US qui sonne en-IN. Dans votre propre consigne de génération, une instruction simple comme « dis ceci avec un accent américain » corrige généralement le problème."
       },
       "Chirp3HD": {
         "blurb": "La génération HD actuelle, réglée pour la conversation naturelle."
@@ -183,7 +183,7 @@
     }
   },
   "langPage": {
-    "crumb": "← Toutes les langues {label}",
+    "crumb": "← Toutes les langues de {label}",
     "meta": "{code} · {voices, plural, one {# voix} other {# voix}} · {families, number} {familyWord} · {samples, plural, one {# extrait à écouter} other {# extraits à écouter}}"
   },
   "consent": {
@@ -208,7 +208,7 @@
     "languageLabel": "Langue"
   },
   "meta": {
-    "andMore": "{names} et plus",
+    "andMore": "{names} et d'autres",
     "siteTitle": "Speakshelf · voix de synthèse vocale de {names}",
     "siteDescription": "Parcourez et écoutez {voices, number} voix de synthèse vocale de {names} en {languages, number} langues, chacune avec un extrait à écouter.",
     "shareDescription": "Parcourez et écoutez les catalogues de synthèse vocale de {names}. Un extrait à écouter pour chaque voix.",
@@ -218,9 +218,9 @@
     "providerShareDescription": "Le catalogue complet de synthèse vocale {label}, avec un extrait à écouter pour chaque voix.",
     "providerJsonLd": "Un catalogue de toutes les voix de synthèse vocale {label}, avec des extraits à écouter dans le navigateur.",
     "langTitle": "Voix {label} en {language}",
-    "langDescription": "Les {voices, number} voix de synthèse vocale {label} pour le {language} ({code}), avec des extraits à écouter dans le navigateur.",
-    "langShareDescription": "Voix de synthèse vocale {label} pour le {language}, avec extraits à écouter.",
-    "langJsonLd": "Voix de synthèse vocale {label} pour le {language} ({code})."
+    "langDescription": "Les {voices, number} voix de synthèse vocale {label} en {language} ({code}), avec des extraits à écouter dans le navigateur.",
+    "langShareDescription": "Voix de synthèse vocale {label} en {language}, avec extraits à écouter.",
+    "langJsonLd": "Voix de synthèse vocale {label} en {language} ({code})."
   },
   "a11y": {
     "sections": "Sections",

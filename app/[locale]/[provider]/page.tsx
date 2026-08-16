@@ -15,9 +15,10 @@ import { PROVIDERS, getProvider } from "@/lib/providers";
 // dynamicParams stays false so an unknown one-segment path never renders
 // here and never writes a cached not-found entry (this route is ISR; a
 // rendered notFound() would be persisted per garbage URL, on Cloud Run's
-// tmpfs). The unmatched segment falls through to the [...rest] catch-all
-// beside this route, which renders dynamically, caches nothing, and
-// reaches the branded localized 404.
+// tmpfs). Declining the segment is also what reaches the branded 404: an
+// unmatched URL is answered at the routing level by app/global-not-found.tsx,
+// which is prerendered, served no-store and readable without JavaScript,
+// in English (the reader's own locale needs the head script there).
 export const revalidate = 86400;
 export const dynamicParams = false;
 

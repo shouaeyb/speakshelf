@@ -12,11 +12,11 @@
   "home": {
     "eyebrow": "テキスト読み上げカタログ",
     "title": "{voices, number} の音声。棚はひとつ。",
-    "sub": "Speakshelf は {names} などのテキスト読み上げ音声をカタログにしています。どの音声もブラウザーで再生できるサンプル付き。アカウント不要、設定不要、あるのは音声だけ。",
+    "sub": "Speakshelf は {names} などのテキスト読み上げ音声を収録しています。どの音声もブラウザーで再生できるサンプル付き。アカウント不要、設定不要、あるのは音声だけ。",
     "jumpProviders": "プロバイダー",
     "jumpAbout": "概要",
     "providersTitle": "{count, plural, other {# プロバイダー}}",
-    "providersSub": "各プロバイダーには完全な棚があります。フィルターと再生付きの全音声リスト、モデルファミリーごとの説明、言語ごとのページ。棚は育ちます。AI TTS Microservice がプロバイダーを束ね、検証が済めば新しい棚がここに開きます。",
+    "providersSub": "各プロバイダーには充実した棚があります。フィルターと再生付きの全音声リスト、モデルファミリーごとの説明、言語ごとのページ。棚は育ちます。AI TTS Microservice がプロバイダーを束ね、検証が済めば新しい棚がここに開きます。",
     "cardVoices": "{count, plural, other {音声}}",
     "cardMeta": "{languages, plural, other {# 言語}} · {familiesCount} {familyWord} · {samples, plural, other {# サンプル}}",
     "browse": "見る →",
@@ -32,7 +32,7 @@
     "why3Title": "自動で新しく",
     "why3Body": "どの棚も AI TTS Microservice から毎日更新されます。新しい音声、言語、サブモデルは、誰もサイトを編集しなくてもここに現れます。",
     "aboutTitle": "このカタログについて",
-    "aboutBody": "Speakshelf はテキスト読み上げ音声のリファレンスカタログです。今日は {providers, plural, other {# プロバイダー}}の {voices, number} 音声を {languages, plural, other {# 言語}}で収め、どれも再生できるサンプル付きです。音声はプロバイダー自身の分け方どおり、モデルファミリーとエンジンでまとめてあるので、聴いたものがそのまま導入するものに対応します。"
+    "aboutBody": "Speakshelf はテキスト読み上げ音声のリファレンスカタログです。現在は {providers, plural, other {# プロバイダー}}の {voices, number} 音声を {languages, plural, other {# 言語}}で収め、どれも再生できるサンプル付きです。音声はプロバイダー自身の分け方どおり、モデルファミリーとエンジンでまとめてあるので、聴いたものがそのまま導入するものに対応します。"
   },
   "attribution": {
     "independence": "Speakshelf は独立したサイトで、掲載しているどのプロバイダーとも無関係です。",
@@ -68,7 +68,7 @@
       "heroSub": "オープンウェイトの Kokoro モデルの全音声のサンプルを再生。言語と性別で絞り込み。アカウント不要、設定不要、あるのは音声だけ。",
       "familyWord": "{count, plural, other {モデルファミリー}}",
       "jump": "モデル",
-      "familiesIntro": "Kokoro はエンジンの群れではなく単一モデルなので、カタログ全体がひとつのファミリーに収まります。",
+      "familiesIntro": "Kokoro は複数のエンジンではなく単一のモデルなので、カタログ全体がひとつのファミリーに収まります。",
       "card": "オープンウェイトのモデル。8,200 万パラメーター、Apache 2.0 ライセンス。",
       "about": "Kokoro はオープンウェイトのテキスト読み上げモデルです。8,200 万パラメーター、Apache 2.0 ライセンスで公開。AI TTS Microservice がクラウドのカタログと並べて提供しているので、{languages, number} 言語の {voices, number} 音声がほかの棚と同じようにここで再生できます。どの音声にも再生できるサンプルがあります。",
       "unknownFamily": "Kokoro カタログへの最近の追加です。"
@@ -115,7 +115,7 @@
         "blurb": "長い朗読のためのナレーション品質の音声。"
       },
       "Polyglot": {
-        "blurb": "複数言語を話すひとつの声のアイデンティティ。"
+        "blurb": "ひとつの声で複数の言語を話します。"
       },
       "Casual": {
         "blurb": "くだけた返答のための会話向け音声。"
@@ -129,7 +129,7 @@
         "blurb": "standard エンジン。広い言語カバレッジを持つ Polly の基本音声。"
       },
       "Generative": {
-        "blurb": "最新の Polly エンジン。会話音声のための生成 AI 製。"
+        "blurb": "最新の Polly エンジン。会話音声向けに生成 AI で構築。"
       },
       "LongForm": {
         "blurb": "長いリスニングのために。記事、研修資料、ナレーション。"
@@ -210,7 +210,7 @@
   "meta": {
     "andMore": "{names} など",
     "siteTitle": "Speakshelf · {names} のテキスト読み上げ音声",
-    "siteDescription": "{names} の {voices, number} テキスト読み上げ音声を {languages, number} 言語で。どれも再生できるサンプル付きで探して聴けます。",
+    "siteDescription": "{names} の {voices, number} のテキスト読み上げ音声を {languages, number} 言語で。どれも再生できるサンプル付きで探して聴けます。",
     "shareDescription": "{names} のテキスト読み上げカタログを探して聴く。全音声に再生できるサンプル。",
     "homeJsonLd": "{names} などのテキスト読み上げ音声のカタログ。ブラウザーで再生できるサンプル付き。",
     "providerTitle": "{label} テキスト読み上げ音声",

@@ -458,6 +458,33 @@
   letter-spacing: 0.5px;
 }
 
+/* The global 404 (app/global-not-found.tsx) ships all fourteen
+   translations in one document and shows the one the html element asks
+   for; its head script sets data-l from the URL before the first paint,
+   and with no script the English default stands. Fourteen static rules
+   because CSS cannot compare an attribute on the html element with one on
+   a descendant. A locale missing from this list renders as a blank page,
+   not as English, so scripts/check-404-locales.mjs asserts one rule here
+   per locale in i18n/locales.ts. */
+.nf-v {
+  display: none;
+}
+
+html[data-l="en"] .nf-v[data-l="en"] { display: block; }
+html[data-l="es"] .nf-v[data-l="es"] { display: block; }
+html[data-l="zh"] .nf-v[data-l="zh"] { display: block; }
+html[data-l="hi"] .nf-v[data-l="hi"] { display: block; }
+html[data-l="fr"] .nf-v[data-l="fr"] { display: block; }
+html[data-l="bn"] .nf-v[data-l="bn"] { display: block; }
+html[data-l="pt"] .nf-v[data-l="pt"] { display: block; }
+html[data-l="ru"] .nf-v[data-l="ru"] { display: block; }
+html[data-l="id"] .nf-v[data-l="id"] { display: block; }
+html[data-l="ar"] .nf-v[data-l="ar"] { display: block; }
+html[data-l="sw"] .nf-v[data-l="sw"] { display: block; }
+html[data-l="ja"] .nf-v[data-l="ja"] { display: block; }
+html[data-l="de"] .nf-v[data-l="de"] { display: block; }
+html[data-l="it"] .nf-v[data-l="it"] { display: block; }
+
 /* About */
 
 .about {

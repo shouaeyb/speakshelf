@@ -28,7 +28,7 @@
     "why1VariantsOnly": "Amazon Polly ergänzt regionale Varianten wie {v1} und {v2}. Ein Regal zeigt, was jeder Anbieter hat und den anderen fehlt.",
     "why1Generic": "Ein Regal zeigt, was jeder Anbieter hat und den anderen fehlt.",
     "why2Title": "Ein Weg zum Anhören",
-    "why2Body": "Gleiche Filter, gleicher Player, gleiches Stimmen-ID-Schema auf jedem Regal. Stimmen über Anbieter hinweg zu vergleichen sind zwei Klicks, nicht zwei Konsolen.",
+    "why2Body": "Gleiche Filter, gleicher Player, gleiches Stimmen-ID-Schema auf jedem Regal. Stimmen über Anbieter hinweg zu vergleichen braucht zwei Klicks, nicht zwei Konsolen.",
     "why3Title": "Aktualisiert sich selbst",
     "why3Body": "Jedes Regal erneuert sich täglich aus dem AI TTS Microservice. Neue Stimmen, Sprachen und Untermodelle erscheinen hier, ohne dass jemand die Seite bearbeitet.",
     "aboutTitle": "Über diesen Katalog",
@@ -43,7 +43,7 @@
     "google": {
       "eyebrow": "GOOGLE CLOUD TEXT TO SPEECH",
       "heroTitle": "Jede Google-Stimme auf einer Seite.",
-      "heroSub": "Hören Sie eine Probe jeder Stimme im Google-Cloud-Katalog. Filtern nach Modellfamilie, Sprache und Geschlecht. Kein Konto, keine Einrichtung, nur die Stimmen.",
+      "heroSub": "Eine Hörprobe jeder Stimme im Google-Cloud-Katalog abspielen. Nach Modellfamilie, Sprache und Geschlecht filtern. Kein Konto, keine Einrichtung, nur die Stimmen.",
       "familyWord": "{count, plural, one {Modellfamilie} other {Modellfamilien}}",
       "jump": "MODELLE",
       "familiesIntro": "Google liefert laufend neue Spracharchitekturen aus und jede Generation ist weiter im Dienst. Der Katalog reicht von kompakten parametrischen Stimmen bis zu Modellen, die sich mit einem Satz dirigieren lassen.",
@@ -54,7 +54,7 @@
     "polly": {
       "eyebrow": "AMAZON POLLY TEXT TO SPEECH",
       "heroTitle": "Jede Amazon-Polly-Stimme auf einer Seite.",
-      "heroSub": "Hören Sie eine Probe jeder Stimme im Amazon-Polly-Katalog. Filtern nach Engine, Sprache und Geschlecht. Kein Konto, keine Einrichtung, nur die Stimmen.",
+      "heroSub": "Eine Hörprobe jeder Stimme im Amazon-Polly-Katalog abspielen. Nach Engine, Sprache und Geschlecht filtern. Kein Konto, keine Einrichtung, nur die Stimmen.",
       "familyWord": "{count, plural, one {Engine} other {Engines}}",
       "jump": "ENGINES",
       "familiesIntro": "Polly gruppiert seine Stimmen nach Engine. Der Katalog reicht von den Standard-Stimmen bis zur generativen Engine, mit einer Long-Form-Stufe für langes Zuhören.",
@@ -65,12 +65,12 @@
     "kokoro": {
       "eyebrow": "KOKORO TEXT TO SPEECH",
       "heroTitle": "Jede Kokoro-Stimme auf einer Seite.",
-      "heroSub": "Hören Sie eine Probe jeder Stimme des offenen Kokoro-Modells. Filtern nach Sprache und Geschlecht. Kein Konto, keine Einrichtung, nur die Stimmen.",
+      "heroSub": "Eine Hörprobe jeder Stimme des offenen Kokoro-Modells abspielen. Nach Sprache und Geschlecht filtern. Kein Konto, keine Einrichtung, nur die Stimmen.",
       "familyWord": "{count, plural, one {Modellfamilie} other {Modellfamilien}}",
       "jump": "MODELL",
       "familiesIntro": "Kokoro ist ein einzelnes Modell statt eines Stalls voller Engines, darum sitzt sein ganzer Katalog in einer Familie.",
       "card": "Ein Modell mit offenen Gewichten, 82 Millionen Parameter unter Apache-2.0-Lizenz.",
-      "about": "Kokoro ist ein Text-to-Speech-Modell mit offenen Gewichten: 82 Millionen Parameter, veröffentlicht unter der Apache-2.0-Lizenz. Der AI TTS Microservice betreibt es neben den Cloud-Katalogen, darum spielen seine {voices, number} Stimmen in {languages, number} Sprachen hier wie jedes andere Regal. Jede Stimme hat eine abspielbare Hörprobe.",
+      "about": "Kokoro ist ein Text-to-Speech-Modell mit offenen Gewichten: 82 Millionen Parameter, veröffentlicht unter der Apache-2.0-Lizenz. Der AI TTS Microservice betreibt es neben den Cloud-Katalogen, darum spielen seine {voices, number} Stimmen in {languages, number} Sprachen hier wie auf jedem anderen Regal. Jede Stimme hat eine abspielbare Hörprobe.",
       "unknownFamily": "Ein Neuzugang im Kokoro-Katalog."
     }
   },
@@ -80,7 +80,7 @@
     "jumpAbout": "ÜBER",
     "familiesTitle": "{count, number} {familyWord}",
     "languagesTitle": "{count, plural, one {# Sprache} other {# Sprachen}}",
-    "languagesSub": "Jede Sprache hat ihre eigene Seite mit der vollständigen Stimmenliste, sodass sich jemand direkt auf ein Regal des Katalogs verlinken lässt.",
+    "languagesSub": "Jede Sprache hat ihre eigene Seite mit der vollständigen Stimmenliste, sodass sich ein Regal des Katalogs direkt verlinken lässt.",
     "famMeta": "{voices, plural, one {# Stimme} other {# Stimmen}}",
     "famLangs": "{count, plural, one {# Sprache} other {# Sprachen}}",
     "famModels": "{count, number} Untermodelle",
@@ -90,7 +90,7 @@
   "families": {
     "google": {
       "Gemini": {
-        "blurb": "Native Sprache aus Gemini. Jede Stimme kann von jedem Untermodell gerendert werden, und der Vortrag folgt einem geschriebenen Stil-Prompt.",
+        "blurb": "Native Sprachausgabe von Gemini. Jede Stimme kann von jedem Untermodell gerendert werden, und der Vortrag folgt einem geschriebenen Stil-Prompt.",
         "note": "Hörproben zeigen jede Stimme ehrlich, Eigenheiten eingeschlossen. Manche Gemini-Stimmen rendern einen anderen Akzent als ihr Sprachcode angibt, eine en-US-Stimme klingt etwa nach en-IN. Im eigenen Generierungs-Prompt behebt das meist eine schlichte Anweisung wie \"say this in an American accent\"."
       },
       "Chirp3HD": {
@@ -162,7 +162,7 @@
     "filters": "{count, plural, =0 {Filter} other {Filter (#)}}",
     "filtersTitle": "Filter",
     "showResults": "{count, plural, one {# Stimme anzeigen} other {# Stimmen anzeigen}}",
-    "empty": "Keine Stimme passt. Kürzere Suche versuchen oder einen Filter lösen.",
+    "empty": "Keine Stimme passt. Kürzere Suche versuchen oder einen Filter entfernen.",
     "langVoices": "{count, plural, one {# Stimme} other {# Stimmen}}",
     "playAria": "Hörprobe abspielen für {name}, {language}",
     "dismissAria": "Schließen",
@@ -214,10 +214,10 @@
     "shareDescription": "Die Text-to-Speech-Kataloge von {names} durchstöbern und anhören. Eine abspielbare Hörprobe für jede Stimme.",
     "homeJsonLd": "Ein Katalog von Text-to-Speech-Stimmen von {names} und mehr, mit Hörproben direkt im Browser.",
     "providerTitle": "{label} Text-to-Speech-Stimmen",
-    "providerDescription": "Hörproben des vollständigen {label}-Text-to-Speech-Katalogs abspielen: {voices, number} Stimmen in {languages, number} Sprachen, mit Filtern für {familyWord}, Sprache und Geschlecht.",
+    "providerDescription": "Hörproben des vollständigen {label}-Text-to-Speech-Katalogs abspielen: {voices, number} Stimmen in {languages, number} Sprachen, mit Filtern nach {familyWord}, Sprache und Geschlecht.",
     "providerShareDescription": "Der vollständige {label}-Text-to-Speech-Katalog mit einer abspielbaren Hörprobe für jede Stimme.",
     "providerJsonLd": "Ein Katalog jeder {label}-Text-to-Speech-Stimme, mit Hörproben direkt im Browser.",
-    "langTitle": "{label} {language} Stimmen",
+    "langTitle": "{label}: Stimmen für {language}",
     "langDescription": "Alle {voices, number} {label}-Text-to-Speech-Stimmen für {language} ({code}), mit Hörproben direkt im Browser.",
     "langShareDescription": "{label}-Text-to-Speech-Stimmen für {language}, mit abspielbaren Hörproben.",
     "langJsonLd": "{label}-Text-to-Speech-Stimmen für {language} ({code})."

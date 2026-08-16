@@ -16,7 +16,7 @@
     "jumpProviders": "المزوّدون",
     "jumpAbout": "حول",
     "providersTitle": "{count, plural, zero {لا مزوّدين} one {مزوّد واحد} two {مزوّدان} few {# مزوّدين} many {# مزوّدًا} other {# مزوّد}}",
-    "providersSub": "لكل مزوّد رفّ كامل: قائمة الأصوات كلها مع الترشيح والتشغيل، وملاحظات عن كل عائلة نماذج، وصفحة لكل لغة. الرفّ ينمو: يوحّد AI TTS Microservice مزيدًا من المزوّدين، وتُفتح هنا رفوف جديدة بعد التحقق.",
+    "providersSub": "لكل مزوّد رفّ كامل: قائمة الأصوات كلها مع المرشّحات والتشغيل، وملاحظات عن كل عائلة نماذج، وصفحة لكل لغة. الرفّ ينمو: يوحّد AI TTS Microservice مزيدًا من المزوّدين، وتُفتح هنا رفوف جديدة بعد التحقق.",
     "cardVoices": "{count, plural, zero {أصوات} one {صوت} two {صوتان} few {أصوات} many {صوتًا} other {صوت}}",
     "cardMeta": "{languages, plural, zero {لا لغات} one {لغة واحدة} two {لغتان} few {# لغات} many {# لغةً} other {# لغة}} · {familiesCount} {familyWord} · {samples, plural, zero {لا عيّنات} one {عيّنة واحدة} two {عيّنتان} few {# عيّنات} many {# عيّنةً} other {# عيّنة}}",
     "browse": "تصفّح ←",
@@ -30,18 +30,18 @@
     "why2Title": "طريقة واحدة للاستماع",
     "why2Body": "المرشّحات نفسها، والمشغّل نفسه، ونظام معرّفات الأصوات نفسه على كل رفّ. مقارنة الأصوات بين المزوّدين نقرتان، لا وحدتا تحكّم.",
     "why3Title": "يتجدّد من تلقاء نفسه",
-    "why3Body": "يتحدّث كل رفّ يوميًا من AI TTS Microservice. الأصوات واللغات والنماذج الفرعية الجديدة تظهر هنا دون أن يحرّر أحد الموقع.",
+    "why3Body": "يُحدَّث كل رفّ يوميًا من AI TTS Microservice. الأصوات واللغات والنماذج الفرعية الجديدة تظهر هنا دون أن يحرّر أحد الموقع.",
     "aboutTitle": "حول هذا الفهرس",
     "aboutBody": "Speakshelf فهرس مرجعي لأصوات تحويل النص إلى كلام. يضم اليوم {voices, plural, one {صوتًا واحدًا} two {صوتين} few {# أصوات} many {# صوتًا} other {# صوت}} من {providers, plural, one {مزوّد واحد} two {مزوّدين} few {# مزوّدين} many {# مزوّدًا} other {# مزوّد}} في {languages, plural, one {لغة واحدة} two {لغتين} few {# لغات} many {# لغةً} other {# لغة}}، ولكل صوت عيّنة قابلة للتشغيل. الأصوات مجموعة كما يجمعها مزوّدوها، في عائلات نماذج ومحرّكات، ليقابل ما تسمعه ما ستنشره فعلًا."
   },
   "attribution": {
     "independence": "Speakshelf مستقل وغير تابع لأي مزوّد يضمّه الفهرس.",
-    "independenceNamed": "Speakshelf مستقل وغير تابع لـ {name}.",
+    "independenceNamed": "Speakshelf مستقل وغير تابع لـ ⁦{name}⁩.",
     "source": "بيانات الأصوات والصوتيات تأتي من <link>AI TTS Microservice</link>، وهي خدمة توحّد Google وAmazon وAzure ومزوّدي كلام آخرين خلف نقطة وصول واحدة. تُبثّ العيّنات عند الطلب، والاستماع مجاني."
   },
   "providers": {
     "google": {
-      "eyebrow": "GOOGLE CLOUD TEXT TO SPEECH",
+      "eyebrow": "تحويل النص إلى كلام من GOOGLE CLOUD",
       "heroTitle": "كل أصوات Google، في صفحة واحدة.",
       "heroSub": "شغّل عيّنة لكل صوت في فهرس Google Cloud. رشّح حسب عائلة النموذج واللغة والجنس. لا حساب، لا إعداد، الأصوات فقط.",
       "familyWord": "{count, plural, zero {عائلات نماذج} one {عائلة نماذج} two {عائلتا نماذج} few {عائلات نماذج} many {عائلة نماذج} other {عائلة نماذج}}",
@@ -52,7 +52,7 @@
       "unknownFamily": "إضافة حديثة إلى فهرس Google."
     },
     "polly": {
-      "eyebrow": "AMAZON POLLY TEXT TO SPEECH",
+      "eyebrow": "تحويل النص إلى كلام من AMAZON POLLY",
       "heroTitle": "كل أصوات Amazon Polly، في صفحة واحدة.",
       "heroSub": "شغّل عيّنة لكل صوت في فهرس Amazon Polly. رشّح حسب المحرّك واللغة والجنس. لا حساب، لا إعداد، الأصوات فقط.",
       "familyWord": "{count, plural, zero {محرّكات} one {محرّك} two {محرّكان} few {محرّكات} many {محرّكًا} other {محرّك}}",
@@ -63,7 +63,7 @@
       "unknownFamily": "إضافة حديثة إلى فهرس Amazon Polly."
     },
     "kokoro": {
-      "eyebrow": "KOKORO TEXT TO SPEECH",
+      "eyebrow": "تحويل النص إلى كلام من KOKORO",
       "heroTitle": "كل أصوات Kokoro، في صفحة واحدة.",
       "heroSub": "شغّل عيّنة لكل صوت من نموذج Kokoro مفتوح الأوزان. رشّح حسب اللغة والجنس. لا حساب، لا إعداد، الأصوات فقط.",
       "familyWord": "{count, plural, zero {عائلات نماذج} one {عائلة نماذج} two {عائلتا نماذج} few {عائلات نماذج} many {عائلة نماذج} other {عائلة نماذج}}",
@@ -156,12 +156,12 @@
     "female": "أنثى",
     "male": "ذكر",
     "neutral": "محايد",
-    "loading": "يحمَّل الفهرس",
+    "loading": "جارٍ تحميل الفهرس",
     "results": "{voices, plural, zero {لا أصوات} one {صوت واحد} two {صوتان} few {# أصوات} many {# صوتًا} other {# صوت}} · {samples, plural, zero {لا عيّنات} one {عيّنة واحدة} two {عيّنتان} few {# عيّنات} many {# عيّنةً} other {# عيّنة}}",
     "clear": "مسح المرشّحات",
     "filters": "{count, plural, =0 {المرشّحات} other {المرشّحات (#)}}",
     "filtersTitle": "المرشّحات",
-    "showResults": "{count, plural, zero {لا أصوات} one {عرض صوت واحد} two {عرض صوتين} few {عرض # أصوات} many {عرض # صوتًا} other {عرض # صوت}}",
+    "showResults": "{count, plural, zero {لا أصوات للعرض} one {عرض صوت واحد} two {عرض صوتين} few {عرض # أصوات} many {عرض # صوتًا} other {عرض # صوت}}",
     "empty": "لا صوت يطابق. جرّب بحثًا أقصر أو أزل مرشّحًا.",
     "langVoices": "{count, plural, zero {لا أصوات} one {صوت واحد} two {صوتان} few {# أصوات} many {# صوتًا} other {# صوت}}",
     "playAria": "تشغيل عيّنة {name}، {language}",

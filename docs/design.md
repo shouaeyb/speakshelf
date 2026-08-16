@@ -45,7 +45,7 @@ Shipped writing sounds like a person who knows the subject. Concretely:
 - No AI boilerplate: never "delve", "seamless", "unleash", "elevate", "comprehensive suite", "in today's world".
 - Plain claims, verified numbers. "One of the largest catalogs", not "the largest", unless proven.
 - Prefer the modest claim over the impressive one: name what the data proves instead of counting what needs interpreting. A set difference of language codes is not "12 languages the other lacks" when two codes can mean one language; the safe sentence names the one real gap and calls variants variants (see the umbrella coverage cell).
-- Cached share surfaces (the og.png card, og and twitter titles and descriptions) carry no counts, and they name one provider fewer than the shelf plus "and more", so the cached line stays literally true when the next provider lands. Live pages name every provider exactly.
+- Cached share surfaces (the og.png card, og and twitter titles and descriptions) carry no counts, and they name one provider fewer than the shelf plus "and more", so the cached line stays literally true when the next provider lands. Sentences that close with "and more" follow the same rule wherever they render: the home hero and its JSON-LD also name one provider fewer (capped at three). Live sentences without an "and more", like the site title, name every provider exactly.
 - Counts and names derive from data in page code, so prose cannot go stale (see the About section for the pattern).
 - Sentence case headings. Mono uppercase is reserved for small labels.
 
@@ -61,3 +61,7 @@ Not every agent has Claude Design tools, and that must never block work:
 ## Verification bar for UI work
 
 Before calling visual work done: build and run the production server, screenshot desktop (1280 or 1440), tablet (860) and mobile (390) widths, click-test one real sample playback, and check that no text touches the viewport edge (the shell owes every width a 24px gutter).
+
+## The em dash rule, and the one language exempt from it
+
+No em dashes in shipped copy stays the rule, and it is a rule about AI-flavored English prose. Russian is exempt, by name: the тире is required orthography in copular sentences ("Speakshelf — справочный каталог" is textbook Russian, and rewriting it as "представляет собой" to dodge the dash produces bureaucratese). `scripts/check-messages.mjs` enforces the rule mechanically and carries the ru exemption. No other locale is exempt; a new locale that genuinely needs the dash gets its own named entry here first.

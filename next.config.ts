@@ -49,6 +49,16 @@ const securityHeaders = [
 ];
 
 const nextConfig: NextConfig = {
+  // app/global-not-found.tsx answers every unmatched URL at the routing
+  // level, before any layout renders, which is the only way a reader
+  // without JavaScript gets a branded 404 here: Next serves a notFound()
+  // thrown during a render as an empty-bodied error document instead, and
+  // in 16.3.0 the flag does not cover that case (see the comment on
+  // app/[locale]/not-found.tsx, which is why that file survives).
+  // Experimental in 16.3 and watched at every Next upgrade.
+  experimental: {
+    globalNotFound: true,
+  },
   async headers() {
     return [
       {

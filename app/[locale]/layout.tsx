@@ -1,6 +1,5 @@
 import { Suspense } from "react";
 import type { Metadata, Viewport } from "next";
-import { IBM_Plex_Sans, IBM_Plex_Mono, IBM_Plex_Sans_Arabic, IBM_Plex_Sans_JP } from "next/font/google";
 import { notFound } from "next/navigation";
 import { hasLocale, NextIntlClientProvider } from "next-intl";
 import { getTranslations } from "next-intl/server";
@@ -15,40 +14,8 @@ import { routing } from "@/i18n/routing";
 import { LOCALES, RTL_LOCALES, listNames } from "@/i18n/locales";
 import { getSite } from "@/lib/catalog";
 import { PROVIDERS } from "@/lib/providers";
+import { FONT_VARS } from "../fonts";
 import "../globals.css";
-
-const plexSans = IBM_Plex_Sans({
-  weight: ["300", "400", "500", "600"],
-  subsets: ["latin", "latin-ext", "cyrillic"],
-  display: "swap",
-  variable: "--font-sans",
-});
-
-const plexMono = IBM_Plex_Mono({
-  weight: ["400", "500"],
-  subsets: ["latin", "latin-ext", "cyrillic"],
-  display: "swap",
-  variable: "--font-mono",
-});
-
-// Script fonts activate per locale through the token overrides in
-// globals.css (html[lang="ar"], html[lang="ja"]); preload stays off so
-// only their own pages fetch them.
-const plexArabic = IBM_Plex_Sans_Arabic({
-  weight: ["300", "400", "500", "600"],
-  subsets: ["arabic"],
-  display: "swap",
-  variable: "--font-arabic",
-  preload: false,
-});
-
-const plexJP = IBM_Plex_Sans_JP({
-  weight: ["300", "400", "500", "600"],
-  subsets: ["latin"],
-  display: "swap",
-  variable: "--font-jp",
-  preload: false,
-});
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000";
 // Locked with the owner and the peer lane 2026-08-14; swap only with a
@@ -58,6 +25,16 @@ const CONTACT_EMAIL = "hi@speakshelf.com";
 export function generateStaticParams(): { locale: string }[] {
   return LOCALES.map((locale) => ({ locale }));
 }
+
+// No dynamicParams=false here, deliberately: in 16.3.0 a layout-level
+// false cascades over the voices page's explicit dynamicParams=true
+// (measured in .next/prerender-manifest.json: the [lang] route flipped to
+// fallback:false), and that page must accept unknown langs at request time
+// so the daily data refresh can surface new languages between deploys.
+// Garbage first segments never reach this layout anyway: the proxy matcher
+// (proxy.ts) sends them through the locale rewrite, where [provider]
+// declines them at the routing level. The notFound() below is defense in
+// depth for anything that still slips past the middleware.
 
 export async function generateMetadata({
   params,
@@ -143,7 +120,7 @@ export default async function LocaleLayout({
       lang={locale}
       dir={RTL_LOCALES.has(locale) ? "rtl" : "ltr"}
       data-scroll-behavior="smooth"
-      className={`${plexSans.variable} ${plexMono.variable} ${plexArabic.variable} ${plexJP.variable}`}
+      className={FONT_VARS}
     >
       <body>
         <NextIntlClientProvider>

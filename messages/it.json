@@ -28,7 +28,7 @@
     "why1VariantsOnly": "Amazon Polly aggiunge varianti regionali come {v1} e {v2}. Un solo scaffale mostra ciò che ogni provider ha e agli altri manca.",
     "why1Generic": "Un solo scaffale mostra ciò che ogni provider ha e agli altri manca.",
     "why2Title": "Un solo modo di ascoltare",
-    "why2Body": "Stessi filtri, stesso player, stesso schema di id delle voci su ogni scaffale. Confrontare voci tra provider sono due clic, non due console.",
+    "why2Body": "Stessi filtri, stesso player, stesso schema di id delle voci su ogni scaffale. Confrontare voci tra provider richiede due clic, non due console.",
     "why3Title": "Si aggiorna da solo",
     "why3Body": "Ogni scaffale si rinnova ogni giorno dall'AI TTS Microservice. Nuove voci, lingue e sottomodelli compaiono qui senza che nessuno tocchi il sito.",
     "aboutTitle": "Su questo catalogo",
@@ -70,7 +70,7 @@
       "jump": "MODELLO",
       "familiesIntro": "Kokoro è un modello unico anziché una scuderia di engine, quindi il suo intero catalogo sta in una sola famiglia.",
       "card": "Un modello open-weight, 82 milioni di parametri sotto licenza Apache 2.0.",
-      "about": "Kokoro è un modello text to speech open-weight: 82 milioni di parametri, rilasciato sotto licenza Apache 2.0. L'AI TTS Microservice lo serve accanto ai cataloghi cloud, così le sue {voices, number} voci in {languages, number} lingue suonano qui come ogni altro scaffale. Ogni voce ha un campione riproducibile.",
+      "about": "Kokoro è un modello text to speech open-weight: 82 milioni di parametri, rilasciato sotto licenza Apache 2.0. L'AI TTS Microservice lo serve accanto ai cataloghi cloud, così le sue {voices, number} voci in {languages, number} lingue suonano qui come su ogni altro scaffale. Ogni voce ha un campione riproducibile.",
       "unknownFamily": "Un'aggiunta recente al catalogo Kokoro."
     }
   },
@@ -90,7 +90,7 @@
   "families": {
     "google": {
       "Gemini": {
-        "blurb": "Voce nativa da Gemini. Ogni voce può essere resa da ogni sottomodello, e la resa segue un prompt di stile scritto.",
+        "blurb": "Sintesi vocale nativa di Gemini. Ogni voce può essere resa da ogni sottomodello, e la resa segue un prompt di stile scritto.",
         "note": "I campioni mostrano ogni voce onestamente, stranezze comprese. Alcune voci Gemini possono rendere un accento diverso dal loro codice, una voce en-US che suona en-IN per esempio. Nel tuo prompt di generazione, un'istruzione semplice come \"say this in an American accent\" di solito corregge."
       },
       "Chirp3HD": {
@@ -187,7 +187,7 @@
     "meta": "{code} · {voices, plural, one {# voce} other {# voci}} · {families, number} {familyWord} · {samples, plural, one {# campione riproducibile} other {# campioni riproducibili}}"
   },
   "consent": {
-    "text": "Speakshelf usa cookie e analitiche per capire come viene usato il catalogo.",
+    "text": "Speakshelf usa cookie e strumenti di analisi per capire come viene usato il catalogo.",
     "necessary": "Solo necessari",
     "accept": "Accetta tutto"
   },
@@ -217,10 +217,10 @@
     "providerDescription": "Ascolta i campioni dell'intero catalogo text to speech {label}: {voices, number} voci in {languages, number} lingue, con filtri per {familyWord}, lingua e genere.",
     "providerShareDescription": "L'intero catalogo text to speech {label} con un campione riproducibile per ogni voce.",
     "providerJsonLd": "Un catalogo di ogni voce text to speech {label}, con campioni da ascoltare nel browser.",
-    "langTitle": "Voci {label} {language}",
-    "langDescription": "Tutte le {voices, number} voci text to speech {label} per {language} ({code}), con campioni da ascoltare nel browser.",
-    "langShareDescription": "Voci text to speech {label} per {language}, con campioni riproducibili.",
-    "langJsonLd": "Voci text to speech {label} per {language} ({code})."
+    "langTitle": "Voci {label} in {language}",
+    "langDescription": "Tutte le {voices, number} voci text to speech {label} in {language} ({code}), con campioni da ascoltare nel browser.",
+    "langShareDescription": "Voci text to speech {label} in {language}, con campioni riproducibili.",
+    "langJsonLd": "Voci text to speech {label} in {language} ({code})."
   },
   "a11y": {
     "sections": "Sezioni",

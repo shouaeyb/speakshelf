@@ -12,7 +12,7 @@
   "home": {
     "eyebrow": "文字转语音目录",
     "title": "{voices, number} 个语音，一个书架。",
-    "sub": "Speakshelf 收录 {names} 等提供商的文字转语音语音。每个语音都有可在浏览器中播放的示例。无需账号，无需配置，只有语音。",
+    "sub": "Speakshelf 收录 {names} 等提供商的文字转语音音色。每个音色都有可在浏览器中播放的示例。无需账号，无需配置，只有语音。",
     "jumpProviders": "提供商",
     "jumpAbout": "关于",
     "providersTitle": "{count, plural, other {# 家提供商}}",
@@ -32,12 +32,12 @@
     "why3Title": "自动保持最新",
     "why3Body": "每个书架每天从 AI TTS Microservice 自动刷新。新语音、新语言和新子模型都会自行出现，无需任何人编辑网站。",
     "aboutTitle": "关于本目录",
-    "aboutBody": "Speakshelf 是文字转语音语音的参考目录。目前收录来自 {providers, plural, other {# 家提供商}}的 {voices, number} 个语音，覆盖 {languages, plural, other {# 种语言}}，每个语音都有可播放的示例。语音按提供商自己的方式分组，即模型家族与引擎，让你听到的与将要部署的一一对应。"
+    "aboutBody": "Speakshelf 是文字转语音音色的参考目录。目前收录来自 {providers, plural, other {# 家提供商}}的 {voices, number} 个语音，覆盖 {languages, plural, other {# 种语言}}，每个语音都有可播放的示例。语音按提供商自己的方式分组，即模型家族与引擎，让你听到的与将要部署的一一对应。"
   },
   "attribution": {
     "independence": "Speakshelf 是独立网站，与所收录的任何提供商均无关联。",
     "independenceNamed": "Speakshelf 是独立网站，与 {name} 无关联。",
-    "source": "语音数据与音频来自 <link>AI TTS Microservice</link>，该服务将 Google、Amazon、Azure 及其他语音提供商统一到单一接入点之后。示例按需生成，因此试听免费。"
+    "source": "语音数据与音频来自 <link>AI TTS Microservice</link>，该服务将 Google、Amazon、Azure 及其他语音提供商统一到同一个接入点。示例按需流式传输，因此试听免费。"
   },
   "providers": {
     "google": {
@@ -57,9 +57,9 @@
       "heroSub": "播放 Amazon Polly 目录中每个语音的示例。按引擎、语言和性别筛选。无需账号，无需配置，只有语音。",
       "familyWord": "{count, plural, other {引擎}}",
       "jump": "引擎",
-      "familiesIntro": "Polly 按引擎给语音分组。目录从 standard 语音延伸到generative 引擎，还有为长时间聆听打造的 long-form 档位。",
+      "familiesIntro": "Polly 按引擎给语音分组。目录从 standard 语音延伸到 generative 引擎，还有为长时间聆听打造的 long-form 档位。",
       "card": "AWS 的文字转语音服务：standard、neural、generative 与 long-form 引擎。",
-      "about": "Amazon Polly 是 AWS 的文字转语音服务，把文本转换为逼真的语音。这里的 {voices, number} 个语音横跨 {families, number} 个引擎：standard 与 neural、采用生成式 AI 技术打造的generative 引擎，以及为文章和培训材料等较长内容设计的 long-form 语音。每个语音都有可播放的示例。",
+      "about": "Amazon Polly 是 AWS 的文字转语音服务，把文本转换为逼真的语音。这里的 {voices, number} 个语音横跨 {families, number} 个引擎：standard 与 neural、采用生成式 AI 技术打造的 generative 引擎，以及为文章和培训材料等较长内容设计的 long-form 语音。每个语音都有可播放的示例。",
       "unknownFamily": "Amazon Polly 目录的新成员。"
     },
     "kokoro": {
@@ -209,18 +209,18 @@
   },
   "meta": {
     "andMore": "{names}等",
-    "siteTitle": "Speakshelf · 来自{names}的文字转语音语音",
-    "siteDescription": "浏览并试听来自{names}、覆盖 {languages, number} 种语言的 {voices, number} 个文字转语音语音，每个都有可播放示例。",
-    "shareDescription": "浏览并试听{names}的文字转语音目录。每个语音都有可播放示例。",
-    "homeJsonLd": "来自 {names} 等提供商的文字转语音语音目录，示例可在浏览器中播放。",
-    "providerTitle": "{label} 文字转语音语音",
+    "siteTitle": "Speakshelf · 来自 {names} 的文字转语音音色",
+    "siteDescription": "浏览并试听来自 {names}、覆盖 {languages, number} 种语言的 {voices, number} 个文字转语音音色，每个都有可播放示例。",
+    "shareDescription": "浏览并试听 {names} 的文字转语音目录。每个语音都有可播放示例。",
+    "homeJsonLd": "来自 {names} 等提供商的文字转语音音色目录，示例可在浏览器中播放。",
+    "providerTitle": "{label} 文字转语音音色",
     "providerDescription": "试听 {label} 完整文字转语音目录的示例：{voices, number} 个语音覆盖 {languages, number} 种语言，可按{familyWord}、语言和性别筛选。",
     "providerShareDescription": "{label} 的完整文字转语音目录，每个语音都有可播放示例。",
-    "providerJsonLd": "{label} 全部文字转语音语音的目录，示例可在浏览器中播放。",
+    "providerJsonLd": "{label} 全部文字转语音音色的目录，示例可在浏览器中播放。",
     "langTitle": "{label} {language}语音",
-    "langDescription": "{label} 面向{language}（{code}）的全部 {voices, number} 个文字转语音语音，示例可在浏览器中播放。",
-    "langShareDescription": "{label} 面向{language}的文字转语音语音，附可播放示例。",
-    "langJsonLd": "{label} 面向{language}（{code}）的文字转语音语音。"
+    "langDescription": "{label} 面向{language}（{code}）的全部 {voices, number} 个文字转语音音色，示例可在浏览器中播放。",
+    "langShareDescription": "{label} 面向{language}的文字转语音音色，附可播放示例。",
+    "langJsonLd": "{label} 面向{language}（{code}）的文字转语音音色。"
   },
   "a11y": {
     "sections": "栏目",
