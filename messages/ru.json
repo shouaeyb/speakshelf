@@ -192,8 +192,6 @@
     "accept": "Принять всё"
   },
   "suggest": {
-    "invite": "Смотреть Speakshelf на русском?",
-    "switch": "Переключить",
     "dismissAria": "Скрыть предложение языка"
   },
   "notFound": {

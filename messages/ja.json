@@ -192,8 +192,6 @@
     "accept": "すべて許可"
   },
   "suggest": {
-    "invite": "Speakshelf を日本語で読みますか？",
-    "switch": "切り替える",
     "dismissAria": "言語の提案を閉じる"
   },
   "notFound": {

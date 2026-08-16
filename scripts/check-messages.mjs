@@ -15,9 +15,12 @@
 // - plural branches legal for ICU (the parser enforces a required "other");
 // - "Speakshelf" appears verbatim wherever the en string carries it;
 // - no em dashes, except Russian, where the copular тире is grammar, not
-//   AI prose (design.md records the exemption);
-// - suggest.invite equals the INVITES entry in i18n/locales.ts per locale,
-//   so the two copies of the invitation can never drift apart.
+//   AI prose (design.md records the exemption).
+//
+// The suggestion banner's visible invitation and CTA live only in INVITES
+// in i18n/locales.ts (target-language on purpose; the dismiss aria-label
+// stays a message key); Record<Locale, ...> plus tsc keeps that map
+// complete, so nothing here checks it.
 //
 // Run: node scripts/check-messages.mjs
 
@@ -122,21 +125,10 @@ for (const file of localeFiles) {
   }
 }
 
-// The invitation strip renders INVITES from i18n/locales.ts; messages carry
-// a suggest.invite twin. They must agree per locale or one of them lies.
-const localesTs = readFileSync(join(root, "i18n", "locales.ts"), "utf8");
-for (const file of ["en.json", ...localeFiles]) {
-  const locale = file.replace(".json", "");
-  const invite = leaves(JSON.parse(readFileSync(join(dir, file), "utf8"))).get("suggest.invite");
-  const match = localesTs.match(new RegExp(`${locale}:\\s*\\{\\s*invite:\\s*"([^"]+)"`));
-  if (!match) fail(`INVITES: no entry found for ${locale}`);
-  else if (match[1] !== invite) fail(`${locale}: suggest.invite "${invite}" != INVITES "${match[1]}"`);
-}
-
 if (failures.length > 0) {
   for (const message of failures) console.error("FAIL " + message);
   process.exit(1);
 }
 console.log(
-  `${localeFiles.length} catalogs match en.json: ${checkedKeys} keys checked for arguments, types, tags, brand, dashes; invites in sync`,
+  `${localeFiles.length} catalogs match en.json: ${checkedKeys} keys checked for arguments, types, tags, brand, dashes`,
 );

@@ -192,8 +192,6 @@
     "accept": "全部接受"
   },
   "suggest": {
-    "invite": "用中文浏览 Speakshelf？",
-    "switch": "切换",
     "dismissAria": "关闭语言建议"
   },
   "notFound": {

@@ -192,8 +192,6 @@
     "accept": "Alle akzeptieren"
   },
   "suggest": {
-    "invite": "Speakshelf auf Deutsch lesen?",
-    "switch": "Wechseln",
     "dismissAria": "Sprachvorschlag schließen"
   },
   "notFound": {
