@@ -6,6 +6,7 @@ import { useLocale, useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
 import type { Voice, PackedCatalog, PackedProvider } from "@/lib/data";
 import { unpack } from "@/lib/data";
+import { formatsParam } from "@/lib/audio-formats";
 import { languageName } from "@/lib/lang";
 import { PROVIDER_FAMILIES, familyLabel, familyMeta, familyRank, modelLabel } from "@/lib/families";
 import FilterFields, { type FilterKind } from "@/components/FilterFields";
@@ -45,12 +46,15 @@ type Active = {
 // Module level so both caches survive route changes within the session.
 // Safari re-downloads media URLs even when they are fresh, so after the
 // first successful play the audio bytes are kept as a blob; replays then
-// come from memory in every engine. Signed URLs expire upstream after 24
-// hours; cached ones are dropped after 18 so a long-lived tab cannot
-// replay a dead link. Keys are full voice ids, so providers never collide.
+// come from memory in every engine. A signed URL is kept until the moment
+// the server says it dies, not for a span counted from when we received it:
+// the server may hand over a URL already well into its life, and a fresh
+// local clock on top of that is how a long-lived tab ends up replaying a
+// dead link. The fallback span only covers a server that reports no expiry.
+// Keys are full voice ids, so providers never collide.
 const URL_TTL_MS = 18 * 60 * 60 * 1000;
 const BLOB_MAX = 24;
-const urlCache = new Map<string, { url: string; t: number }>();
+const urlCache = new Map<string, { url: string; exp: number }>();
 // A voice whose search document has not been built yet matches nothing
 // rather than crashing the filter. Module level so the memo below needs no
 // dependency on it.
@@ -581,7 +585,7 @@ function ExplorerCore({ provider, voices, lockLanguage, models, paramsKey }: Cor
 
     function resolve() {
       const known = urlCache.get(cacheKey);
-      if (known && Date.now() - known.t < URL_TTL_MS) {
+      if (known && known.exp > Date.now()) {
         source = "cached";
         start(known.url, false);
         return;
@@ -617,7 +621,11 @@ function ExplorerCore({ provider, voices, lockLanguage, models, paramsKey }: Cor
         fail(sawGenerating ? "notePreparing" : "noteUnavailable");
         return;
       }
-      fetch(`/api/sample?id=${encodeURIComponent(v.id)}${model ? `&model=${encodeURIComponent(model)}` : ""}`, {
+      const query =
+        `/api/sample?id=${encodeURIComponent(v.id)}` +
+        (model ? `&model=${encodeURIComponent(model)}` : "") +
+        `&formats=${formatsParam()}`;
+      fetch(query, {
         // A hung request must not strand the spinner; a timeout lands in
         // the catch below as a blip.
         signal: AbortSignal.timeout(15_000),
@@ -648,12 +656,16 @@ function ExplorerCore({ provider, voices, lockLanguage, models, paramsKey }: Cor
             fail(sawGenerating ? "notePreparing" : "noteUnavailable");
             return;
           }
-          const body = (await res.json().catch(() => null)) as { url?: string } | null;
+          const body = (await res.json().catch(() => null)) as { url?: string; reuseUntil?: number } | null;
           if (!body?.url) {
             fail("noteUnavailable");
             return;
           }
-          urlCache.set(cacheKey, { url: body.url, t: Date.now() });
+          // The server says how long this URL may be reused, having already
+          // trimmed its own safety margin; only a server that says nothing
+          // falls back to a local span.
+          const exp = typeof body.reuseUntil === "number" ? body.reuseUntil : Date.now() + URL_TTL_MS;
+          urlCache.set(cacheKey, { url: body.url, exp });
           start(body.url, false);
         })
         .catch(() => {

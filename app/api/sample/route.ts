@@ -1,4 +1,5 @@
 import type { NextRequest } from "next/server";
+import { normalizeFormats } from "@/lib/audio-formats";
 import { getSite, getSiteFresh } from "@/lib/catalog";
 import { rateLimit, upstreamMissAllowed } from "@/lib/ratelimit";
 
@@ -7,20 +8,36 @@ export const dynamic = "force-dynamic";
 
 const API_BASE = "https://aitts.theproductivepixel.com/api/v1";
 
-// Signed sample URLs live for 24 hours; keep them for 20 and refresh after.
-// Misses store the in-flight promise so concurrent requests for the same
-// voice share one upstream call instead of draining the rate bucket.
-// Upstream returns 202 while a sample is being generated for the first
-// time; that is relayed to the client, which retries after a short wait.
-// The generating answer is also kept for its retry interval, so every
-// retrier of a cold voice coalesces into at most one upstream lookup per
-// interval instead of each spending the process-wide miss budget.
-const TTL_MS = 20 * 60 * 60 * 1000;
-type Entry = { url: string; exp: number };
+// Signed sample URLs carry their own expiry, which upstream reports as an
+// absolute timestamp. We keep a cached URL until shortly before that moment
+// rather than for a fixed span of our own, because a URL handed to us late in
+// its life would otherwise be treated as fresh by every layer below and die in
+// a long-lived tab. The ceiling is a safety net for an upstream that ever
+// stops reporting expiry.
+//
+// There are two key spaces, and the difference matters. A ready URL is
+// FORMAT-SPECIFIC: one server cache serves a Safari visitor asking for AAC and
+// a Chromium visitor asking for Opus, so the requested format belongs in the
+// key and in the in-flight coalescing, or one of them would be handed audio it
+// cannot play. Generation is format-INDEPENDENT: upstream synthesizes one
+// sample per voice and converts it afterwards, so the "still generating"
+// answer is keyed by voice and sub-model but not format, so every retrier of a cold voice, whatever
+// format it wants, coalesces into at most one upstream lookup per retry
+// interval instead of each spending the process-wide miss budget. One bounded
+// exception, left alone on purpose: before that first 202 has installed the
+// marker, two different formats asking for the same cold voice at the same
+// instant do start one upstream lookup each. Serializing that away would mean
+// blocking one format behind another's lookup, which costs a reader latency to
+// save at most one token.
+const TTL_CEILING_MS = 20 * 60 * 60 * 1000;
+const EXPIRY_SAFETY_MS = 60 * 60 * 1000;
+const FALLBACK_TTL_MS = 10 * 60 * 1000;
+type Entry = { url: string; exp: number; contentType?: string };
 type Pending = { generating: true; retryAfter: number };
 type Failure = { retryAfter: string | null; status: number };
 type Result = Entry | Pending | Failure;
-const cache = new Map<string, Entry | (Pending & { exp: number }) | Promise<Result>>();
+const cache = new Map<string, Entry | Promise<Result>>();
+const generating = new Map<string, Pending & { exp: number }>();
 
 // Audio hosts the production CSP allows (next.config.ts media-src and
 // connect-src): GCS today, Cloudflare R2 pre-added for the owner's
@@ -45,8 +62,11 @@ function checkAudioHost(url: string): void {
   }
 }
 
-async function lookup(id: string, model: string, key: string): Promise<Result> {
-  const qs = model ? `?model=${encodeURIComponent(model)}` : "";
+async function lookup(id: string, model: string, formats: string, key: string): Promise<Result> {
+  const params = new URLSearchParams();
+  if (model) params.set("model", model);
+  if (formats) params.set("formats", formats);
+  const qs = params.size > 0 ? `?${params}` : "";
   const res = await fetch(`${API_BASE}/voices/${encodeURIComponent(id)}/sample-url${qs}`, {
     headers: { Authorization: `Bearer ${key}` },
     cache: "no-store",
@@ -58,11 +78,31 @@ async function lookup(id: string, model: string, key: string): Promise<Result> {
   if (!res.ok) {
     return { retryAfter: res.headers.get("retry-after"), status: res.status };
   }
-  const body = (await res.json()) as { data?: { sample_url?: string } };
+  const body = (await res.json()) as {
+    data?: { sample_url?: string; expires_at?: string; content_type?: string };
+  };
   const url = body.data?.sample_url;
   if (!url) return { retryAfter: null, status: 404 };
   checkAudioHost(url);
-  return { url, exp: Date.now() + TTL_MS };
+  // Upstream reports when this URL dies. Stop trusting it an hour early, and
+  // never hold one longer than the ceiling even if that timestamp is missing
+  // or absurd.
+  const now = Date.now();
+  const reported = Date.parse(body.data?.expires_at ?? "");
+  const expiresAt = Number.isFinite(reported) ? reported : now + TTL_CEILING_MS;
+  let exp = Math.min(expiresAt - EXPIRY_SAFETY_MS, now + TTL_CEILING_MS);
+
+  // A compressed preview is made shortly after a sample first exists, so a
+  // request that asked for one and got WAV has most likely arrived during
+  // that gap. Holding that WAV for a day would pin the voice to the large
+  // file long after the small one landed, so this answer is kept briefly and
+  // then asked again.
+  const contentType = body.data?.content_type;
+  const wantedCompressed = formats !== "" && !formats.startsWith("wav");
+  if (wantedCompressed && contentType === "audio/wav") {
+    exp = Math.min(exp, now + FALLBACK_TTL_MS);
+  }
+  return { url, exp, contentType };
 }
 
 export async function GET(req: NextRequest) {
@@ -103,7 +143,27 @@ export async function GET(req: NextRequest) {
     return Response.json({ error: "Server is missing TTS_API_KEY" }, { status: 500 });
   }
 
-  const cacheKey = model ? `${id}|${model}` : id;
+  // A visitor states which formats their browser can play. Anything we do not
+  // recognize is refused here rather than forwarded, so a bad list can never
+  // become an upstream request.
+  const rawFormats = req.nextUrl.searchParams.get("formats");
+  const formats = normalizeFormats(rawFormats);
+  if (rawFormats !== null && !formats) {
+    return Response.json({ error: "Unsupported audio format requested" }, { status: 400 });
+  }
+  const profile = formats ? formats.join(",") : "";
+
+  const voiceKey = model ? `${id}|${model}` : id;
+  const cacheKey = profile ? `${voiceKey}#${profile}` : voiceKey;
+
+  // A voice already known to be generating answers every format from one
+  // marker, without a second upstream call or a second miss token.
+  const marker = generating.get(voiceKey);
+  if (marker && marker.exp > Date.now()) {
+    return Response.json({ status: "generating", retry_after: marker.retryAfter }, { status: 202 });
+  }
+  if (marker) generating.delete(voiceKey);
+
   let entry = cache.get(cacheKey);
   if (entry && !(entry instanceof Promise) && entry.exp <= Date.now()) {
     cache.delete(cacheKey);
@@ -118,17 +178,22 @@ export async function GET(req: NextRequest) {
         { status: 503, headers: { "Retry-After": "60" } },
       );
     }
-    const pending = lookup(id, model, key);
+    const pending = lookup(id, model, profile, key);
     cache.set(cacheKey, pending);
     pending.then(
       (r) => {
         if ("url" in r) cache.set(cacheKey, r);
-        else if ("generating" in r)
-          cache.set(cacheKey, {
-            ...r,
-            exp: Date.now() + Math.min(Math.max(r.retryAfter, 3), 15) * 1000,
-          });
-        else cache.delete(cacheKey);
+        else if ("generating" in r) {
+          cache.delete(cacheKey);
+          // Markers live seconds, and a voice nobody asks about again would
+          // otherwise keep its dead entry forever, so a crowded map sheds the
+          // expired ones before adding another.
+          const now = Date.now();
+          if (generating.size > 64) {
+            for (const [k, m] of generating) if (m.exp <= now) generating.delete(k);
+          }
+          generating.set(voiceKey, { ...r, exp: now + Math.min(Math.max(r.retryAfter, 3), 15) * 1000 });
+        } else cache.delete(cacheKey);
       },
       () => cache.delete(cacheKey),
     );
@@ -143,7 +208,10 @@ export async function GET(req: NextRequest) {
   }
 
   if ("url" in result) {
-    return Response.json({ url: result.url });
+    // reuseUntil travels with the URL so the browser expires its copy against
+    // the same moment this server does, instead of starting a fresh clock on
+    // a URL that may already be most of the way through its life.
+    return Response.json({ url: result.url, reuseUntil: result.exp, contentType: result.contentType });
   }
   if ("generating" in result) {
     return Response.json({ status: "generating", retry_after: result.retryAfter }, { status: 202 });
