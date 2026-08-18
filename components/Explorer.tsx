@@ -757,13 +757,23 @@ function ExplorerCore({ provider, voices, lockLanguage, models, paramsKey }: Cor
 
     /** Fetch the whole sample, then play it from memory.
      *
-     *  Compressed samples are tens of kilobytes, so one fetch beats letting
-     *  the media element negotiate: measured on production, WebKit reached
-     *  sound in 667ms this way against 2706ms streamed, Chromium 892 against
-     *  1739, because the element otherwise opens several range requests
-     *  before it will start. The same bytes become the blob and the decoded
-     *  replay tiers, so this single request also replaces the second
-     *  download the old path made after playback began. */
+     *  This is a WebKit fix that showed no measured penalty for the other engines. Handed a
+     *  URL, WebKit opens several range requests before it will make a sound;
+     *  handed bytes it plays at once. Measured end to end on production, a
+     *  first play in WebKit went from a median of 4050ms to 2126ms, with the
+     *  requests per play falling from four to one. An alternating
+     *  same-session test of the two transports found Chromium and Firefox
+     *  indifferent, 452ms against 425ms and 444ms against 443ms, which is
+     *  why the choice is made by format rather than by browser: no engine
+     *  showed a penalty for taking the same path.
+     *
+     *  It only works because samples are compressed now, tens of kilobytes.
+     *  Waiting for a whole 460KB WAV before making a sound would be worse
+     *  than streaming it, which is why the WAV fallback still streams.
+     *
+     *  The same bytes become the blob and decoded replay tiers, so this one
+     *  request also replaces the second download the old path made after
+     *  playback began. */
     function playFromBytes(url: string) {
       const left = startupLeft();
       if (left <= 0) {
