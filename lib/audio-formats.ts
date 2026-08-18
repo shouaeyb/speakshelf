@@ -69,3 +69,24 @@ export function preferredFormats(): SampleFormat[] {
 export function formatsParam(): string {
   return preferredFormats().join(",");
 }
+
+/** MIME types the sample service answers with, mapped to our three names. */
+const MIME_TO_FORMAT: Record<string, SampleFormat> = {
+  "audio/ogg": "opus",
+  "audio/opus": "opus",
+  "audio/aac": "aac",
+  "audio/mp4": "aac",
+  "audio/wav": "wav",
+  "audio/x-wav": "wav",
+  "audio/wave": "wav",
+};
+
+/**
+ * Name the format actually served, for analytics. Returns undefined for a
+ * type we do not recognize rather than guessing from what was requested: a
+ * preference is not evidence of what came back.
+ */
+export function formatFromContentType(contentType: string | undefined): SampleFormat | undefined {
+  if (!contentType) return undefined;
+  return MIME_TO_FORMAT[contentType.split(";")[0].trim().toLowerCase()];
+}

@@ -19,7 +19,10 @@ const API_BASE = "https://aitts.theproductivepixel.com/api/v1";
 // FORMAT-SPECIFIC: one server cache serves a Safari visitor asking for AAC and
 // a Chromium visitor asking for Opus, so the requested format belongs in the
 // key and in the in-flight coalescing, or one of them would be handed audio it
-// cannot play. Generation is format-INDEPENDENT: upstream synthesizes one
+// cannot play. That costs at most one extra cold lookup per voice per
+// profile, and a browser only ever sends one of four (opus,aac,wav /
+// opus,wav / aac,wav / wav), so the multiplier is bounded and steady state
+// is unaffected. Generation is format-INDEPENDENT: upstream synthesizes one
 // sample per voice and converts it afterwards, so the "still generating"
 // answer is keyed by voice and sub-model but not format, so every retrier of a cold voice, whatever
 // format it wants, coalesces into at most one upstream lookup per retry
@@ -156,20 +159,21 @@ export async function GET(req: NextRequest) {
   const voiceKey = model ? `${id}|${model}` : id;
   const cacheKey = profile ? `${voiceKey}#${profile}` : voiceKey;
 
-  // A voice already known to be generating answers every format from one
-  // marker, without a second upstream call or a second miss token.
-  const marker = generating.get(voiceKey);
-  if (marker && marker.exp > Date.now()) {
-    return Response.json({ status: "generating", retry_after: marker.retryAfter }, { status: 202 });
-  }
-  if (marker) generating.delete(voiceKey);
-
   let entry = cache.get(cacheKey);
   if (entry && !(entry instanceof Promise) && entry.exp <= Date.now()) {
     cache.delete(cacheKey);
     entry = undefined;
   }
   if (!entry) {
+    // Only a genuine miss consults the marker. A voice can be mid-generation
+    // for one format while another format's URL is already cached and
+    // playable, and answering that reader "still preparing" would hold a
+    // ready sample back for the marker's whole life.
+    const marker = generating.get(voiceKey);
+    if (marker && marker.exp > Date.now()) {
+      return Response.json({ status: "generating", retry_after: marker.retryAfter }, { status: 202 });
+    }
+    if (marker) generating.delete(voiceKey);
     // Cache miss: this is the only path that spends the shared upstream
     // allowance, so it carries its own process-wide budget.
     if (!upstreamMissAllowed()) {
@@ -182,8 +186,12 @@ export async function GET(req: NextRequest) {
     cache.set(cacheKey, pending);
     pending.then(
       (r) => {
-        if ("url" in r) cache.set(cacheKey, r);
-        else if ("generating" in r) {
+        if ("url" in r) {
+          cache.set(cacheKey, r);
+          // A ready answer proves generation finished, so a marker left from
+          // an earlier attempt must not outlive it.
+          generating.delete(voiceKey);
+        } else if ("generating" in r) {
           cache.delete(cacheKey);
           // Markers live seconds, and a voice nobody asks about again would
           // otherwise keep its dead entry forever, so a crowded map sheds the

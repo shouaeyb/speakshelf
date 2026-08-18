@@ -1,5 +1,6 @@
 "use client";
 
+import { memo } from "react";
 import { useTranslations } from "next-intl";
 import { familyLabel } from "@/lib/families";
 import type { Voice } from "@/lib/data";
@@ -31,13 +32,15 @@ interface VoiceRowProps {
   modelText: string;
   /** This row's playback state, null while another row (or none) plays. */
   state: { status: PlayStatus; note?: string } | null;
-  onPlay: () => void;
+  /** Takes the voice, so the list can hand every row one shared function
+   *  instead of minting a closure per row on every render. */
+  onPlay: (voice: Voice) => void;
 }
 
 /** One voice: play button, name, and the metadata. Desktop keeps it on a
  *  single line; at mobile widths CSS wraps it into two, with the play
  *  button's touch target spanning both. */
-export default function VoiceRow({
+function VoiceRowBase({
   voice,
   provider,
   languageLabel,
@@ -56,7 +59,7 @@ export default function VoiceRow({
         className={`play${state !== null && state.status !== "error" ? " play-on" : ""}`}
         aria-label={t("explorer.playAria", { name: voice.name, language: languageLabel })}
         aria-pressed={state !== null && state.status === "playing"}
-        onClick={onPlay}
+        onClick={() => onPlay(voice)}
       >
         {state === null || state.status === "error" ? (
           <PlayGlyph />
@@ -109,3 +112,20 @@ export default function VoiceRow({
     </div>
   );
 }
+
+/** The list holds thousands of rows on a big provider, and every playback
+ *  state change re-renders the component that owns them all. Without this
+ *  comparator React would reconcile every row to change one; with it, only
+ *  the row whose state actually moved does any work. The state object is
+ *  built fresh by the parent on each render, so it is compared by value.
+ *  Voices are immutable catalog data, so identity is enough for the rest. */
+export default memo(VoiceRowBase, (prev, next) => {
+  if (prev.voice !== next.voice) return false;
+  if (prev.provider !== next.provider) return false;
+  if (prev.languageLabel !== next.languageLabel) return false;
+  if (prev.modelText !== next.modelText) return false;
+  if (prev.onPlay !== next.onPlay) return false;
+  if (prev.state === next.state) return true;
+  if (prev.state === null || next.state === null) return false;
+  return prev.state.status === next.state.status && prev.state.note === next.state.note;
+});

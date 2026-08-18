@@ -1,12 +1,12 @@
 "use client";
 
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { useLocale, useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
 import type { Voice, PackedCatalog, PackedProvider } from "@/lib/data";
 import { unpack } from "@/lib/data";
-import { formatsParam } from "@/lib/audio-formats";
+import { formatFromContentType, formatsParam, type SampleFormat } from "@/lib/audio-formats";
 import { languageName } from "@/lib/lang";
 import { PROVIDER_FAMILIES, familyLabel, familyMeta, familyRank, modelLabel } from "@/lib/families";
 import FilterFields, { type FilterKind } from "@/components/FilterFields";
@@ -54,7 +54,15 @@ type Active = {
 // Keys are full voice ids, so providers never collide.
 const URL_TTL_MS = 18 * 60 * 60 * 1000;
 const BLOB_MAX = 24;
+// How long a media element may take to produce sound before the attempt is
+// declared dead. Nothing else bounds it: the lookup's abort only covers the
+// URL request, so without this a stalled media fetch spins forever.
+const MEDIA_START_MS = 20_000;
 const urlCache = new Map<string, { url: string; exp: number }>();
+// Which format each voice was actually served, so a replay out of the blob
+// or decoded tier still reports honestly instead of guessing from what this
+// browser prefers. Set from the server's content type, never from the ask.
+const formatCache = new Map<string, SampleFormat>();
 // A voice whose search document has not been built yet matches nothing
 // rather than crashing the filter. Module level so the memo below needs no
 // dependency on it.
@@ -143,6 +151,9 @@ function ExplorerCore({ provider, voices, lockLanguage, models, paramsKey }: Cor
   const replayRef = useRef<ReplayControls | null>(null);
   const errTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const retryTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  // A media element that never starts and never errors would otherwise hold
+  // the row on its spinner forever; this is that deadline.
+  const mediaTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   // Guards against stale media events after switching voices or stopping.
   const playGen = useRef(0);
   // The write effect must not run before the URL has been applied once.
@@ -227,7 +238,7 @@ function ExplorerCore({ provider, voices, lockLanguage, models, paramsKey }: Cor
     const gen = playGen;
     const audio = audioRef;
     const replay = replayRef;
-    const timers = [errTimer, retryTimer, toastTimer];
+    const timers = [errTimer, retryTimer, toastTimer, mediaTimer];
     return () => {
       // The generation bump makes any in-flight lookup a no-op, so no
       // retry chain can fire after unmount.
@@ -459,6 +470,7 @@ function ExplorerCore({ provider, voices, lockLanguage, models, paramsKey }: Cor
   function stop() {
     playGen.current++;
     if (retryTimer.current) clearTimeout(retryTimer.current);
+    if (mediaTimer.current) clearTimeout(mediaTimer.current);
     audioRef.current?.pause();
     replayRef.current?.stop();
     replayRef.current = null;
@@ -488,6 +500,7 @@ function ExplorerCore({ provider, voices, lockLanguage, models, paramsKey }: Cor
     replayRef.current = null;
     if (errTimer.current) clearTimeout(errTimer.current);
     if (retryTimer.current) clearTimeout(retryTimer.current);
+    if (mediaTimer.current) clearTimeout(mediaTimer.current);
     const gen = ++playGen.current;
     const current = () => playGen.current === gen;
     setActive({ id: v.id, model, status: "loading" });
@@ -502,16 +515,24 @@ function ExplorerCore({ provider, voices, lockLanguage, models, paramsKey }: Cor
     // One failure per playback attempt: a dead media load can surface as
     // both an element error event and a play() rejection.
     let failedOnce = false;
+    // Bumped by each start(); only the newest attempt may end the chain.
+    let attemptSeq = 0;
 
-    const fail = (note: string) => {
+    // `note` is what the row shows; `reason` is what analytics records, and
+    // they differ only where one visible message covers several distinct
+    // failures. A media timeout reads as "unavailable" to a reader but must
+    // stay countable on its own, or the deadline can never be validated.
+    const fail = (note: string, reason: string = note) => {
       if (!current() || failedOnce) return;
       failedOnce = true;
+      if (mediaTimer.current) clearTimeout(mediaTimer.current);
       track(EVENTS.SAMPLE_FAILED, {
         provider,
         locale,
         voice_id: v.id,
         model: model || undefined,
-        reason: note,
+        format: formatCache.get(cacheKey),
+        reason,
       });
       setActive({ id: v.id, model, status: "error", note });
       errTimer.current = setTimeout(() => {
@@ -520,7 +541,10 @@ function ExplorerCore({ provider, voices, lockLanguage, models, paramsKey }: Cor
     };
 
     const markPlaying = () => {
-      if (!current()) return;
+      // A row that already failed stays failed: a late playing event from a
+      // media element abandoned at the deadline must not resurrect it.
+      if (!current() || failedOnce) return;
+      if (mediaTimer.current) clearTimeout(mediaTimer.current);
       if (!reported) {
         reported = true;
         track(EVENTS.SAMPLE_PLAYED, {
@@ -530,6 +554,8 @@ function ExplorerCore({ provider, voices, lockLanguage, models, paramsKey }: Cor
           family: v.family,
           language: v.lang,
           model: model || undefined,
+          format: formatCache.get(cacheKey),
+          ms: Date.now() - clickedAt,
           source,
         });
         maybeToast(v.family);
@@ -545,6 +571,13 @@ function ExplorerCore({ provider, voices, lockLanguage, models, paramsKey }: Cor
 
     function start(url: string, fromBlob: boolean) {
       if (!current()) return;
+      // Each attempt owns its deadline and its play() promise. Starting a
+      // new one (the blob tier falling back to the network, say) abandons
+      // the previous attempt, so neither its timer nor a late rejection can
+      // end a chain that has already moved on.
+      const attempt = ++attemptSeq;
+      const live = () => current() && attempt === attemptSeq && !failedOnce;
+      if (mediaTimer.current) clearTimeout(mediaTimer.current);
       if (!fromBlob) streamUrl = url;
       a.onplaying = markPlaying;
       // Safari does not reliably fire onplaying for cached replays; any
@@ -561,7 +594,10 @@ function ExplorerCore({ provider, voices, lockLanguage, models, paramsKey }: Cor
       a.onerror = () => {
         if (!current()) return;
         if (fromBlob) {
-          // A dead object URL falls back to the network path once.
+          // A dead object URL falls back to the network path once. The
+          // fallback is a fresh attempt with the whole remaining budget, so
+          // this one's deadline goes with it.
+          if (mediaTimer.current) clearTimeout(mediaTimer.current);
           const stale = blobCache.get(cacheKey);
           if (stale) URL.revokeObjectURL(stale.url);
           blobCache.delete(cacheKey);
@@ -573,13 +609,45 @@ function ExplorerCore({ provider, voices, lockLanguage, models, paramsKey }: Cor
         fail("noteUnavailable");
       };
       a.src = url;
+      // The deadline is armed before play() and covers the whole media load,
+      // which nothing else does: the lookup's own abort only guards the URL
+      // request. Without it a media element that neither starts nor errors,
+      // which is what a stalled range request looks like, leaves the row
+      // spinning for good. It never outlives the reader's patience budget.
+      const leftForMedia = remaining();
+      if (leftForMedia <= 0) {
+        fail(sawGenerating ? "notePreparing" : "noteUnavailable");
+        return;
+      }
+      mediaTimer.current = setTimeout(
+        () => {
+          if (!live()) return;
+          // Abandon this element: pause it and drop its handlers so a late
+          // event cannot contradict the failure the reader has been shown.
+          a.onplaying = null;
+          a.ontimeupdate = null;
+          a.onerror = null;
+          a.pause();
+          if (fromBlob) {
+            // The object URL is the suspect, so it goes with the attempt.
+            const stale = blobCache.get(cacheKey);
+            if (stale) URL.revokeObjectURL(stale.url);
+            blobCache.delete(cacheKey);
+          } else {
+            urlCache.delete(cacheKey);
+          }
+          fail("noteUnavailable", "mediaTimeout");
+        },
+        Math.min(MEDIA_START_MS, leftForMedia),
+      );
       a.play()
         .catch(() => {
           // A rejection for the live generation is real, usually an
           // autoplay block because the lookup left the click gesture. The
           // repeat tap plays synchronously from the cache. Stale
-          // rejections come from row switches and are ignored.
-          if (current()) fail("noteTapAgain");
+          // rejections, from a row switch or an attempt this one replaced,
+          // are ignored.
+          if (live()) fail("noteTapAgain");
         });
     }
 
@@ -590,6 +658,10 @@ function ExplorerCore({ provider, voices, lockLanguage, models, paramsKey }: Cor
         start(known.url, false);
         return;
       }
+      // No cached media for this voice, so whatever format a previous
+      // attempt was served no longer describes this one. Cleared before the
+      // lookup so a failure cannot report a format this attempt never got.
+      formatCache.delete(cacheKey);
       source = "network";
       lookup(0);
     }
@@ -603,12 +675,21 @@ function ExplorerCore({ provider, voices, lockLanguage, models, paramsKey }: Cor
     // not the network's.
     const CHAIN_BUDGET_MS = 90_000;
     const withinBudget = () => Date.now() - clickedAt <= CHAIN_BUDGET_MS;
+    // What is left of the reader's ninety seconds. Every wait the chain can
+    // schedule is clamped to it, so the budget is genuinely terminal rather
+    // than a figure a long retry wait or a request timeout can overrun.
+    const remaining = () => CHAIN_BUDGET_MS - (Date.now() - clickedAt);
     let sawGenerating = false;
     let blips = 0;
 
     function retryLater(seconds: number, attempt: number) {
+      const left = remaining();
+      if (left <= 0) {
+        fail(sawGenerating ? "notePreparing" : "noteUnavailable");
+        return;
+      }
       setActive({ id: v.id, model, status: "generating" });
-      const wait = Math.min(Math.max(seconds, 4), 15) * 1000;
+      const wait = Math.min(Math.min(Math.max(seconds, 4), 15) * 1000, left);
       retryTimer.current = setTimeout(() => {
         if (current()) lookup(attempt + 1);
       }, wait);
@@ -616,8 +697,13 @@ function ExplorerCore({ provider, voices, lockLanguage, models, paramsKey }: Cor
 
     function lookup(attempt: number) {
       // The budget is a wall-clock hard stop, checked at dispatch so a
-      // wait scheduled near the edge cannot slip past it.
-      if (!withinBudget()) {
+      // wait scheduled near the edge cannot slip past it. The clock is read
+      // ONCE and reused: checking with one read and sizing the abort with a
+      // second lets the budget lapse between them, and AbortSignal.timeout
+      // of a negative span throws synchronously, outside the chain that
+      // would have caught it, stranding the spinner it was meant to save.
+      const left = remaining();
+      if (left <= 0) {
         fail(sawGenerating ? "notePreparing" : "noteUnavailable");
         return;
       }
@@ -627,8 +713,9 @@ function ExplorerCore({ provider, voices, lockLanguage, models, paramsKey }: Cor
         `&formats=${formatsParam()}`;
       fetch(query, {
         // A hung request must not strand the spinner; a timeout lands in
-        // the catch below as a blip.
-        signal: AbortSignal.timeout(15_000),
+        // the catch below as a blip. Clamped to the reader's remaining
+        // patience so a request cannot outlive the budget it belongs to.
+        signal: AbortSignal.timeout(Math.min(15_000, left)),
       })
         .then(async (res) => {
           if (!current()) return;
@@ -656,7 +743,11 @@ function ExplorerCore({ provider, voices, lockLanguage, models, paramsKey }: Cor
             fail(sawGenerating ? "notePreparing" : "noteUnavailable");
             return;
           }
-          const body = (await res.json().catch(() => null)) as { url?: string; reuseUntil?: number } | null;
+          const body = (await res.json().catch(() => null)) as {
+            url?: string;
+            reuseUntil?: number;
+            contentType?: string;
+          } | null;
           if (!body?.url) {
             fail("noteUnavailable");
             return;
@@ -666,6 +757,16 @@ function ExplorerCore({ provider, voices, lockLanguage, models, paramsKey }: Cor
           // falls back to a local span.
           const exp = typeof body.reuseUntil === "number" ? body.reuseUntil : Date.now() + URL_TTL_MS;
           urlCache.set(cacheKey, { url: body.url, exp });
+          const served = formatFromContentType(body.contentType);
+          if (served) formatCache.set(cacheKey, served);
+          else formatCache.delete(cacheKey);
+          // The body arrived, but parsing it took time too: a URL that lands
+          // after the reader's ninety seconds must not start a playback with
+          // a fresh deadline on top.
+          if (!withinBudget()) {
+            fail(sawGenerating ? "notePreparing" : "noteUnavailable");
+            return;
+          }
           start(body.url, false);
         })
         .catch(() => {
@@ -707,6 +808,20 @@ function ExplorerCore({ provider, voices, lockLanguage, models, paramsKey }: Cor
     resolve();
   }
 
+  // Rows get ONE function for the life of the list instead of a fresh
+  // closure each, which is what lets the memoized row skip re-rendering when
+  // a different row starts playing. play() itself must stay render-scoped:
+  // it reads the selected sub-model and the active row, so freezing it in a
+  // useCallback would capture stale ones. The ref is refreshed after every
+  // commit, so a click always reaches the current play().
+  const playRef = useRef(play);
+  useLayoutEffect(() => {
+    playRef.current = play;
+  });
+  const handlePlay = useCallback((voice: Voice) => {
+    // The tap's own timestamp starts the reader's patience budget.
+    playRef.current(voice, Date.now());
+  }, []);
 
   const fieldCount = 3 + (lockLanguage ? 0 : 1) + (showModelPick ? 1 : 0);
   const toolbarClass = fieldCount === 5 ? "toolbar" : fieldCount === 4 ? "toolbar toolbar-4" : "toolbar toolbar-3";
@@ -838,7 +953,7 @@ function ExplorerCore({ provider, voices, lockLanguage, models, paramsKey }: Cor
               languageLabel={languageName(v.lang, locale)}
               modelText={v.family === multiFamily ? effectiveModel : ""}
               state={active?.id === v.id ? { status: active.status, note: active.note } : null}
-              onPlay={() => play(v, Date.now())}
+              onPlay={handlePlay}
             />
           ))}
         </section>
