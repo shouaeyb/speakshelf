@@ -28,16 +28,52 @@ export function getBuffer(key: string): AudioBuffer | null {
   return b;
 }
 
+/** Discard a key's decoded audio AND disown any decode still running for
+ *  it. Deleting the buffer alone is not enough: an in-flight decode would
+ *  finish afterwards and put the discarded sample straight back. */
 export function evictBuffer(key: string): void {
   buffers.delete(key);
+  generation.set(key, (generation.get(key) ?? 0) + 1);
+  // Detach the abandoned job too, so a later caller offering the very same
+  // bytes starts a fresh decode instead of awaiting one whose result this
+  // eviction has already condemned.
+  decoding.delete(key);
 }
 
+/** Bumped whenever a key's audio is discarded or replaced. A decode commits
+ *  its result only if the generation it started under is still current. */
+const generation = new Map<string, number>();
+
+/** Decodes already running, so a second caller waits on the first instead
+ *  of decoding the same bytes again. The completed-buffer check alone is not
+ *  enough: a stop and an immediate replay can both arrive while the first
+ *  decode is still pending. */
+const decoding = new Map<string, { blob: Blob; job: Promise<void> }>();
+
 /** Decode from the stored Blob's own bytes, never via fetch(blob:), which
- *  sits outside connect-src (the reference repo's hard-won CSP lesson). */
-export async function decodeIntoCache(key: string, blob: Blob): Promise<void> {
-  if (buffers.has(key)) return;
+ *  sits outside connect-src (the reference repo's hard-won CSP lesson).
+ *  A decode is shared only with a caller holding the SAME bytes: replacement
+ *  bytes must never wait on the outgoing blob's decode. */
+export function decodeIntoCache(key: string, blob: Blob): Promise<void> {
+  if (buffers.has(key)) return Promise.resolve();
+  const running = decoding.get(key);
+  if (running && running.blob === blob) return running.job;
+  const token = generation.get(key) ?? 0;
+  const job = decodeNow(key, blob, token).finally(() => {
+    // Only clear our own entry: a newer decode may have replaced it.
+    const current = decoding.get(key);
+    if (current && current.job === job) decoding.delete(key);
+  });
+  decoding.set(key, { blob, job });
+  return job;
+}
+
+async function decodeNow(key: string, blob: Blob, token: number): Promise<void> {
   const bytes = await blob.arrayBuffer();
   const decoded = await context().decodeAudioData(bytes);
+  // Discarded while we were decoding: drop the result rather than restoring
+  // audio the player deliberately threw away.
+  if ((generation.get(key) ?? 0) !== token) return;
   while (buffers.size >= MAX_BUFFERS) {
     const oldest = buffers.keys().next().value;
     if (oldest === undefined) break;

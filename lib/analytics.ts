@@ -10,6 +10,12 @@ export const EVENTS = {
   SAMPLE_PLAYED: "sample_played",
   SAMPLE_FAILED: "sample_failed",
   SAMPLE_GENERATING: "sample_generating",
+  // A preparation step failed without costing the reader their sample: the
+  // bytes fetch fell back to streaming, or a decode that only powers the
+  // next replay did not finish. Deliberately NOT sample_failed, which means
+  // the reader heard nothing; counting these there would report successful
+  // plays as failures.
+  SAMPLE_PREPARE_FAILED: "sample_prepare_failed",
   FILTER_CHANGED: "filter_changed",
   SEARCH_USED: "search_used",
   PROVIDER_OPENED: "provider_opened",

@@ -74,6 +74,34 @@ const EMPTY_DOC: SearchDoc = { words: [], text: "" };
 const blobCache = new Map<string, { url: string; blob: Blob }>();
 const blobInFlight = new Set<string>();
 
+/** Insert bytes into the blob tier, evicting the least recently played. */
+function storeBlob(key: string, blob: Blob): string {
+  // Replacing a key must revoke the URL it held, or that object stays alive
+  // for the life of the document with nothing pointing at it.
+  const existing = blobCache.get(key);
+  if (existing) {
+    URL.revokeObjectURL(existing.url);
+    blobCache.delete(key);
+    // The decoded tier held the OLD bytes; disown it and any decode still
+    // running for them, or the replacement can be shadowed by its
+    // predecessor.
+    evictBuffer(key);
+  }
+  while (blobCache.size >= BLOB_MAX) {
+    const oldest = blobCache.entries().next().value;
+    if (!oldest) break;
+    URL.revokeObjectURL(oldest[1].url);
+    blobCache.delete(oldest[0]);
+  }
+  const url = URL.createObjectURL(blob);
+  blobCache.set(key, { url, blob });
+  return url;
+}
+
+/** Preparation failures are reported once per voice per session: a reader
+ *  who taps the same stubborn voice ten times is one story, not ten. */
+const prepareReported = new Set<string>();
+
 function warmBlob(key: string, url: string) {
   if (blobCache.has(key) || blobInFlight.has(key)) return;
   blobInFlight.add(key);
@@ -81,13 +109,7 @@ function warmBlob(key: string, url: string) {
     .then((res) => (res.ok ? res.blob() : null))
     .then((blob) => {
       if (!blob || blobCache.has(key)) return;
-      while (blobCache.size >= BLOB_MAX) {
-        const oldest = blobCache.entries().next().value;
-        if (!oldest) break;
-        URL.revokeObjectURL(oldest[1].url);
-        blobCache.delete(oldest[0]);
-      }
-      blobCache.set(key, { url: URL.createObjectURL(blob), blob });
+      storeBlob(key, blob);
       // Same bytes feed the decoded tier; a decode failure only means
       // replays use the blob URL through the media element instead.
       return decodeIntoCache(key, blob).catch(() => {});
@@ -517,6 +539,33 @@ function ExplorerCore({ provider, voices, lockLanguage, models, paramsKey }: Cor
     let failedOnce = false;
     // Bumped by each start(); only the newest attempt may end the chain.
     let attemptSeq = 0;
+    // True once the bytes path has taken responsibility for the blob and
+    // decoded tiers, so confirmed playback must not warm them a second time.
+    let warmHandled = false;
+    // Set when a blob attempt failed: the rest of this playback streams,
+    // however it obtains its URL.
+    let forceStream = false;
+    // ONE startup allowance for the whole phase, as an absolute moment.
+    // Fetching bytes and starting a media element are different mechanisms
+    // but one wait to the reader, so a fetch that burns the allowance leaves
+    // none for the stream that follows it. Set on the first attempt, never
+    // renewed, and always clamped by what is left of the reader's budget.
+    let startupDeadline = 0;
+    // True once a blob failure sent us back for a fresh URL. That lookup and
+    // any retry it schedules belong to the SAME startup phase the reader is
+    // already waiting through, so they draw on what is left of it rather
+    // than on the ninety second generation budget.
+    let inStartupRecovery = false;
+    /** What this chain may still spend: the generation budget, and the
+     *  startup allowance too once recovery is under way. */
+    function chainLeft(): number {
+      return inStartupRecovery ? Math.min(remaining(), startupLeft()) : remaining();
+    }
+    function startupLeft(): number {
+      const budget = remaining();
+      if (startupDeadline === 0) startupDeadline = Date.now() + Math.min(MEDIA_START_MS, budget);
+      return Math.min(startupDeadline - Date.now(), budget);
+    }
 
     // `note` is what the row shows; `reason` is what analytics records, and
     // they differ only where one visible message covers several distinct
@@ -562,9 +611,11 @@ function ExplorerCore({ provider, voices, lockLanguage, models, paramsKey }: Cor
         // Warming belongs to confirmed playback (reference lesson): a
         // voice that never produced audio is never cached. The same bytes
         // feed the decoded replay tier.
-        const known = blobCache.get(cacheKey);
-        if (known) void decodeIntoCache(cacheKey, known.blob).catch(() => {});
-        else if (streamUrl) warmBlob(cacheKey, streamUrl);
+        if (!warmHandled) {
+          const known = blobCache.get(cacheKey);
+          if (known) void decodeIntoCache(cacheKey, known.blob).catch(() => {});
+          else if (streamUrl) warmBlob(cacheKey, streamUrl);
+        }
       }
       setActive({ id: v.id, model, status: "playing" });
     };
@@ -594,14 +645,7 @@ function ExplorerCore({ provider, voices, lockLanguage, models, paramsKey }: Cor
       a.onerror = () => {
         if (!current()) return;
         if (fromBlob) {
-          // A dead object URL falls back to the network path once. The
-          // fallback is a fresh attempt with the whole remaining budget, so
-          // this one's deadline goes with it.
-          if (mediaTimer.current) clearTimeout(mediaTimer.current);
-          const stale = blobCache.get(cacheKey);
-          if (stale) URL.revokeObjectURL(stale.url);
-          blobCache.delete(cacheKey);
-          resolve();
+          if (!fallbackFromBlob()) fail("noteUnavailable");
           return;
         }
         // A URL that failed to load should not be replayed from cache.
@@ -614,7 +658,7 @@ function ExplorerCore({ provider, voices, lockLanguage, models, paramsKey }: Cor
       // request. Without it a media element that neither starts nor errors,
       // which is what a stalled range request looks like, leaves the row
       // spinning for good. It never outlives the reader's patience budget.
-      const leftForMedia = remaining();
+      const leftForMedia = startupLeft();
       if (leftForMedia <= 0) {
         fail(sawGenerating ? "notePreparing" : "noteUnavailable");
         return;
@@ -629,33 +673,144 @@ function ExplorerCore({ provider, voices, lockLanguage, models, paramsKey }: Cor
           a.onerror = null;
           a.pause();
           if (fromBlob) {
-            // The object URL is the suspect, so it goes with the attempt.
-            const stale = blobCache.get(cacheKey);
-            if (stale) URL.revokeObjectURL(stale.url);
-            blobCache.delete(cacheKey);
-          } else {
-            urlCache.delete(cacheKey);
+            // A blob that will not start is still recoverable: the signed
+            // URL may play perfectly well, so spend the remaining budget on
+            // it rather than ending the reader's attempt here.
+            if (fallbackFromBlob()) return;
+            fail("noteUnavailable", "mediaTimeout");
+            return;
           }
+          urlCache.delete(cacheKey);
           fail("noteUnavailable", "mediaTimeout");
         },
-        Math.min(MEDIA_START_MS, leftForMedia),
+        leftForMedia,
       );
       a.play()
-        .catch(() => {
-          // A rejection for the live generation is real, usually an
-          // autoplay block because the lookup left the click gesture. The
-          // repeat tap plays synchronously from the cache. Stale
-          // rejections, from a row switch or an attempt this one replaced,
-          // are ignored.
-          if (live()) fail("noteTapAgain");
+        .catch((err: unknown) => {
+          // Stale rejections, from a row switch or an attempt this one
+          // replaced, are ignored. An autoplay refusal is real and the
+          // repeat tap plays synchronously from the cache. Any OTHER
+          // rejection on an object URL is about the source, so the signed
+          // URL still deserves its chance.
+          if (!live()) return;
+          const refused = err instanceof Error && err.name === "NotAllowedError";
+          if (fromBlob && !refused && fallbackFromBlob()) return;
+          fail("noteTapAgain");
         });
+    }
+
+    /** Every way an object URL can fail lands here: the element's error
+     *  event, the media deadline, and a play() rejection that is not an
+     *  autoplay refusal. Guarded, so the recovery happens once: it drops the
+     *  suspect blob and its decoded buffer, marks warming handled so the
+     *  stream that follows cannot rebuild the blob that just failed, and
+     *  streams the signed URL we still hold. Returns false when there is
+     *  nothing left to try, so the caller can fail honestly. */
+    let blobFallbackUsed = false;
+    function fallbackFromBlob(): boolean {
+      if (blobFallbackUsed) return false;
+      blobFallbackUsed = true;
+      if (mediaTimer.current) clearTimeout(mediaTimer.current);
+      const stale = blobCache.get(cacheKey);
+      if (stale) URL.revokeObjectURL(stale.url);
+      blobCache.delete(cacheKey);
+      evictBuffer(cacheKey);
+      warmHandled = true;
+      // Everything from here streams. Fetching bytes again would rebuild the
+      // blob that just failed, whether the URL is the one we hold or a
+      // freshly minted one.
+      forceStream = true;
+      const signed = urlCache.get(cacheKey);
+      if (signed && signed.exp > Date.now()) {
+        source = "cached";
+        start(signed.url, false);
+        return true;
+      }
+      // A blob outlives its signed URL: the tiers have different lifetimes,
+      // so this is ordinary, not exceptional. Mint a fresh one rather than
+      // telling the reader the sample is gone, but inside the startup window
+      // they are already waiting through, never beside it.
+      if (startupLeft() <= 0) return false;
+      inStartupRecovery = true;
+      source = "network";
+      lookup(0);
+      return true;
+    }
+
+    /** Report a step that failed WITHOUT costing the reader their sample.
+     *  Never terminal, never visible, never sets failedOnce: the play either
+     *  continues by another route or has already succeeded. */
+    function reportPrepare(stage: string, ms: number) {
+      if (!current()) return; // a stop or a row switch is not a failure
+      if (prepareReported.has(cacheKey)) return;
+      prepareReported.add(cacheKey);
+      track(EVENTS.SAMPLE_PREPARE_FAILED, {
+        provider,
+        locale,
+        voice_id: v.id,
+        model: model || undefined,
+        format: formatCache.get(cacheKey),
+        stage,
+        ms,
+      });
+    }
+
+    /** Fetch the whole sample, then play it from memory.
+     *
+     *  Compressed samples are tens of kilobytes, so one fetch beats letting
+     *  the media element negotiate: measured on production, WebKit reached
+     *  sound in 667ms this way against 2706ms streamed, Chromium 892 against
+     *  1739, because the element otherwise opens several range requests
+     *  before it will start. The same bytes become the blob and the decoded
+     *  replay tiers, so this single request also replaces the second
+     *  download the old path made after playback began. */
+    function playFromBytes(url: string) {
+      const left = startupLeft();
+      if (left <= 0) {
+        fail(sawGenerating ? "notePreparing" : "noteUnavailable");
+        return;
+      }
+      const started = Date.now();
+      warmHandled = true;
+      // Drawn from the shared startup allowance, so a fetch that fails fast
+      // hands nearly all of it to the stream that follows, and a fetch that
+      // burns it leaves none: the reader waits once, not twice.
+      fetch(url, { signal: AbortSignal.timeout(left) })
+        .then((res) => (res.ok ? res.blob() : Promise.reject(new Error(String(res.status)))))
+        .then((blob) => {
+          if (!current()) return;
+          const objectUrl = storeBlob(cacheKey, blob);
+          // Decode from the bytes in hand, before playback starts, so the
+          // replay tier is ready and markPlaying never starts a second one.
+          void decodeIntoCache(cacheKey, blob).catch(() => {
+            reportPrepare("blobDecode", Date.now() - started);
+          });
+          start(objectUrl, true);
+        })
+        .catch(() => {
+          if (!current()) return;
+          reportPrepare("blobFetch", Date.now() - started);
+          // One shot, and never warmed afterwards: falling back to streaming
+          // is the whole recovery, and re-fetching after it would restore
+          // exactly the second transfer this path exists to remove.
+          start(url, false);
+        });
+    }
+
+    /** Compressed samples play from bytes; the WAV fallback keeps streaming,
+     *  where progressive playback of a much larger file is worth more than
+     *  one-request efficiency. An unrecognized type streams too. */
+    function playUrl(url: string) {
+      const served = formatCache.get(cacheKey);
+      if (!forceStream && (served === "opus" || served === "aac")) playFromBytes(url);
+      else start(url, false);
     }
 
     function resolve() {
       const known = urlCache.get(cacheKey);
       if (known && known.exp > Date.now()) {
         source = "cached";
-        start(known.url, false);
+        playUrl(known.url);
         return;
       }
       // No cached media for this voice, so whatever format a previous
@@ -683,7 +838,7 @@ function ExplorerCore({ provider, voices, lockLanguage, models, paramsKey }: Cor
     let blips = 0;
 
     function retryLater(seconds: number, attempt: number) {
-      const left = remaining();
+      const left = chainLeft();
       if (left <= 0) {
         fail(sawGenerating ? "notePreparing" : "noteUnavailable");
         return;
@@ -702,7 +857,7 @@ function ExplorerCore({ provider, voices, lockLanguage, models, paramsKey }: Cor
       // second lets the budget lapse between them, and AbortSignal.timeout
       // of a negative span throws synchronously, outside the chain that
       // would have caught it, stranding the spinner it was meant to save.
-      const left = remaining();
+      const left = chainLeft();
       if (left <= 0) {
         fail(sawGenerating ? "notePreparing" : "noteUnavailable");
         return;
@@ -767,7 +922,7 @@ function ExplorerCore({ provider, voices, lockLanguage, models, paramsKey }: Cor
             fail(sawGenerating ? "notePreparing" : "noteUnavailable");
             return;
           }
-          start(body.url, false);
+          playUrl(body.url);
         })
         .catch(() => {
           if (!current()) return;
