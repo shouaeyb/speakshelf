@@ -15,8 +15,44 @@ let ctx: AudioContext | null = null;
 
 function context(): AudioContext {
   if (!ctx) ctx = new AudioContext();
-  if (ctx.state === "suspended") void ctx.resume();
   return ctx;
+}
+
+/** What the shared context can do RIGHT NOW, without creating one. */
+export function contextState(): "none" | "running" | "closed" | "asleep" {
+  if (!ctx) return "none";
+  // Safari adds "interrupted", after a call or another app takes the audio
+  // session; it needs the same waking as "suspended", so they are one state
+  // here and only "running" is trusted.
+  const state: string = ctx.state;
+  if (state === "running" || state === "closed") return state;
+  return "asleep";
+}
+
+/**
+ * Wake the context and report whether it is actually running.
+ *
+ * iOS only starts an audio context inside a user gesture, and resume() is a
+ * promise: starting a source before it settles plays into a sleeping context,
+ * which is silence with a UI that says otherwise. So the caller waits for a
+ * true answer and treats false as a tier miss. There is no synchronous test
+ * for "this can never resume", and a resume promise can hang, so the wait
+ * carries its own deadline; the late continuation is caught by the caller's
+ * own generation check rather than by cancelling a promise we do not own.
+ */
+export async function resumeContext(deadlineMs = 1500): Promise<boolean> {
+  const c = context();
+  if (contextState() === "running") return true;
+  if (contextState() === "closed") return false;
+  try {
+    await Promise.race([
+      c.resume(),
+      new Promise((resolve) => setTimeout(resolve, deadlineMs)),
+    ]);
+  } catch {
+    return false;
+  }
+  return contextState() === "running";
 }
 
 export function getBuffer(key: string): AudioBuffer | null {

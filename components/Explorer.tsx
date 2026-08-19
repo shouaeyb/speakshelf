@@ -14,7 +14,15 @@ import FilterPanel from "@/components/FilterPanel";
 import VoiceRow, { type PlayStatus } from "@/components/VoiceRow";
 import { getProvider } from "@/lib/providers";
 import { EVENTS, track } from "@/lib/analytics";
-import { decodeIntoCache, evictBuffer, getBuffer, playBuffer, type ReplayControls } from "@/lib/audio-replay";
+import {
+  contextState,
+  decodeIntoCache,
+  evictBuffer,
+  getBuffer,
+  playBuffer,
+  resumeContext,
+  type ReplayControls,
+} from "@/lib/audio-replay";
 import { buildSearchDoc, matchesTokens, tokenize, type SearchDoc } from "@/lib/search";
 
 interface ExplorerProps {
@@ -611,10 +619,13 @@ function ExplorerCore({ provider, voices, lockLanguage, models, paramsKey }: Cor
         // Warming belongs to confirmed playback (reference lesson): a
         // voice that never produced audio is never cached. The same bytes
         // feed the decoded replay tier.
-        if (!warmHandled) {
-          const known = blobCache.get(cacheKey);
-          if (known) void decodeIntoCache(cacheKey, known.blob).catch(() => {});
-          else if (streamUrl) warmBlob(cacheKey, streamUrl);
+        const known = blobCache.get(cacheKey);
+        if (known) {
+          void decodeIntoCache(cacheKey, known.blob).catch(() => {
+            reportPrepare("blobDecode", Date.now() - clickedAt);
+          });
+        } else if (!warmHandled && streamUrl) {
+          warmBlob(cacheKey, streamUrl);
         }
       }
       setActive({ id: v.id, model, status: "playing" });
@@ -790,11 +801,12 @@ function ExplorerCore({ provider, voices, lockLanguage, models, paramsKey }: Cor
         .then((blob) => {
           if (!current()) return;
           const objectUrl = storeBlob(cacheKey, blob);
-          // Decode from the bytes in hand, before playback starts, so the
-          // replay tier is ready and markPlaying never starts a second one.
-          void decodeIntoCache(cacheKey, blob).catch(() => {
-            reportPrepare("blobDecode", Date.now() - started);
-          });
+          // Decoding waits for confirmed playback. Doing it here would build
+          // the Web Audio context before any sound has been made, and iOS
+          // creates a context outside a gesture SUSPENDED, which is how a
+          // later replay ends up moving its equaliser in silence. The bytes
+          // are already in the blob tier, so markPlaying decodes from them
+          // without another request.
           start(objectUrl, true);
         })
         .catch(() => {
@@ -814,6 +826,24 @@ function ExplorerCore({ provider, voices, lockLanguage, models, paramsKey }: Cor
       const served = formatCache.get(cacheKey);
       if (!forceStream && (served === "opus" || served === "aac")) playFromBytes(url);
       else start(url, false);
+    }
+
+    /** Everything under the decoded tier, in order: the bytes we already
+     *  hold, then the cached URL, then the network. The asynchronous
+     *  continuation after a failed context wake MUST come through here too,
+     *  or it would jump straight to a lookup and re-fetch audio that is
+     *  sitting in memory. */
+    function serveBelowDecoded(): boolean {
+      const blobbed = blobCache.get(cacheKey);
+      if (blobbed) {
+        // Re-insert so eviction hits the least recently played entry.
+        blobCache.delete(cacheKey);
+        blobCache.set(cacheKey, blobbed);
+        source = "memory";
+        start(blobbed.url, true);
+        return true;
+      }
+      return false;
     }
 
     function resolve() {
@@ -948,28 +978,46 @@ function ExplorerCore({ provider, voices, lockLanguage, models, paramsKey }: Cor
     // Replay tiers, fastest first. Decoded PCM plays synchronously through
     // Web Audio: no media element, no demux, no network, on every engine.
     const decoded = getBuffer(cacheKey);
-    if (decoded) {
-      source = "memory";
-      try {
-        replayRef.current = playBuffer(decoded, () => {
-          if (current()) setActive((cur) => (cur?.id === v.id ? null : cur));
+    const ctxState = contextState();
+    if (decoded && ctxState !== "closed") {
+      const startDecoded = () => {
+        try {
+          replayRef.current = playBuffer(decoded, () => {
+            if (current()) setActive((cur) => (cur?.id === v.id ? null : cur));
+          });
+          markPlaying();
+          return true;
+        } catch {
+          // A broken buffer falls through to the blob tier.
+          evictBuffer(cacheKey);
+          return false;
+        }
+      };
+      if (ctxState === "running") {
+        source = "memory";
+        if (startDecoded()) return;
+      } else {
+        // The context is asleep, or does not exist yet. Waking it is a
+        // promise, and starting a source before it settles is how a replay
+        // ends up silent behind a moving equaliser, so this play waits for a
+        // real answer. A context that will not wake is treated as a tier
+        // miss, not as a failure: the blob below still plays through a media
+        // element, which needs no context at all. The decoded bytes are kept
+        // either way, since the fault is activation, not the audio.
+        source = "memory";
+        void resumeContext().then((awake) => {
+          if (!current()) return; // stopped, or another row took over
+          if (awake && startDecoded()) return;
+          // Bytes in hand beat any network path, so this rejoins the tier
+          // walk rather than jumping to a lookup.
+          if (serveBelowDecoded()) return;
+          source = "cached";
+          resolve();
         });
-        markPlaying();
         return;
-      } catch {
-        // A broken buffer falls through to the blob tier.
-        evictBuffer(cacheKey);
       }
     }
-    const blobbed = blobCache.get(cacheKey);
-    if (blobbed) {
-      // Re-insert so eviction hits the least recently played entry.
-      blobCache.delete(cacheKey);
-      blobCache.set(cacheKey, blobbed);
-      source = "memory";
-      start(blobbed.url, true);
-      return;
-    }
+    if (serveBelowDecoded()) return;
     resolve();
   }
 
