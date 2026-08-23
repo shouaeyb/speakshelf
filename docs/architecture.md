@@ -95,7 +95,7 @@ Rows are memoized (`components/VoiceRow.tsx`) with a comparator over voice ident
 - Metadata, Open Graph and JSON-LD counts derive from the catalog at render time. Titles are unique per provider and language ("Amazon Polly English (Wales) voices"); the root is the umbrella.
 - `app/llms.txt/route.ts` regenerates daily: provider list with counts, the id pattern, the packed format, the sample endpoint's 202 behavior.
 - `app/robots.ts` allows `/api/catalog` (which prefix-covers the per-provider slices) and `/api/sample`, disallows the rest of `/api/`.
-- `app/sitemap.ts` lists the umbrella, each provider home, and every language page (2,072 URLs today across the fourteen locales).
+- `app/sitemap.ts` lists the umbrella, each provider home, and every language page (2,072 URLs today across the fourteen locales). It declares `revalidate = 86400` like every other catalog-derived route: a generated sitemap is a cached route handler, and without its own window it is prerendered once and served from that artifact until the next deploy, freezing the URL set to the catalog the build happened to see. INVARIANT: it emits no `lastmod`. The only date on hand is `site.updated`, which `lib/catalog.ts` stamps on a successful refresh rather than on a real change, so publishing it would date all 2,072 URLs to the same day whether or not anything moved; lastmod is optional and an absent signal beats a misleading one.
 - `/api/catalog/[provider]` serves each provider's packed slice (force-static, daily, prerendered for the blessed set). Per-provider on purpose: google is about 95 percent of the payload and the smaller shelves should not pay for it.
 
 ## Caches at a glance

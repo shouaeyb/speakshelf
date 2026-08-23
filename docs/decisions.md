@@ -301,3 +301,15 @@ Two corrections, together. The decoded tier now plays only through a context tha
 Proven by simulating exactly what iOS does when it refuses: a context whose state never leaves suspended and whose `resume()` never settles. Before, that is a silent replay; after, the replay falls through and the media element plays for a second time, in both Chromium and WebKit.
 
 Worth recording about the reference, since it was the model for this tier: it carries the same fire-and-forget resume before `source.start()` and is protected only by ordering, never creating its context before first sound. Copying its structure would have hidden this bug rather than fixed it.
+
+## 2026-08-23: the sitemap regenerates daily and stops publishing a date
+
+Production was serving a sitemap generated once, at build, from the committed fallback catalog. Every one of its 2,072 entries carried `lastmod 2026-08-13` while the pages themselves reported the catalog as refreshed on 2026-08-23, and `.next/prerender-manifest.json` gave `/sitemap.xml` an `initialRevalidateSeconds` of `false` against `86400` for `/llms.txt`. A generated sitemap is a route handler Next caches, and `app/sitemap.ts` was the one catalog-derived route that never declared a window, so it was prerendered once and served from that artifact.
+
+The frozen date was the visible half. The frozen URL SET was the half that matters: the route derives one entry per provider and one per language from the catalog it saw at build, so a language appearing upstream could not enter the sitemap until the next deploy. Nothing was missing on the day this was found (live and fallback agreed exactly, 93, 42 and 9 languages), which is why it read as a date problem rather than a coverage one. Language pages carry `dynamicParams = true` and the provider language index revalidates daily, so such a page would still have been reachable, just undiscovered in the sitemap.
+
+Two proofs that the build took the fallback path rather than simply refreshing on the 13th: `lib/catalog.ts` stamps `updated` with the local date when a live fetch succeeds, never with an upstream one, and copy committed on the 16th is live on production. A successful fetch during that build could not have produced the 13th.
+
+So the route now says `revalidate = 86400` like its neighbours, and `lastModified` is gone rather than corrected. The only date available is that same `updated` field, which moves on a successful REFRESH and not on a change: the live payloads were byte-identical to the 13 August fallback while the footer read 23 August. Publishing it would tell crawlers all 2,072 URLs changed on one day, every day the fetch worked. A deploy timestamp is no more truthful. An honest per-page date needs real change detection, which this does not have, and lastmod is an optional field. `changeFrequency` and `priority` stay: Google ignores both, they are valid, and removing them would be churn.
+
+Worth noting for whoever adds the next generated metadata route: the missing window was invisible locally, because a dev server regenerates on every request. It only shows on a deployed artifact.
