@@ -6,6 +6,7 @@ import { useLocale, useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
 import type { Voice, PackedCatalog, PackedProvider } from "@/lib/data";
 import { unpack } from "@/lib/data";
+import { useFilterUrl } from "@/lib/filter-url";
 import { languageName } from "@/lib/lang";
 import { PROVIDER_FAMILIES, familyLabel, familyMeta, familyRank, modelLabel } from "@/lib/families";
 import FilterFields, { type FilterKind } from "@/components/FilterFields";
@@ -63,17 +64,19 @@ function ExplorerCore({ provider, voices, lockLanguage, models, paramsKey }: Cor
   );
   const subModels = useMemo(() => (multiFamily ? models[multiFamily] : []), [models, multiFamily]);
   const [all, setAll] = useState<Voice[] | null>(voices ?? null);
-  const [q, setQ] = useState("");
   const searchRef = useRef<HTMLInputElement | null>(null);
-  const [family, setFamily] = useState("");
-  const [lang, setLang] = useState("");
-  const [gender, setGender] = useState("");
-  // "" means the API default, which is the first listed sub-model.
-  const [gmodel, setGmodel] = useState("");
+  // The five filter fields and the query string are one state machine, and
+  // it lives in `lib/filter-url.ts`: the URL is read during the first
+  // render, and neither side is allowed to drive the other afterwards. An
+  // empty gmodel means the API default, which is the first listed
+  // sub-model. On language pages paramsKey is undefined and nothing here
+  // reads or writes the URL at all.
+  const { filters, patch, clear } = useFilterUrl({ paramsKey, lockLanguage, subModels, all });
+  const { q, family, lang, gender, gmodel } = filters;
   // Mobile only: the select fields live behind a FILTERS button under 721px.
   const [panelOpen, setPanelOpen] = useState(false);
   const filtersBtn = useRef<HTMLButtonElement | null>(null);
-  // Sound lives in : the cache tiers, the startup
+  // Sound lives in `lib/playback.ts`: the cache tiers, the startup
   // allowance, the recovery ladder and the family quirk toast. This file
   // owns the catalog, the filters and the list, and learns only which row
   // is doing what.
@@ -85,8 +88,6 @@ function ExplorerCore({ provider, voices, lockLanguage, models, paramsKey }: Cor
     gmodel,
     multiFamily,
   });
-  // The write effect must not run before the URL has been applied once.
-  const urlApplied = useRef(false);
 
   // The provider's catalog loads after mount so page HTML stays small. The
   // API route serves the server's current view, which refreshes daily; the
@@ -109,56 +110,6 @@ function ExplorerCore({ provider, voices, lockLanguage, models, paramsKey }: Cor
       live = false;
     };
   }, [voices, provider]);
-
-  // Apply ?family= etc. whenever the router navigates, so family tiles work
-  // both on a fresh load and on same-page client transitions. Re-runs when
-  // the catalog arrives so family and language can be validated against it.
-  // A field the reader has already touched since the last apply is left
-  // alone, so typing during the catalog load is not wiped.
-  const applied = useRef<{ f: string; l: string; g: string; m: string; s: string } | null>(null);
-  useEffect(() => {
-    if (lockLanguage || paramsKey === undefined) return;
-    const p = new URLSearchParams(paramsKey);
-    const f = p.get("family") ?? "";
-    const l = p.get("language") ?? "";
-    const g = p.get("gender") ?? "";
-    const m = p.get("gmodel") ?? "";
-    const want = {
-      f: f && (!all || all.some((v) => v.family === f)) ? f : "",
-      l: !all || all.some((v) => v.lang === l) ? l : "",
-      g: ["female", "male", "neutral"].includes(g) ? g : "",
-      m: subModels.includes(m) && m !== subModels[0] ? m : "",
-      s: p.get("q") ?? "",
-    };
-    const prev = applied.current;
-    setFamily((cur) => (!prev || cur === prev.f ? want.f : cur));
-    setLang((cur) => (!prev || cur === prev.l ? want.l : cur));
-    setGender((cur) => (!prev || cur === prev.g ? want.g : cur));
-    setGmodel((cur) => (!prev || cur === prev.m ? want.m : cur));
-    setQ((cur) => (!prev || cur === prev.s ? want.s : cur));
-    applied.current = want;
-    urlApplied.current = true;
-  }, [paramsKey, lockLanguage, all, subModels]);
-
-  // Keep the URL shareable without triggering navigation. Next mirrors
-  // external replaceState into useSearchParams (its patched history dispatches
-  // a restore action), so this write does echo back into the apply effect;
-  // it cannot loop because the echoed URL carries the values already applied.
-  // It also never scrolls: only GlideLink clicks record a glide intent.
-  useEffect(() => {
-    if (lockLanguage || !urlApplied.current) return;
-    const p = new URLSearchParams();
-    if (family) p.set("family", family);
-    if (lang) p.set("language", lang);
-    if (gender) p.set("gender", gender);
-    if (gmodel) p.set("gmodel", gmodel);
-    if (q) p.set("q", q);
-    const qs = p.toString();
-    const url = qs ? `?${qs}${window.location.hash}` : window.location.pathname + window.location.hash;
-    window.history.replaceState(null, "", url);
-  }, [q, family, lang, gender, gmodel, lockLanguage]);
-
-
 
   // Alphabetical by the reader's locale, tie-broken by code for
   // determinism; the search field is the fast path, the order is the
@@ -291,27 +242,23 @@ function ExplorerCore({ provider, voices, lockLanguage, models, paramsKey }: Cor
   // mounts (toolbar and mobile panel) cannot drift apart.
   const applyFilter = (kind: FilterKind, value: string) => {
     if (kind === "family") {
-      setFamily(value);
+      patch({ family: value });
       track(EVENTS.FILTER_CHANGED, { provider, locale, kind: "family", value: value || "all" });
     } else if (kind === "language") {
-      setLang(value);
+      patch({ lang: value });
       track(EVENTS.FILTER_CHANGED, { provider, locale, kind: "language", value: value || "all" });
     } else if (kind === "gender") {
-      setGender(value);
+      patch({ gender: value });
       track(EVENTS.FILTER_CHANGED, { provider, locale, kind: "gender", value: value || "any" });
     } else {
       // "" is the API default, so the first sub-model is stored as no choice.
-      setGmodel(value === subModels[0] ? "" : value);
+      patch({ gmodel: value === subModels[0] ? "" : value });
       track(EVENTS.FILTER_CHANGED, { provider, locale, kind: "model", value });
     }
   };
 
   const clearFilters = () => {
-    setQ("");
-    setFamily("");
-    setLang("");
-    setGender("");
-    setGmodel("");
+    clear();
     track(EVENTS.FILTER_CHANGED, { provider, locale, kind: "clear", value: "all" });
   };
 
@@ -347,9 +294,6 @@ function ExplorerCore({ provider, voices, lockLanguage, models, paramsKey }: Cor
   // (owner's call, 2026-08-14).
   const familyNote = noteFor(family);
 
-
-
-
   const fieldCount = 3 + (lockLanguage ? 0 : 1) + (showModelPick ? 1 : 0);
   const toolbarClass = fieldCount === 5 ? "toolbar" : fieldCount === 4 ? "toolbar toolbar-4" : "toolbar toolbar-3";
 
@@ -376,7 +320,7 @@ function ExplorerCore({ provider, voices, lockLanguage, models, paramsKey }: Cor
             placeholder={t("explorer.searchPlaceholder")}
             aria-label={t("explorer.searchAria")}
             value={q}
-            onChange={(e) => setQ(e.target.value)}
+            onChange={(e) => patch({ q: e.target.value })}
           />
           {q !== "" && (
             <button
@@ -384,7 +328,7 @@ function ExplorerCore({ provider, voices, lockLanguage, models, paramsKey }: Cor
               className="search-clear"
               aria-label={t("explorer.clearSearch")}
               onClick={() => {
-                setQ("");
+                patch({ q: "" });
                 searchRef.current?.focus();
               }}
             >
