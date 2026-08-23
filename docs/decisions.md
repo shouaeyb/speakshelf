@@ -313,3 +313,12 @@ Two proofs that the build took the fallback path rather than simply refreshing o
 So the route now says `revalidate = 86400` like its neighbours, and `lastModified` is gone rather than corrected. The only date available is that same `updated` field, which moves on a successful REFRESH and not on a change: the live payloads were byte-identical to the 13 August fallback while the footer read 23 August. Publishing it would tell crawlers all 2,072 URLs changed on one day, every day the fetch worked. A deploy timestamp is no more truthful. An honest per-page date needs real change detection, which this does not have, and lastmod is an optional field. `changeFrequency` and `priority` stay: Google ignores both, they are valid, and removing them would be churn.
 
 Worth noting for whoever adds the next generated metadata route: the missing window was invisible locally, because a dev server regenerates on every request. It only shows on a deployed artifact.
+
+## 2026-08-24: the player moves out of the Explorer
+
+`components/Explorer.tsx` had reached 1,194 lines against the repo's thousand line cap, and the module trying to get out was obvious: the sample player. Every cache tier, the startup allowance, the recovery ladder and the family quirk toast now live in `lib/playback.ts` behind a `usePlayback` hook, and the Explorer keeps the catalog, the filters and the list. It learns only which row is doing what.
+
+The move is mechanical and nothing about sound changed. The code is the same code in the same order; what changed is the wrapper, the inputs it used to read from component scope (provider, locale, the translator, the family filter, the sub-model pick and the multi-model family) and the four values it hands back. `models` did not come along because only the search index used it, and the search index stayed behind. The module-level caches stayed module-level, so a route change inside the session still finds warm bytes.
+
+It went out in a commit of its own, before the query-state work rather than folded into it, so the audio path stays revertible on its own and the browser sweep could be run against the move alone. That matters more here than usual: this is the code the iOS silent-replay round landed in, and a regression in it is not something a type checker would catch.
+
