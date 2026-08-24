@@ -1,12 +1,12 @@
 "use client";
 
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { useLocale, useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
 import type { Voice, PackedCatalog, PackedProvider } from "@/lib/data";
 import { unpack } from "@/lib/data";
-import { useFilterUrl } from "@/lib/filter-url";
+import { useFilterUrl, type FilterState } from "@/lib/filter-url";
 import { languageName } from "@/lib/lang";
 import { PROVIDER_FAMILIES, familyLabel, familyMeta, familyRank, modelLabel } from "@/lib/families";
 import FilterFields, { type FilterKind } from "@/components/FilterFields";
@@ -73,6 +73,7 @@ function ExplorerCore({ provider, voices, lockLanguage, models, paramsKey }: Cor
   // reads or writes the URL at all.
   const { filters, patch, clear } = useFilterUrl({ paramsKey, lockLanguage, subModels, all });
   const { q, family, lang, gender, gmodel } = filters;
+  const toolbarRef = useRef<HTMLDivElement | null>(null);
   // Mobile only: the select fields live behind a FILTERS button under 721px.
   const [panelOpen, setPanelOpen] = useState(false);
   const filtersBtn = useRef<HTMLButtonElement | null>(null);
@@ -88,6 +89,54 @@ function ExplorerCore({ provider, voices, lockLanguage, models, paramsKey }: Cor
     gmodel,
     multiFamily,
   });
+
+  // Language pages ship this toolbar in the server HTML, so a reader can
+  // type or choose before React attaches. Those interactions are not lost,
+  // they are just unheard: React 19 deliberately leaves a live input or
+  // select alone while hydrating, so the browser still holds what the reader
+  // did and only this component's state is behind. Adopting it here keeps
+  // the interaction instead of discarding it, and without it the control
+  // shows a value it is no longer acting on, forever.
+  //
+  // One snapshot, one update, in a layout effect. Not because separate
+  // calls would clobber each other, they would not: `patch` merges
+  // functionally. One call because the toolbar's fields are one answer and
+  // reading them together is the only version of this that does not depend
+  // on batching or on the order effects happen to run in. A layout effect
+  // because refs attach at commit and it runs before the next paint, so no
+  // controlled re-render can enforce the stale state first. Scoped to the
+  // toolbar because the mobile panel cannot exist yet: opening it needs the
+  // React that has not attached. Provider pages build this toolbar with
+  // React itself, so there is no pre-attach value to recover and this never
+  // runs there.
+  useLayoutEffect(() => {
+    if (paramsKey !== undefined) return;
+    const bar = toolbarRef.current;
+    if (!bar) return;
+    const val = (sel: string) => bar.querySelector<HTMLSelectElement>(sel)?.value ?? "";
+    const next: Partial<FilterState> = {};
+    const typed = searchRef.current?.value ?? "";
+    const fam = val("#f-family");
+    const gen = val("#f-gender");
+    // The picker shows the first sub-model when nothing is chosen, so that
+    // value means the API default and is stored as no choice.
+    const gm = val("#f-gmodel");
+    if (typed) next.q = typed;
+    if (fam) next.family = fam;
+    if (gen) next.gender = gen;
+    if (gm && gm !== subModels[0]) next.gmodel = gm;
+    // A route-locked page renders no language select, so there is nothing to
+    // read and the route's own language stands. Read it when it IS there, so
+    // an unlocked list mount is covered too rather than quietly half-served.
+    const lg = val("#f-lang");
+    if (lg) next.lang = lg;
+    // Importing state the browser already recorded, at the one moment it can
+    // be read: a synchronization with an external system, not a
+    // render-driven update.
+    if (Object.keys(next).length > 0) patch(next);
+    // The hydration boundary happens once. Later renders own themselves.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   // The provider's catalog loads after mount so page HTML stays small. The
   // API route serves the server's current view, which refreshes daily; the
@@ -299,7 +348,7 @@ function ExplorerCore({ provider, voices, lockLanguage, models, paramsKey }: Cor
 
   return (
     <div>
-      <div className={toolbarClass}>
+      <div className={toolbarClass} ref={toolbarRef}>
         <div className="field">
           <svg
             className="search-magnifier"
