@@ -30,11 +30,12 @@ function pickTarget(locale: string): Locale | null {
 }
 
 // The owner's decision (docs/decisions.md): browser language never hard
-// redirects. This quiet strip offers a one-tap switch in the visitor's
-// own language. The stored value is the CHOICE, not a dismissal: someone
-// who picked Spanish and later lands on an English page is offered
-// Spanish again instead of being stranded; someone who dismissed is
-// treated as having chosen the page they were on.
+// redirects. This quiet offer, a notification rather than anything in the
+// page flow, gives a one-tap switch in the visitor's own language. The
+// stored value is the CHOICE, not a dismissal: someone who picked Spanish
+// and later lands on an English page is offered Spanish again instead of
+// being stranded; someone who dismissed is treated as having chosen the
+// page they were on.
 export default function LanguageSuggest() {
   const locale = useLocale();
   const pathname = usePathname();
@@ -72,14 +73,17 @@ export default function LanguageSuggest() {
     typeof window !== "undefined" ? pathname + window.location.search + window.location.hash : pathname;
 
   return (
-    <div
-      className="lang-suggest"
-      role="region"
-      lang={target}
-      dir={RTL_LOCALES.has(target) ? "rtl" : "ltr"}
-      aria-label={INVITES[target].invite}
-    >
-      <div className="shell lang-suggest-in">
+    // dir belongs on the inner row, not here. This element is positioned
+    // with logical properties, and those resolve against the direction of
+    // the element that carries them: an Arabic offer marked rtl put itself
+    // in the top LEFT corner of an English page, opposite every other
+    // overlay. The card follows the PAGE, the words inside follow the
+    // language being offered. lang stays out here so the accessible name
+    // is announced in that language.
+    <div className="lang-suggest" role="region" lang={target} aria-label={INVITES[target].invite}>
+      {/* No .shell: this is a fixed notification and manages its own
+          padding, not a full-width band inside the page grid. */}
+      <div className="lang-suggest-in" dir={RTL_LOCALES.has(target) ? "rtl" : "ltr"}>
         <span className="lang-suggest-text">{INVITES[target].invite}</span>
         <button
           type="button"
@@ -96,6 +100,11 @@ export default function LanguageSuggest() {
         <button
           type="button"
           className="lang-suggest-close"
+          // The only string here that is NOT in the offered language: it
+          // comes from the page's own catalogue. Without this it would
+          // inherit lang from the region and a screen reader would read the
+          // page's words with the offered language's voice.
+          lang={locale}
           aria-label={t("dismissAria")}
           onClick={() => {
             remember(locale as Locale);

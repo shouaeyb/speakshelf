@@ -1,17 +1,47 @@
-/* Language suggestion strip: one quiet offer above the masthead, in the
-   visitor's own language, remembered forever once answered. */
+/* Language suggestion: one quiet offer in the visitor's own language,
+   remembered forever once answered.
+
+   It is a Carbon notification, not a bar in the document flow. The offer
+   can only be decided after hydration, because localStorage and navigator
+   have no server counterpart, so a strip in the flow arrived a beat late
+   and shoved the whole page down: measured at 45px on /ja and 42px on
+   /bn, which is what the owner reported as flashing. Reserving the space
+   instead would tax the majority who never see an offer. Fixed placement
+   costs nothing when it stays away, which is the common case.
+
+   Stack: over the page, the sticky language heads (10) and the masthead
+   (20); under the toast (40), the consent bar (50) and the filter panel
+   (60). It is a standing offer, so anything transient or blocking wins. */
 .lang-suggest {
+  position: fixed;
+  top: 64px;
+  inset-inline-end: 24px;
+  inset-inline-start: auto;
+  z-index: 30;
+  max-width: 420px;
   background: var(--inv-bg);
   color: var(--inv-text);
-  border-bottom: 1px solid var(--inv-border);
+  border: 1px solid var(--inv-border);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.18);
+  animation: toast-in 240ms cubic-bezier(0.2, 0, 0.38, 0.9);
+}
+
+/* Shares the toast's entrance, including its direction-aware variant. */
+[dir="rtl"] .lang-suggest {
+  animation-name: toast-in-rtl;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .lang-suggest {
+    animation: none;
+  }
 }
 
 .lang-suggest-in {
   display: flex;
   align-items: center;
   gap: 16px;
-  padding-top: 8px;
-  padding-bottom: 8px;
+  padding: 12px 16px;
   font-size: 12.5px;
 }
 
@@ -45,6 +75,21 @@
 
 .lang-suggest-close:hover {
   color: var(--inv-text);
+}
+
+/* Narrow: the corner is too small for a card, so it spans the width under
+   the masthead. The toast keeps the bottom at this size, so the two do
+   not meet unless the consent bar has taken the bottom first. */
+@media (max-width: 520px) {
+  .lang-suggest {
+    inset-inline: 16px;
+    top: 60px;
+    max-width: none;
+  }
+
+  .lang-suggest-in {
+    gap: 12px;
+  }
 }
 
 /* Footer brand column: the wordmark alone. */
@@ -198,6 +243,57 @@
   .toast-top {
     top: 60px;
     bottom: auto;
+  }
+}
+
+/* Two notifications never share a slot. The suggestion is the standing
+   one and holds the top corner, so the toast drops below it for as long
+   as an offer is up. On a narrow screen the toast prefers the bottom
+   instead and only returns to the top when the consent bar has taken the
+   bottom (see maybeToast in lib/playback.ts), which is the one case where
+   both sit at the top and this offset is what separates them.
+   `:has()` is the only way to see the suggestion from here: it is mounted
+   by the locale layout and the toast by the playback hook, so they are not
+   siblings and no shared class reaches both. The child combinator keeps
+   the match to body's own children, which is where the suggestion is
+   mounted, instead of asking the browser to watch the whole document.
+   The offsets clear the tallest suggestion measured across all fourteen
+   locales in Chromium, WebKit and Firefox: its bottom edge reaches 119px
+   wide (English, in Firefox) and 137px narrow (Russian at 320px, in
+   Firefox).
+
+   The wide rule is fenced to min-width 521px on purpose. `body:has()`
+   outweighs the plain `.toast` selector that puts the toast at the bottom
+   under 521px, so left unfenced it would drag the narrow toast back to
+   the top. */
+@media (min-width: 521px) {
+  body:has(> .lang-suggest) .toast {
+    top: 132px;
+  }
+}
+
+@media (max-width: 520px) {
+  body:has(> .lang-suggest) .toast-top {
+    top: 152px;
+  }
+}
+
+/* An in-page jump must not land underneath the suggestion, at any width.
+   The corner card does not clear the section headings horizontally the way
+   it looks like it should: measured across the fourteen locales, a heading
+   still reaches 387px into the card's band at 721px (Indonesian) and 44px
+   at 1024px, and only a viewport around 1280px is genuinely clear. Pushing
+   the jump below the card is one rule; arguing about horizontal overlap
+   width by width is not. The targets themselves are declared in
+   explorer.css; this sheet comes after it in the cascade and owns the
+   suggestion, so the exception lives with the thing that causes it. */
+body:has(> .lang-suggest) :is(#models, #voices, #languages, #about, #providers) {
+  scroll-margin-top: 132px;
+}
+
+@media (max-width: 520px) {
+  body:has(> .lang-suggest) :is(#models, #voices, #languages, #about, #providers) {
+    scroll-margin-top: 152px;
   }
 }
 

@@ -97,8 +97,8 @@ export const viewport: Viewport = {
 
 /** One locale's whole page: the part of the masthead that needs no client,
  *  over the same 404 body the locale-scoped page renders. Left out on
- *  purpose: provider tabs, the language suggestion strip, the locale
- *  switcher, analytics, the consent bar and the footer.
+ *  purpose: provider tabs, the language suggestion, the locale switcher,
+ *  analytics, the consent bar and the footer.
  *
  *  Thirteen of these fourteen blocks are display:none, so the document
  *  carries fourteen <main> elements. Checked in Chromium rather than

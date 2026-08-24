@@ -4,11 +4,14 @@
 // line cap and this is the module that was trying to get out. The Explorer
 // keeps the catalog, the filters and the list; this keeps sound.
 //
-// The code came across unchanged: it is the same code that shipped through
-// the 2026-08-18 and 2026-08-19 rounds, in the same order. Read
+// The audio path came across unchanged: it is the same code that shipped
+// through the 2026-08-18 and 2026-08-19 rounds, in the same order. Read
 // docs/decisions.md before changing any of it, because the ordering of the
 // tiers, the single startup allowance and the rule that a decoded replay
 // must prove its context is awake were each paid for by a real regression.
+// The one deliberate change in this file since then is in maybeToast, which
+// now asks whether a language suggestion holds the top edge before it picks
+// a corner; that belongs to the floating-offer work, not to the move.
 
 "use client";
 
@@ -130,7 +133,7 @@ export function usePlayback({ provider, locale, t, family, gmodel, multiFamily }
   // The family quirk toast: shown once per session, on the first play of
   // a voice from a noted family, because the top-of-list note is off
   // screen once the reader has scrolled into a long list.
-  const [toast, setToast] = useState<{ text: string; pos: "top" | "bottom" } | null>(null);
+  const [toast, setToast] = useState<Toast>(null);
   const toastTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   // Mirrors the family filter for callbacks that fire long after their
   // click render (cold generations); see maybeToast.
@@ -192,11 +195,17 @@ export function usePlayback({ provider, locale, t, family, gmodel, multiFamily }
     }
     // Mobile places the toast opposite the playing row so it never covers
     // what was just tapped; desktop ignores pos and stays Carbon top-right
-    // (the media query wins). While the consent bar holds the bottom edge,
-    // the toast takes the top slot: the bottom is simply occupied.
+    // (the media query wins, and the stylesheet drops it below a language
+    // suggestion when one is up). Occupied edges decide first: the consent
+    // bar owns the bottom, the language suggestion owns the top, and only
+    // when neither is up does the playing row choose.
     const consentUp = !!document.querySelector(".consent");
+    const suggestUp = !!document.querySelector(".lang-suggest");
     const row = document.querySelector(".play-on")?.getBoundingClientRect();
-    const pos = consentUp || (row && row.top > window.innerHeight / 2) ? "top" : "bottom";
+    let pos: "top" | "bottom";
+    if (consentUp) pos = "top";
+    else if (suggestUp) pos = "bottom";
+    else pos = row && row.top > window.innerHeight / 2 ? "top" : "bottom";
     setToast({ text: note, pos });
     if (toastTimer.current) clearTimeout(toastTimer.current);
     toastTimer.current = setTimeout(() => setToast(null), 15000);
@@ -732,6 +741,7 @@ export function usePlayback({ provider, locale, t, family, gmodel, multiFamily }
   // it reads the selected sub-model and the active row, so freezing it in a
   // useCallback would capture stale ones. The ref is refreshed after every
   // commit, so a click always reaches the current play().
+
   const playRef = useRef(play);
   useLayoutEffect(() => {
     playRef.current = play;
