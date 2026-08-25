@@ -97,7 +97,7 @@ Rows are memoized (`components/VoiceRow.tsx`) with a comparator over voice ident
 - Metadata, Open Graph and JSON-LD counts derive from the catalog at render time. Titles are unique per provider and language ("Amazon Polly English (Wales) voices"); the root is the umbrella.
 - `app/llms.txt/route.ts` regenerates daily: provider list with counts, the id pattern, the packed format, the sample endpoint's 202 behavior.
 - `app/robots.ts` allows `/api/catalog` (which prefix-covers the per-provider slices) and `/api/sample`, disallows the rest of `/api/`.
-- `app/sitemap.ts` lists the umbrella, each provider home, and every language page (2,072 URLs today across the fourteen locales). It declares `revalidate = 86400` like every other catalog-derived route: a generated sitemap is a cached route handler, and without its own window it is prerendered once and served from that artifact until the next deploy, freezing the URL set to the catalog the build happened to see. INVARIANT: it emits no `lastmod`. The only date on hand is `site.updated`, which `lib/catalog.ts` stamps on a successful refresh rather than on a real change, so publishing it would date all 2,072 URLs to the same day whether or not anything moved; lastmod is optional and an absent signal beats a misleading one.
+- `app/sitemap.ts` lists the umbrella, each provider home, and every language page (2,072 URLs today across the fourteen locales). It is force-dynamic because sitemap traffic is too sparse to make per-instance ISR safe: a recycled instance could otherwise serve the deploy-time URL set to its first sitemap requester while regeneration ran in the background. Each request regenerates the XML synchronously from `getSite()`, whose six-hour process memo and shared-flight guard still prevent a catalog fetch per request. INVARIANT: it emits no `lastmod`. The only date on hand is `site.updated`, which `lib/catalog.ts` stamps on a successful refresh rather than on a real change, so publishing it would date all 2,072 URLs to the same day whether or not anything moved; lastmod is optional and an absent signal beats a misleading one.
 - `/api/catalog/[provider]` serves each provider's packed slice (force-static, daily, prerendered for the blessed set). Per-provider on purpose: google is about 95 percent of the payload and the smaller shelves should not pay for it.
 
 ## Caches at a glance
@@ -137,8 +137,10 @@ Rows are memoized (`components/VoiceRow.tsx`) with a comparator over voice ident
   nothing reads it with detection off, and a Set-Cookie on prefixed-locale
   pages would have made 13 of the 14 locales uncacheable at the CDN.
 - ISR state is per instance and dies with it, so a fresh instance serves
-  build-time HTML until pages revalidate. Accepted for a daily-refresh
-  catalog; no shared cache handler.
+  build-time HTML until catalog pages revalidate. That behavior remains
+  accepted for the catalog pages and static catalog routes. The sitemap is
+  force-dynamic because its sparse traffic made a stale first response
+  unsafe.
 - `TTS_API_KEY` reaches the process only through Secret Manager. Public
   `NEXT_PUBLIC_*` values bake at build time via `--set-build-env-vars`, so
   the canonical origin is the web.app site until speakshelf.com attaches,

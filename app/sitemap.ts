@@ -3,19 +3,21 @@ import { LOCALES } from "@/i18n/locales";
 import { getSite } from "@/lib/catalog";
 import { localeUrl } from "@/lib/seo";
 
-export const revalidate = 86400;
+export const dynamic = "force-dynamic";
 
 // One entry per page per locale, each carrying the full alternate set so
 // crawlers see the reciprocal hreflang picture from the sitemap alone.
 //
-// The daily window is declared here rather than inherited. A generated
-// sitemap is a route handler that Next caches, and with no revalidate of
-// its own it is prerendered once and served from that artifact until the
-// next deploy: the URL set would then be frozen to whatever catalog the
-// build saw, and a language appearing upstream would never enter the
-// sitemap. Such a page stays reachable through the daily provider index,
-// so this is delayed discovery rather than a lost page, but every other
-// catalog-derived route already says 86400 and this one is no exception.
+// This route is dynamic on purpose. Next's ISR state is local to each
+// Cloud Run instance. Once a build artifact is old enough, a recycled
+// instance can serve that artifact to its first sitemap requester while
+// regeneration runs in the background. Sitemap requests are too sparse
+// for the health probe to hide that stale-first behavior.
+//
+// Rendering on every request removes the per-instance sitemap cache.
+// getSite() still holds the built catalog in process for six hours and
+// coalesces refreshes, so this does not fetch the upstream catalog on
+// every sitemap request.
 //
 // No lastModified, deliberately. The only date available is
 // `site.updated`, which `lib/catalog.ts` stamps when a refresh SUCCEEDS,
